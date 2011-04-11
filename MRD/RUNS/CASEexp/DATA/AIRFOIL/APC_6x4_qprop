@@ -1,0 +1,11 @@
+APC6x4airfoil !Airfoil Name
+-0.27  ! CL0
+5.9000 ! CLA 
+-1.200 ! CLmin 
+1.2000 ! CLmax
+0.0240 ! CD0 
+0.1300 ! CD2u
+0.3    ! CD2l
+0.0500 ! CLCD0
+20000  ! REref
+-0.5   ! REexp

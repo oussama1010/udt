@@ -1,0 +1,51 @@
+! This file contains the initial values of all the variables.!
+! and coefficients that is going to be used in the program...!
+!!! DO NOT CHANGE THE ORDER OR THE FORM OF THIS FILE !!! 
+!--- Environment ---!
+1.225          ! rho=1.225 kg/m^3
+0.0000178      ! mu=0.0000178 kg/m-s
+340.0          ! a=340.0 m/s
+
+
+
+!--- System Weights ---!
+0.050	     ! Payload      !kg  
+0.023	     ! Autopilot    !kg 
+0.010        ! Misc. weight !kg
+
+
+
+4            ! Motor number
+
+!--- Frame Specs ---!
+0           ! Frame Type 0:carbon,1:aluminium,2:etc...
+
+
+
+
+
+
+
+
+
+
+!--- Lift Distribution Along the Span---!
+0.2  0.5  1.0  ! R1,R2,R3 Spanwise Locations 0:root 1:tip
+0.85 0.70 0.40 ! RCL1,RCL2,RCL3 Local CL coeff @ corresponding locations
+!--- Propeller Settings ---!
+2 2 1            ! n_blade_ary=(/2,2,1/) min max delta
+0.20 0.22 0.01   ! R_tip_ary=(/0.20,0.22,0.01/) in meters
+2200 2400 100    ! RPM_ary=(/2200,2400,100/) rev/min
+0.035            ! R_hub = 0.035 in meters
+!--- Mission Settings---!
+1               ! dsgn_con=1
+70.0 29.0 1.0   ! WCWeight=(/70.0,29.0,1.0/) weight coeff for each dsgn condt
+0.0 5.0 8.0     ! Speed = (/0.0,5.0,8.0/) speed at each dsgn condt (m/s)
+2.5 2.0 2.5     ! Thrust =(/2.5,2.0,2.5/) thrust at each dsgn condt (N)
+0.0 14.0 14.0   ! WCVolt=(/0.0,14.0,14.0/) Max Voltage limitation if exists, otherwise put 0.0 (Volt)
+2 1 1           ! Opt=(/2,1,1/) Optimization type for each condt, 1:Dynamic, 2:Static Optimization
+!--- Misc Settings ---! DO NOT TOUCH !!!
+0.0	! Power(1) = 0.0
+0.0	! Ldes = 0.0
+0.2	! FQdes = 0.2
+30	! Nout = 30

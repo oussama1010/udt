@@ -1,0 +1,25 @@
+	MODULE MCOMMON
+	IMPLICIT NONE
+
+	REAL :: VERSION
+
+	INTEGER :: i
+
+	INTEGER :: 	NR_MOTOR,	&
+			NR_PROP,	&
+			NR_BLADE,	&
+			RUN_MODE,	&
+			FRAME_TYPE
+
+
+	REAL :: TIP_CLRNC
+
+
+	REAL :: M_FRAME,	&
+		M_FRAME_FIX,	&
+		M_PROP,		&
+		M_BATT,		&
+		M_MOTOR,	&
+		M_TOTAL
+
+	END MODULE MCOMMON
