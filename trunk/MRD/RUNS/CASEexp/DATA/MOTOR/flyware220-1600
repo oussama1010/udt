@@ -1,0 +1,9 @@
+
+ FlyWare 220/6-1600
+
+ 1        ! motor type  (Permanent Magnet DC)
+
+ 0.368    ! Rmotor (ohms)
+ 0.39     ! Io     (Amps)
+ 1563.0   ! Kv     (rpm/V)
+
