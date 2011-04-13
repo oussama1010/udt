@@ -9,8 +9,9 @@ CHARLES 1 2 3
 1.225          ! rho=1.225 kg/m^3
 0.0000178      ! mu=0.0000178 kg/m-s
 340.0          ! a=340.0 m/s
-
-
+!It doesnt read this line
+#Nor this
+  OR this
 
 !--- System Weights ---!
 0.050	     ! Payload      !kg  

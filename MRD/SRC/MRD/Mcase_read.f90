@@ -47,12 +47,19 @@
 	READ(60,4000,iostat=status)LINE
 	IF(status.eq.-1) THEN
 	exit
+!--- First Check if the line starts with '!','#' if so skip this line ---!
+	ELSE IF (LINE(1:1).EQ.'!') THEN
+	GOTO 1000
+	ELSE IF (LINE(1:1).EQ.'#') THEN
+	GOTO 1000
+	ELSE IF (LINE(2:2).EQ.' ') THEN
+	GOTO 1000
 	END IF
-!--- First Check if the line starts with '!','C','#' if so skip this line ---!
+
 !	WRITE(*,*)' STATUS :',status
 	CALL EXTRACT_LINE()
 !	READ(60,*,iostat=status) !
-
+1000	CONTINUE ! Just skipped the commented line !!!
 	END DO
 	CLOSE(60)
 
