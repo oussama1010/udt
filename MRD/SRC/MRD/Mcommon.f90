@@ -28,7 +28,12 @@
 	CHARACTER(LEN=30) :: COMMAND
 	CHARACTER(LEN=90) :: LEFT_ARGS
 	REAL :: R1,R2,R3
-	INTEGER :: I1,I2,I3
+	
+	REAL ::		RHO,		&
+			MU, 		&
+			VSOUND
+
+
 	INTEGER :: 	NR_MOTOR,	&
 			NR_PROP,	&
 			NR_BLADE,	&
