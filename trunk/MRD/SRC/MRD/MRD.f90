@@ -51,27 +51,19 @@
 !---Main Loops will be defined here and then EXECuted 1by1
 	CALL MEXEC()
 
-	READ(*,5000)LINE
-	K = INDEX(LINE,'0')
-	KI = INDEX(LINE,'1')
-	KBLANK = INDEX(LINE,' ')
-	COMMAND = LINE(1:KBLANK)
-	LEFT_ARGS = LINE(KBLANK+1:120)
-
-	WRITE(*,*)' COMMAND is : ',COMMAND
-	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS
+!	READ(*,5000)LINE
+!	WRITE(*,*)LINE(1:1)
+!	K = INDEX(LINE,'0')
+!	KI = INDEX(LINE,'1')
+!	KBLANK = INDEX(LINE,' ')
+!	COMMAND = LINE(1:KBLANK)
+!	LEFT_ARGS = LINE(KBLANK+1:120)
+!	WRITE(*,*)' COMMAND is : ',COMMAND
+!	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS
 !	WRITE(*,*)' Index 0 of Line is : ',K
 !	WRITE(*,*)' Index I of Line is : ',KI
 !	WRITE(*,*)' Input Line is : ',LINE
 !	WRITE(*,*)' Input Line 5th ch is : ',LINE(3:5)
-
-	IF(COMMAND .EQ. 'MURAT') THEN
-	WRITE(*,*)' Reading 3 real values !!! '
-	READ(LEFT_ARGS,*)R1,R2,R3
-	END IF
-	WRITE(*,*)' R1 is : ',R1
-	WRITE(*,*)' R2 is : ',R2
-	WRITE(*,*)' R3 is : ',R3
 
 5000	FORMAT(A120)
 
