@@ -3,13 +3,11 @@ CHARLES: 1 2 3
 
 
 
-
-
 ! This file contains the initial values of all the variables.!
 ! and coefficients that is going to be used in the program...!
 !!! DO NOT CHANGE THE ORDER OR THE FORM OF THIS FILE !!! 
 !--- Environment ---!
-RHO:	fctrd	1.225          ! rho=1.225 kg/m^3
+RHO:		1.225          ! rho=1.225 kg/m^3
 MU:		0.0000178      ! mu=0.0000178 kg/m-s
 VSOUND:		340.0          ! a=340.0 m/s
 !It doesnt read this line

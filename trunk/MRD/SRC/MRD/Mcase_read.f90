@@ -52,9 +52,8 @@
 	GOTO 1000
 	ELSE IF (LINE(1:1).EQ.'#') THEN
 	GOTO 1000
-!---More efficient but not robust---!
-!	ELSE IF (LINE(2:2).EQ.' ') THEN
-!	GOTO 1000
+	ELSE IF (LINE(2:2).EQ.' ') THEN
+	GOTO 1000
 	END IF
 
 !	WRITE(*,*)' STATUS :',status
@@ -76,26 +75,33 @@
 	KBLANK =INDEX(LINE,':')
 	COMMAND = LINE(1:KBLANK-1)
 	LEFT_ARGS = LINE(KBLANK+2:120)
-!	WRITE(*,*)'========================'        !---- Debug 
-!	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
-!	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
-!	WRITE(*,*)'========================'        !---- Debug 
+	WRITE(*,*)'========================'        !---- Debug 
+	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
+	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
+	WRITE(*,*)'========================'        !---- Debug 
 
 !---CHARLES, we will only modify this part for all COMMANDS and their args---!
-	IF(COMMAND .EQ. 'MURAT') THEN
-!		WRITE(*,*)' Reading 3 Real values !!! '     !---- Debug 
+	SELECT CASE (COMMAND)	
+	CASE ('MURAT')
+		WRITE(*,*)' Reading 3 Real values !!! '     !---- Debug 
 		READ(LEFT_ARGS,*, err = 6000)R1,R2,R3
-!		WRITE(*,*)' R1 is : ',R1      !---- Debug 
-!		WRITE(*,*)' R2 is : ',R2      !---- Debug 
-!		WRITE(*,*)' R3 is : ',R3      !---- Debug 
-	ELSE IF(COMMAND .EQ. 'RHO') THEN
-!		WRITE(*,*)' Reading 1 Real values !!! '  !---- Debug 
+		WRITE(*,*)' R1 is : ',R1      !---- Debug 
+		WRITE(*,*)' R2 is : ',R2      !---- Debug 
+		WRITE(*,*)' R3 is : ',R3      !---- Debug 
+	CASE ('RHO')
+		WRITE(*,*)' Reading 1 Real values !!! '  !---- Debug 
 		READ(LEFT_ARGS,*, err = 6000)RHO
-!		WRITE(*,*)' RHO is : ',RHO    !---- Debug 
-	END IF
+		WRITE(*,*)' RHO is : ',RHO    !---- Debug 
+	CASE DEFAULT
+		GOTO 7000	
+	END SELECT
+
+
+
 	
 	GOTO 7000
 
+!---If a COMMAND has been recognized but it's associated data could not be found---!
 6000	WRITE(*,*)'!!!   ERROR   !!!'
 	WRITE(*,*)' Could not get dat for ', COMMAND
 
