@@ -52,8 +52,9 @@
 	GOTO 1000
 	ELSE IF (LINE(1:1).EQ.'#') THEN
 	GOTO 1000
-	ELSE IF (LINE(2:2).EQ.' ') THEN
-	GOTO 1000
+!---More efficient but not robust---!
+!	ELSE IF (LINE(2:2).EQ.' ') THEN
+!	GOTO 1000
 	END IF
 
 !	WRITE(*,*)' STATUS :',status
@@ -71,36 +72,41 @@
 	SUBROUTINE EXTRACT_LINE
 	USE MCOMMON
 	IMPLICIT NONE
-!--- Find the first blank char, assume that COMMAND ends there---!
-	KBLANK = INDEX(LINE,' ')
-	COMMAND = LINE(1:KBLANK)
-	LEFT_ARGS = LINE(KBLANK+1:120)
-	WRITE(*,*)'========================'        !---- Debug 
-	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
-	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
-	WRITE(*,*)'========================'        !---- Debug 
+!--- Find the first ":" char, assume that COMMAND ends there (to avoid issue with spaces or tab)---!
+	KBLANK =INDEX(LINE,':')
+	COMMAND = LINE(1:KBLANK-1)
+	LEFT_ARGS = LINE(KBLANK+2:120)
+!	WRITE(*,*)'========================'        !---- Debug 
+!	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
+!	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
+!	WRITE(*,*)'========================'        !---- Debug 
 
 !---CHARLES, we will only modify this part for all COMMANDS and their args---!
 	IF(COMMAND .EQ. 'MURAT') THEN
-	WRITE(*,*)' Reading 3 Real values !!! '     !---- Debug 
-	READ(LEFT_ARGS,*)R1,R2,R3
-	WRITE(*,*)' R1 is : ',R1      !---- Debug 
-	WRITE(*,*)' R2 is : ',R2      !---- Debug 
-	WRITE(*,*)' R3 is : ',R3      !---- Debug 
-	ELSE IF(COMMAND .EQ. 'CHARLES') THEN
-	WRITE(*,*)' Reading 3 Integer values !!! '  !---- Debug 
-	READ(LEFT_ARGS,*)I1,I2,I3
-	WRITE(*,*)' I1 is : ',I1      !---- Debug 
-	WRITE(*,*)' I2 is : ',I2      !---- Debug 
-	WRITE(*,*)' I3 is : ',I3      !---- Debug 
+!		WRITE(*,*)' Reading 3 Real values !!! '     !---- Debug 
+		READ(LEFT_ARGS,*, err = 6000)R1,R2,R3
+!		WRITE(*,*)' R1 is : ',R1      !---- Debug 
+!		WRITE(*,*)' R2 is : ',R2      !---- Debug 
+!		WRITE(*,*)' R3 is : ',R3      !---- Debug 
+	ELSE IF(COMMAND .EQ. 'RHO') THEN
+!		WRITE(*,*)' Reading 1 Real values !!! '  !---- Debug 
+		READ(LEFT_ARGS,*, err = 6000)RHO
+!		WRITE(*,*)' RHO is : ',RHO    !---- Debug 
 	END IF
+	
+	GOTO 7000
 
+6000	WRITE(*,*)'!!!   ERROR   !!!'
+	WRITE(*,*)' Could not get dat for ', COMMAND
 
+7000	CONTINUE
 
 	END SUBROUTINE
 
+
+
 !	SUBROUTINE GETLINE(CMND,R,I,L,ERR)
-!--- Reads the entire line, gets the command, 4 real, 4 integer, 4 logical values and error
+!--- Reads the entire line, gets the command, 4 real, 4 integer, 4 logical values and error, we might not need it
 
 !	END SUBROUTINE GETLINE
 
