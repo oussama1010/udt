@@ -6,7 +6,7 @@ MFLAGS =
 QFLAGS = -fdefault-double-8 -fdefault-real-8    
 PROGS = mrd qprop qmil
 
-MRDOBJS = Mcommon.o Mcase_read.o Mframe.o Mpdsgn.o Mweight.o Mexec.o MRD.o
+MRDOBJS = Mcommon.o Mcase_read1.o Mframe.o Mpdsgn.o Mweight.o Mexec.o MRD.o
 #Mcase_read.o \
 
 QPOBJS = qprop.o gvcalc.o cdfun.o tqcalc.o motor.o spline.o io.o qcget.o gaussn0.o
@@ -39,8 +39,8 @@ MRD.o :	$(MSRC)/MRD.f90
 	$(FC) -c $(MFLAGS) $(MSRC)/MRD.f90
 Mcommon.o : $(MSRC)/Mcommon.f90
 	$(FC) -c $(MFLAGS) $(MSRC)/Mcommon.f90
-Mcase_read.o : $(MSRC)/Mcase_read.f90
-	$(FC) -c $(MFLAGS) $(MSRC)/Mcase_read.f90
+Mcase_read1.o : $(MSRC)/Mcase_read1.f90
+	$(FC) -c $(MFLAGS) $(MSRC)/Mcase_read1.f90
 Mexec.o :	$(MSRC)/Mexec.f90
 	$(FC) -c $(MFLAGS) $(MSRC)/Mexec.f90
 Mframe.o :	$(MSRC)/Mframe.f90
