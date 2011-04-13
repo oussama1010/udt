@@ -25,6 +25,12 @@
 
 	WRITE(*,*)' Welcome to MRD'
 	WRITE(*,'(A,F3.1)')'  Version : ', VERSION
+!--- Get command line arg for the CASE Filename ---
+	CALL GETARG (1,COMMAND_LINE_ARG)
+	CASE_FILE_NAME = TRIM(COMMAND_LINE_ARG)
+
+!--- Initialization of CASE File ---
+	CALL READ_CASE()
 !=========================================
 !--- Manual Initialization for now...
 !--- Will be CALL READCASE() later, to read the CASE.txt input file...
@@ -40,9 +46,33 @@
 	M_FRAME_FIX = 0.1 ! (kg) Fixed frame weight for FRAME_TYPE=10
 
 !=========================================
-	WRITE(*,'(A,I2)')'  MOTOR NR : ', NR_MOTOR
+!	WRITE(*,'(A,I2)')'  MOTOR NR : ', NR_MOTOR
 
 !---Main Loops will be defined here and then EXECuted 1by1
 	CALL MEXEC()
+
+	READ(*,5000)LINE
+	K = INDEX(LINE,'0')
+	KI = INDEX(LINE,'1')
+	KBLANK = INDEX(LINE,' ')
+	COMMAND = LINE(1:KBLANK)
+	LEFT_ARGS = LINE(KBLANK+1:120)
+
+	WRITE(*,*)' COMMAND is : ',COMMAND
+	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS
+!	WRITE(*,*)' Index 0 of Line is : ',K
+!	WRITE(*,*)' Index I of Line is : ',KI
+!	WRITE(*,*)' Input Line is : ',LINE
+!	WRITE(*,*)' Input Line 5th ch is : ',LINE(3:5)
+
+	IF(COMMAND .EQ. 'MURAT') THEN
+	WRITE(*,*)' Reading 3 real values !!! '
+	READ(LEFT_ARGS,*)R1,R2,R3
+	END IF
+	WRITE(*,*)' R1 is : ',R1
+	WRITE(*,*)' R2 is : ',R2
+	WRITE(*,*)' R3 is : ',R3
+
+5000	FORMAT(A120)
 
 	END PROGRAM MRD 

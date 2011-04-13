@@ -19,7 +19,7 @@
 	SUBROUTINE READ_CASE
 	USE MCOMMON
 	IMPLICIT NONE
-	integer :: status
+	integer :: i, status
 !Open the CASE file
 !Read the command
 !Decide which arguments to read
@@ -29,32 +29,80 @@
 !Loop till the CASE file ends...
 
 
-	OPEN(60,file='CASE.run', status='old',iostat=status)
+	OPEN(60,file=CASE_FILE_NAME, status='old',iostat=status)
 !--- If the file doesnt exists tell to copy it from src...
 		IF (status .ne. 0) then 
-		WRITE(*,*)' CASE.run Variable initialization file doesnt exists...' 
-		WRITE(*,*)' Copy it from /src directory...'
+		WRITE(*,*)
+		WRITE(*,*)' ******!!! WARNING !!!******' 
+		WRITE(*,*)' CASE file doesnt exists...' 
+		WRITE(*,*)' Run the program with a commandline argument as ;'
+		WRITE(*,*)' <mrd CASE.run> and check the existence of CASE.run'
+		WRITE(*,*)' ******!!! WARNING !!!******'
+		WRITE(*,*)
 		CLOSE(60)
 		GOTO 5000
 		END IF
 !--- File exists so read it...
-	READ(60,*,iostat=status) ! This file contains the initial values of all the variables 
-	READ(60,*,iostat=status) ! and coefficients that is going to be used in the program...
-	READ(60,*,iostat=status) !
+	DO i=1,1000
+	READ(60,4000,iostat=status)LINE
+	IF(status.eq.-1) THEN
+	exit
+	END IF
+!--- First Check if the line starts with '!','C','#' if so skip this line ---!
+!	WRITE(*,*)' STATUS :',status
+	CALL EXTRACT_LINE()
+!	READ(60,*,iostat=status) !
 
+	END DO
 	CLOSE(60)
-5000	CONTINUE
 
+4000	FORMAT(A120)
+
+5000	CONTINUE
 	END SUBROUTINE 
 
-
-
-	SUBROUTINE GOTOLINE(line_nr)
+	SUBROUTINE EXTRACT_LINE
 	USE MCOMMON
 	IMPLICIT NONE
+!--- Find the first blank char, assume that COMMAND ends there---!
+	KBLANK = INDEX(LINE,' ')
+	COMMAND = LINE(1:KBLANK)
+	LEFT_ARGS = LINE(KBLANK+1:120)
+	WRITE(*,*)'========================'        !---- Debug 
+	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
+	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
+	WRITE(*,*)'========================'        !---- Debug 
 
-	DO 1,line_nr
-	READ(60,*,iostat=status)
-	END DO
+!---CHARLES, we will only modify this part for all COMMANDS and their args---!
+	IF(COMMAND .EQ. 'MURAT') THEN
+	WRITE(*,*)' Reading 3 Real values !!! '     !---- Debug 
+	READ(LEFT_ARGS,*)R1,R2,R3
+	WRITE(*,*)' R1 is : ',R1      !---- Debug 
+	WRITE(*,*)' R2 is : ',R2      !---- Debug 
+	WRITE(*,*)' R3 is : ',R3      !---- Debug 
+	ELSE IF(COMMAND .EQ. 'CHARLES') THEN
+	WRITE(*,*)' Reading 3 Integer values !!! '  !---- Debug 
+	READ(LEFT_ARGS,*)I1,I2,I3
+	WRITE(*,*)' I1 is : ',I1      !---- Debug 
+	WRITE(*,*)' I2 is : ',I2      !---- Debug 
+	WRITE(*,*)' I3 is : ',I3      !---- Debug 
+	END IF
 
-	END SUBROUTINE GOTOLINE
+
+
+	END SUBROUTINE
+
+!	SUBROUTINE GETLINE(CMND,R,I,L,ERR)
+!--- Reads the entire line, gets the command, 4 real, 4 integer, 4 logical values and error
+
+!	END SUBROUTINE GETLINE
+
+!	SUBROUTINE GOTOLINE(line_nr)
+!	USE MCOMMON
+!	IMPLICIT NONE
+
+!	DO 1,line_nr
+!	READ(60,*,iostat=status)
+!	END DO
+
+!	END SUBROUTINE GOTOLINE
