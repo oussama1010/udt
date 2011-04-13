@@ -22,17 +22,20 @@
 
 	WRITE(*,*)' Frame Building Subroutine '
 !--- Fixed Frame Weight for Type 10---
-	IF (FRAME_TYPE == 10) THEN
-	M_frame = M_frame_fix
-
-	END IF
 
 
-
-
-
-
-
+	SELECT CASE(FRAME_TYPE)
+	CASE (10)
+		M_frame = M_frame_fix
+	CASE (1) 
+		CALL ESTIMATE_VOLUME()
+	END SELECT
 
 
 	END SUBROUTINE MFRAME
+
+	SUBROUTINE ESTIMATE_VOLUME
+	USE MCOMMON
+	IMPLICIT NONE
+
+	END SUBROUTINE ESTIMATE_VOLUME
