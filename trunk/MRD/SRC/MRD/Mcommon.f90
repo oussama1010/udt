@@ -51,4 +51,23 @@
 		M_MOTOR,	&
 		M_TOTAL
 
+!--- New addition from MURAT
+	REAL :: Qprop_V, Qprop_rpm, Qprop_Dbeta, Qprop_T, Qprop_Q, Qprop_Pshaft, Qprop_Volts, &
+                Qprop_Amps, Qprop_Eff_mot, Qprop_Eff_prop, Qprop_Adv, Qprop_CT, Qprop_CP, Qprop_DV,&
+                Qprop_Eff_total, Qprop_P_elec, Qprop_P_prop, Qprop_cl_avg, Qprop_cd_avg 
+
+	CHARACTER(len=25) :: propeller_candidate, qprop_outfile, Prop_name, Motor_name, Airfoil_name
+	CHARACTER(len=50) :: qprop_infile
+	CHARACTER(len=120) :: qprop_in_command
+	CHARACTER(len=27) :: dir_name
+
+	INTEGER :: wcn, err_nr
+
+	INTEGER :: indx_airfoil, indx_motor, indx_prop, indx_motor_ary(3),&
+		indx_airfoil_ary(3), indx_prop_ary(3)
+
+	REAL :: Speed(3), Thrust(3)
+
+	INTEGER :: n_prop, n_motor !these are the motor and prop number in the directory... we should change the name I guess...
+
 	END MODULE MCOMMON

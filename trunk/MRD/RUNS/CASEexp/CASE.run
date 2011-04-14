@@ -11,23 +11,55 @@ VSOUND:		340.0          ! a=340.0 m/s
 #Nor this
   OR this
 
+
 !--- System Weights ---!
+
+MASS_PAYLOAD  0.050	     ! Payload      !kg  
+MASS_AVIONICS 0.023	     ! Autopilot    !kg 
+MASS_MISC     0.010        ! Misc. weight !kg
+=======
 PAYLOAD_WEIGHT:		0.050	     ! Payload      !kg  
 AUTOPILOT_WEIGHT:	0.023	     ! Autopilot    !kg 
 MISC_WEIGHT:		0.010        ! Misc. weight !kg
 
 
-
-4            ! Motor number
+NR_MOTOR   4            ! Motor number
 
 !--- Frame Specs ---!
+
+FRAME_TYPE      1
+FRAME_MAT       0    ! Frame Material 0:carbon,1:aluminium,2:etc...
+FRAME_SHAPE     0    ! Symetric,round,line...
+FRAME_FIX_MASS  0.1  ! kg, If defined, the prog doesnt estimate the mass... otherwise leave 0.0
+FRAME_SIZE  ! Array, min,max,delta
+=======
 FRAME_WEIGHT:	100	! frame weight in gr used if different from 0         
 FRAME_TYPE:	0           ! Frame Type 0:carbon,1:aluminium,2:etc...
 
 
+!--- Constraints & Checks ---!
+PROP_AR
+MIN_TW_RATIO 
+
 !--- Battery Specs ---!
 BATTERY: 900 180          ! Battery specs: Capacity in mAh  Specific Energy in Wh/kg
  
+
+!--- Energy Source ---!
+BATT_SPEC_ENERGY
+BATT_MASS_MULTIPLIER
+BATT_MAX_VOLT
+
+
+!--- PROGRAM RUN MODE ---!
+RUN_MODE    !Design :0, Analyse:1,...
+
+
+
+
+
+
+=======
 
 
 !--- Lift Distribution Along the Span---!
