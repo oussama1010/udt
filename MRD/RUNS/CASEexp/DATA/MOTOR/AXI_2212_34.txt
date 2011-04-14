@@ -1,0 +1,9 @@
+
+ Axi 2212/34 Gold Line
+
+ 1        ! motor type  (Permanent Magnet DC)
+
+ 0.345    ! Rmotor (ohms)
+ 0.4        ! Io     (Amps)
+ 710.0   ! Kv     (rpm/V)
+

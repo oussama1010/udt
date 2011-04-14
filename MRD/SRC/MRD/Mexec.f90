@@ -22,10 +22,26 @@
 
 	WRITE(*,*)' Execution Subroutine '
 
+!--- Starting by generating the Frame
 	CALL MFRAME 
+!--- MFRAME should have output the frame weight...
+!--- Sum up all the components
 	CALL M_TOTAL_WEIGHT
+!--- Assumed to have the final mass of the vehicle
+!--- Calculate the required thrust for each motor...
+!	THRUST(1) = TOTAL_WEIGHT/ NMOTOR  !convertion needed according to the units...
+
+!--- Choose Analyse/Design mode and execute 
+	IF(RUN_MODE .EQ. 2) THEN
+	CALL M_PROP_ANALYSE
+	ELSE IF (RUN_MODE .EQ. 1) THEN
 	CALL M_PROP_DESIGN
+	ELSE
+	WRITE(*,*)' !!! RUN MODE is not defined !!!  Quitting...'
+	STOP
+	END IF
 
-
+!--- Simulate the performance
+!	CAll M_SIMUL
 
 	END SUBROUTINE MEXEC

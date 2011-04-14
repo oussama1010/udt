@@ -38,15 +38,36 @@
 	NR_MOTOR = 4   ! Number of motors
 	NR_PROP = NR_MOTOR ! Number of Propellers
 	NR_BLADE = 2 ! Blade number, will be array later
-	RUN_MODE = 1  ! 1:design prop,2:use existing prop,3:...
+	RUN_MODE = 2  ! 1:design prop,2:use existing prop,3:...
 
 	FRAME_TYPE = 1 ! Frame type 1,2,3,... will be defined 
 	TIP_CLRNC = 0.01 ! Tip Clearance in meters
 
 	M_FRAME_FIX = 0.1 ! (kg) Fixed frame weight for FRAME_TYPE=10
-
+!--- extra from MURAT ---!
+	wcn = 1
+	SPEED(1) = 0.1 !m/s
+	THRUST(1) = 1.0 !N This is going to be changed after the total weight estimation!!!
+	qprop_outfile = 'qprop_output.dat' ! this is the resultant filename coming out of Qprop...
 !=========================================
 !	WRITE(*,'(A,I2)')'  MOTOR NR : ', NR_MOTOR
+
+!--- Motor,Airfoil and Propeller lists will be generated
+
+	CALL SYSTEM('ls -B DATA/MOTOR > DATA/motor_name_list.txt')
+	CALL SYSTEM('ls -B DATA/AIRFOIL > DATA/airfoil_name_list.txt')
+	CALL SYSTEM('ls -B DATA/PROPELLER > DATA/propeller_name_list.txt')
+!######################################################
+
+	indx_motor_ary(1)=1
+	indx_prop_ary(1)=1
+	call nmax_prop(n_prop)
+	indx_prop_ary(2)=n_prop
+	call nmax_motor(n_motor)
+	indx_motor_ary(2)=n_motor
+!	WRITE(*,*)' Number of motors in the list : ',n_motor
+!	WRITE(*,*)' Number of props in the list : ',n_prop
+!######################################################
 
 !---Main Loops will be defined here and then EXECuted 1by1
 	CALL MEXEC()
