@@ -24,12 +24,11 @@
 !--- Fixed Frame Weight for Type 10---
 
 
-	SELECT CASE(FRAME_TYPE)
-	CASE (10)
-		M_frame = M_frame_fix
-	CASE (1) 
+	IF (M_frame_fix .Eq. 0) THEN 
 		CALL ESTIMATE_VOLUME()
-	END SELECT
+	ELSE 
+		M_frame = M_frame_fix
+	END IF
 
 
 	END SUBROUTINE MFRAME
