@@ -75,23 +75,54 @@
 	KBLANK =INDEX(LINE,':')
 	COMMAND = LINE(1:KBLANK-1)
 	LEFT_ARGS = LINE(KBLANK+2:120)
-	WRITE(*,*)'========================'        !---- Debug 
-	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
-	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
-	WRITE(*,*)'========================'        !---- Debug 
+!	WRITE(*,*)'========================'        !---- Debug 
+!	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
+!	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
+!	WRITE(*,*)'========================'        !---- Debug 
 
 !---CHARLES, we will only modify this part for all COMMANDS and their args---!
 	SELECT CASE (COMMAND)	
-	CASE ('MURAT')
-		WRITE(*,*)' Reading 3 Real values !!! '     !---- Debug 
-		READ(LEFT_ARGS,*, err = 6000)R1,R2,R3
-		WRITE(*,*)' R1 is : ',R1      !---- Debug 
-		WRITE(*,*)' R2 is : ',R2      !---- Debug 
-		WRITE(*,*)' R3 is : ',R3      !---- Debug 
+
 	CASE ('RHO')
-		WRITE(*,*)' Reading 1 Real values !!! '  !---- Debug 
+!		WRITE(*,*)' Reading 1 Real values !!! '  !---- Debug 
 		READ(LEFT_ARGS,*, err = 6000)RHO
 		WRITE(*,*)' RHO is : ',RHO    !---- Debug 
+	CASE ('MU')
+		READ(LEFT_ARGS,*, err = 6000)MU
+		WRITE(*,*)' MU is : ',MU   !---- Debug
+	CASE ('VSOUND')
+		READ(LEFT_ARGS,*, err = 6000)VSOUND
+		WRITE(*,*)' VSOUND is : ',VSOUND    !---- Debug
+	CASE ('GRAVITATION')
+		READ(LEFT_ARGS,*, err = 6000)GRAV_ACC
+		WRITE(*,*)' GRAV_ACC is : ',GRAV_ACC    !---- Debug
+	CASE ('MASS_PAYLOAD')
+		READ(LEFT_ARGS,*, err = 6000)M_PAYLOAD
+		WRITE(*,*)' M_PAYLOAD is : ',M_PAYLOAD    !---- Debug
+	CASE ('MASS_AVIONICS')
+		READ(LEFT_ARGS,*, err = 6000)M_AUTOP
+		WRITE(*,*)' M_AUTOP is : ',M_AUTOP    !---- Debug
+	CASE ('MASS_MISC')
+		READ(LEFT_ARGS,*, err = 6000)M_MISC
+		WRITE(*,*)' M_MISC is : ',M_MISC    !---- Debug
+	CASE ('BATT_SPEC_ENERGY')
+		READ(LEFT_ARGS,*, err = 6000)BATT_SPEC_NRG
+		WRITE(*,*)' BATT_SPEC_NRG is : ',BATT_SPEC_NRG    !---- Debug
+	CASE ('BATT_MASS_MULTIPLIER')
+		READ(LEFT_ARGS,*, err = 6000)M_BATT
+		WRITE(*,*)' M_BATT is : ',M_BATT    !---- Debug
+	CASE ('BATT_MAX_VOLT')
+		READ(LEFT_ARGS,*, err = 6000)BATT_MAX_VOLT
+		WRITE(*,*)' BATT_MAX_VOLT is : ',BATT_MAX_VOLT    !---- Debug
+	CASE ('FRAME_FIX_MASS')
+		READ(LEFT_ARGS,*, err = 6000)M_FRAME_FIX
+		WRITE(*,*)' M_FRAME_FIX is : ',M_FRAME_FIX    !---- Debug
+	CASE ('AVIONICS_POWER')
+		READ(LEFT_ARGS,*, err = 6000)AVIONICS_POWER
+		WRITE(*,*)' AVIONICS_POWER is : ',AVIONICS_POWER    !---- Debug
+	CASE ('PAYLOAD_POWER')
+		READ(LEFT_ARGS,*, err = 6000)PAYLOAD_POWER
+		WRITE(*,*)' PAYLOAD_POWER is : ',PAYLOAD_POWER    !---- Debug
 	CASE DEFAULT
 		GOTO 7000	
 	END SELECT

@@ -3,9 +3,10 @@
 !!! DO NOT CHANGE THE ORDER OR THE FORM OF THIS FILE !!! 
 
 !--- Environment ---!
-RHO:	twrbtw	1.225          ! rho=1.225 kg/m^3
+RHO:		1.225          ! rho=1.225 kg/m^3
 MU:		0.0000178      ! mu=0.0000178 kg/m-s
 VSOUND:		340.0          ! a=340.0 m/s
+GRAVITATION:	9.81		! g=9.81 m/s²
 
 !It doesnt read this line
 #Nor this
@@ -14,49 +15,40 @@ VSOUND:		340.0          ! a=340.0 m/s
 
 !--- System Weights ---!
 
-MASS_PAYLOAD  0.050	     ! Payload      !kg  
-MASS_AVIONICS 0.023	     ! Autopilot    !kg 
-MASS_MISC     0.010        ! Misc. weight !kg
-=======
-PAYLOAD_WEIGHT:		0.050	     ! Payload      !kg  
-AUTOPILOT_WEIGHT:	0.023	     ! Autopilot    !kg 
-MISC_WEIGHT:		0.010        ! Misc. weight !kg
+MASS_PAYLOAD:  0.050	     ! Payload      !kg  
+MASS_AVIONICS: 0.023	     ! Autopilot    !kg 
+MASS_MISC:     0.010        ! Misc. weight !kg
 
 
-NR_MOTOR   4            ! Motor number
+NR_MOTOR:   4            ! Motor number
 
 !--- Frame Specs ---!
 
-FRAME_TYPE      1
-FRAME_MAT       0    ! Frame Material 0:carbon,1:aluminium,2:etc...
-FRAME_SHAPE     0    ! Symetric,round,line...
-FRAME_FIX_MASS  0.1  ! kg, If defined, the prog doesnt estimate the mass... otherwise leave 0.0
-FRAME_SIZE  ! Array, min,max,delta
-=======
-FRAME_WEIGHT:	100	! frame weight in gr used if different from 0         
-FRAME_TYPE:	0           ! Frame Type 0:carbon,1:aluminium,2:etc...
+FRAME_TYPE:      1
+FRAME_MAT:       0    ! Frame Material 0:carbon,1:aluminium,2:etc...
+FRAME_SHAPE :    0    ! Symetric,round,line...
+FRAME_FIX_MASS: 0.2  ! kg, If defined, the prog doesnt estimate the mass... otherwise leave 0.0
+FRAME_SIZE:  ! Array, min,max,delta
 
 
 !--- Constraints & Checks ---!
 PROP_AR
 MIN_TW_RATIO 
 
-!--- Battery Specs ---!
-BATTERY: 900 180          ! Battery specs: Capacity in mAh  Specific Energy in Wh/kg
- 
 
 !--- Energy Source ---!
-BATT_SPEC_ENERGY
-BATT_MASS_MULTIPLIER
-BATT_MAX_VOLT
+BATT_SPEC_ENERGY:	100	! 100 Wh/kg
+BATT_MASS_MULTIPLIER:	0.2	! 0.2 kg
+BATT_MAX_VOLT:		12	! 12 V
 
 
 !--- PROGRAM RUN MODE ---!
 RUN_MODE    !Design :0, Analyse:1,...
 
 
-
-
+!--- Power Consumption ---!
+AVIONICS_POWER:		4	! autopilot consumption 4 W
+PAYLOAD_POWER:		2	! payload consumption 2 W
 
 
 =======

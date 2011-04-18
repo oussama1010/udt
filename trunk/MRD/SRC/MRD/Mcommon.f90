@@ -70,4 +70,13 @@
 
 	INTEGER :: n_prop, n_motor !these are the motor and prop number in the directory... we should change the name I guess...
 
+!--- New addition from Charles
+	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF
+
+	REAL :: M_PAYLOAD, M_AUTOP, M_MISC, BATT_SPEC_NRG
+
+	REAL :: GRAV_ACC
+	
+	REAL :: BATT_MAX_VOLT, CONTROLLER_ESTIMATED_EFFICIENCY, AVIONICS_POWER, PAYLOAD_POWER
+
 	END MODULE MCOMMON

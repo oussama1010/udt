@@ -46,7 +46,7 @@
 	M_FRAME_FIX = 0.1 ! (kg) Fixed frame weight for FRAME_TYPE=10
 !--- extra from MURAT ---!
 	wcn = 1
-	SPEED(1) = 0.1 !m/s
+	SPEED(1) = 0.06 !m/s
 	THRUST(1) = 1.0 !N This is going to be changed after the total weight estimation!!!
 	qprop_outfile = 'qprop_output.dat' ! this is the resultant filename coming out of Qprop...
 !=========================================
