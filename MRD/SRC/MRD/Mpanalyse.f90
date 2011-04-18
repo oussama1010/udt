@@ -38,7 +38,7 @@
 !!! The mass depends on the propeller and the engine used so it cannot be calculated before the loop for now.
 
 	CALL M_TOTAL_WEIGHT
-	Thrust(wcn) = M_TOTAL * GRAV_ACC * 0.25
+	Thrust(wcn) = M_TOTAL * GRAV_ACC / NR_MOTOR
 
 	
 
@@ -173,7 +173,7 @@ SUBROUTINE TW_RATIO_ESTIMATOR
 !	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
 !	 	write (*,*)
 
-	write (*,*) 'the thrust to weight ratio is :  ', (4 *  Qprop_T / (M_TOTAL * GRAV_ACC ))
+	write (*,*) 'the thrust to weight ratio is :  ', (NR_MOTOR *  Qprop_T / (M_TOTAL * GRAV_ACC ))
 	write (*,*)
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
