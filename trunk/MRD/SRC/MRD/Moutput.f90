@@ -102,7 +102,9 @@
 	CALL SORT_TABLE
 
 	DO i=1,n 
-		CALL WRITE_OUTPUT(table1(1,i), table1(2,i), table2(1,i), table2(2,i), table2(3,i), table2(4,i), table2(5,i), table3(1,i))
+!		WRITE(*,*) table1(1,i), table1(2,i)
+		CALL WRITE_OUTPUT(table1(2,i), table1(1,i), table2(1,i), table2(2,i), table2(3,i), table2(4,i), table2(5,i), &
+		table3(1,i))
 	END DO
 
 4000	FORMAT(A120)
@@ -144,8 +146,10 @@
 	CASE (' Motor')
 		n = n + 1
 		READ(LEFT_ARGS,*) table1(1,n)
+!		WRITE (*,*) table1(1,n)
 	CASE (' Propeller')
 		READ(LEFT_ARGS,*) table1(2,n)
+!		WRITE (*,*) table1(2,n)
 	CASE (' Battery Energy')
 		READ(LEFT_ARGS,*) table2(1,n)
 	CASE (' Flying weight')
@@ -191,13 +195,13 @@
 	DO While (indexbegin .Ne. n)
 		indexmax = indexbegin
 		DO i= indexbegin, n
-			If ( table3(1,indexmax) .Le. table3(1,i)) Then
+			If ( table2(4,i) .Le. table2(4,indexmax)) Then
 				indexmax = i
 			END If
 		END DO
 		
-		table1(1,n+1) = table1(1,indexbegin)
-		table1(2,n+1) = table1(2,indexbegin)
+		table1(1,n+1) = trim(table1(1,indexbegin))
+		table1(2,n+1) = trim(table1(2,indexbegin))
 		table2(1,n+1) = table2(1,indexbegin)
 		table2(2,n+1) = table2(2,indexbegin)
 		table2(3,n+1) = table2(3,indexbegin)
@@ -206,8 +210,8 @@
 		table3(1,n+1) = table3(1,indexbegin)
 
 
-		table1(1,indexbegin) = table1(1,indexmax)
-		table1(2,indexbegin) = table1(2,indexmax)
+		table1(1,indexbegin) = trim(table1(1,indexmax))
+		table1(2,indexbegin) = trim(table1(2,indexmax))
 		table2(1,indexbegin) = table2(1,indexmax)
 		table2(2,indexbegin) = table2(2,indexmax)
 		table2(3,indexbegin) = table2(3,indexmax)
@@ -215,8 +219,8 @@
 		table2(5,indexbegin) = table2(5,indexmax)
 		table3(1,indexbegin) = table3(1,indexmax)
 
-		table1(1,indexmax) = table1(1,n+1)
-		table1(2,indexmax) = table1(2,n+1)
+		table1(1,indexmax) = trim(table1(1,n+1))
+		table1(2,indexmax) = trim(table1(2,n+1))
 		table2(1,indexmax) = table2(1,n+1)
 		table2(2,indexmax) = table2(2,n+1)
 		table2(3,indexmax) = table2(3,n+1)
