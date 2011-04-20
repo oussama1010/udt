@@ -57,6 +57,7 @@
 	CALL SYSTEM('ls -B DATA/MOTOR > DATA/motor_name_list.txt')
 	CALL SYSTEM('ls -B DATA/AIRFOIL > DATA/airfoil_name_list.txt')
 	CALL SYSTEM('ls -B DATA/PROPELLER > DATA/propeller_name_list.txt')
+	CALL SYSTEM("rm output.dat")
 !######################################################
 
 	indx_motor_ary(1)=1
@@ -85,6 +86,8 @@
 !	WRITE(*,*)' Index I of Line is : ',KI
 !	WRITE(*,*)' Input Line is : ',LINE
 !	WRITE(*,*)' Input Line 5th ch is : ',LINE(3:5)
+
+	CALL SORT_OUTPUT()
 
 5000	FORMAT(A120)
 

@@ -75,6 +75,7 @@
 		CALL M_MAX_FLIGHT_TIME
 		CALL TW_RATIO_ESTIMATOR
 
+		CALL WRITE_OUTPUT(prop_name, motor_name, BATT_SPEC_NRG * M_BATT, M_TOTAL, Qprop_T, TOTAL_FLYING_POWER, TW_RATIO, MAX_FLIGHT_TIME)
 !--- Just after having all the coeffs, Simulation needs to be called in Mexec.f90, to calculte the mission...
 
 	indx_prop=indx_prop+1
@@ -90,7 +91,7 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
-	REAL :: NRG, HOVER_POWER, TOTAL_FLYING_POWER
+	REAL :: NRG, HOVER_POWER
 
 	INTEGER :: MAX_FLIGHT_TIME_MIN, MAX_FLIGHT_TIME_HOUR
 
@@ -110,12 +111,13 @@
 
 	TOTAL_FLYING_POWER = HOVER_POWER / CONTROLLER_ESTIMATED_EFFICIENCY + AVIONICS_POWER + PAYLOAD_POWER
 
-	MAX_FLIGHT_TIME_MIN = NRG / TOTAL_FLYING_POWER * 60	! flight time in minutes
+	MAX_FLIGHT_TIME = NRG / TOTAL_FLYING_POWER * 60	! flight time in minutes
 
 	MAX_FLIGHT_TIME_HOUR= MAX_FLIGHT_TIME_MIN / 60
 
-	MAX_FLIGHT_TIME_MIN= modulo(MAX_FLIGHT_TIME_MIN,60)
+	MAX_FLIGHT_TIME_MIN= modulo(MAX_FLIGHT_TIME,60)
 
+	write (*,*) 'the total power needed is :  ', TOTAL_FLYING_POWER, 'W'		! debug
 	write (*,*) 'the maximal flight time is  :  ', MAX_FLIGHT_TIME_HOUR,'h',MAX_FLIGHT_TIME_MIN		! debug
 	write (*,*)
 	
@@ -173,7 +175,9 @@ SUBROUTINE TW_RATIO_ESTIMATOR
 !	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
 !	 	write (*,*)
 
-	write (*,*) 'the thrust to weight ratio is :  ', (NR_MOTOR *  Qprop_T / (M_TOTAL * GRAV_ACC ))
+	TW_RATIO = NR_MOTOR *  Qprop_T / (M_TOTAL * GRAV_ACC )
+
+	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO
 	write (*,*)
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
