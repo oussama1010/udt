@@ -7,7 +7,7 @@ QFLAGS = -fdefault-double-8 -fdefault-real-8
 PROGS = mrd qprop qmil
 
 MRDOBJS = Mcommon.o Mcase_read1.o Mfunctions.o Mframe.o Mpanalyse.o Mpdsgn.o \
-Mweight.o Mexec.o MRD.o
+Mweight.o Mexec.o MRD.o Moutput.o
 #Mcase_read.o \
 
 QPOBJS = qprop.o gvcalc.o cdfun.o tqcalc.o motor.o spline.o io.o qcget.o gaussn0.o
@@ -54,7 +54,8 @@ Mweight.o :	$(MSRC)/Mweight.f90
 	$(FC) -c $(MFLAGS) $(MSRC)/Mweight.f90
 Mfunctions.o :	$(MSRC)/Mfunctions.f90
 	$(FC) -c $(MFLAGS) $(MSRC)/Mfunctions.f90
-
+Moutput.o :	$(MSRC)/Moutput.f90
+	$(FC) -c $(MFLAGS) $(MSRC)/Moutput.f90
 
 #-------Qprop & Qmil src files--------------
 qprop.o: $(QpSRC)/qprop.f $(QpSRC)/QDEF.INC
