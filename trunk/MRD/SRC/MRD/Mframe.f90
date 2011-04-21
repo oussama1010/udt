@@ -23,9 +23,9 @@
 	WRITE(*,*)' Frame Building Subroutine '
 !--- Fixed Frame Weight for Type 10---
 
-
+		WRITE(*,*)M_frame_fix
 	IF (M_frame_fix .Eq. 0) THEN 
-		CALL ESTIMATE_VOLUME()
+		CALL ESTIMATE_MASS()
 	ELSE 
 		M_frame = M_frame_fix
 	END IF
@@ -33,8 +33,30 @@
 
 	END SUBROUTINE MFRAME
 
-	SUBROUTINE ESTIMATE_VOLUME
+	SUBROUTINE ESTIMATE_MASS
 	USE MCOMMON
 	IMPLICIT NONE
 
-	END SUBROUTINE ESTIMATE_VOLUME
+	Real :: framespan, volume
+
+	framespan = SQRT(((2.3*PROP_RADIUS)*(1.2*PROP_RADIUS))/2)
+
+	SELECT CASE (FRAME_SHAPE)
+	CASE(0)
+		SELECT CASE (FRAME_MAT)
+			CASE(0)	
+				volume = (0.088 *framespan)*(0.035 *framespan)*framespan*4
+				M_frame = volume *1.333/1000+ 0.05
+			CASE(1)	
+				volume = (0.088 *framespan)*(0.035 *framespan)*framespan*4
+				M_frame = volume *1.4/1000+ 0.05
+			CASE(2)
+				volume = (0.2 *framespan)*(0.3 *framespan)*framespan*4
+				M_frame = volume *0.333/1000+ 0.05
+		END SELECT	
+	CASE(1)
+	END SELECT
+
+	WRITE(*,*)'M_FRAME', M_FRAME
+
+	END SUBROUTINE ESTIMATE_MASS

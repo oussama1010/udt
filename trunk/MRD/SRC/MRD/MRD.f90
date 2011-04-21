@@ -43,7 +43,7 @@
 	FRAME_TYPE = 1 ! Frame type 1,2,3,... will be defined 
 	TIP_CLRNC = 0.01 ! Tip Clearance in meters
 
-	M_FRAME_FIX = 0.1 ! (kg) Fixed frame weight for FRAME_TYPE=10
+!	M_FRAME_FIX = 0.1 ! (kg) Fixed frame weight for FRAME_TYPE=10
 !--- extra from MURAT ---!
 	wcn = 1
 	SPEED(1) = 0.06 !m/s
