@@ -38,7 +38,11 @@
 			NR_PROP,	&
 			NR_BLADE,	&
 			RUN_MODE,	&
-			FRAME_TYPE
+			FRAME_TYPE,	&
+			FRAME_MAT,	&
+			FRAME_SHAPE
+
+
 
 
 	REAL :: TIP_CLRNC
@@ -71,7 +75,7 @@
 	INTEGER :: n_prop, n_motor !these are the motor and prop number in the directory... we should change the name I guess...
 
 !--- New addition from Charles
-	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF
+	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF, PROP_RADIUS
 
 	REAL :: M_PAYLOAD, M_AUTOP, M_MISC, BATT_SPEC_NRG
 

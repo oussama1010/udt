@@ -25,10 +25,10 @@ NR_MOTOR:   4            ! Motor number
 !--- Frame Specs ---!
 
 FRAME_TYPE:      1
-FRAME_MAT:       0    ! Frame Material 0:carbon,1:aluminium,2:etc...
-FRAME_SHAPE :    0    ! Symetric,round,line...
-FRAME_FIX_MASS: 0.2  ! kg, If defined, the prog doesnt estimate the mass... otherwise leave 0.0
-FRAME_SIZE:  ! Array, min,max,delta
+FRAME_MAT:       2    ! Frame Material 0:carbon,1:aluminium,2:EPP...
+FRAME_SHAPE :    0    ! 0 cross, 1 round ...
+FRAME_FIX_MASS: 0  ! kg, If defined, the prog doesnt estimate the mass... otherwise leave 0.0
+FRAME_SIZE: 0 0 0 ! Array, min,max,delta	If not defined the prog estimate the size according to the propellers used
 
 
 !--- Constraints & Checks ---!

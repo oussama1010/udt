@@ -26,8 +26,6 @@ SUBROUTINE M_TOTAL_WEIGHT
 	WRITE(*,*)' Total Weight Subroutine ' 
 	write (*,*)
 
-	CALL PROP_WEIGHT_ESTIMATOR()
-
 !	CALL ENGINE_WEIGHT
 
 	M_MOTOR = 0.02
@@ -49,7 +47,7 @@ SUBROUTINE M_TOTAL_WEIGHT
 
 
 !---Estimates the weight of a propeller from the data file...!
-	SUBROUTINE PROP_WEIGHT_ESTIMATOR	
+	SUBROUTINE PROP_DATA_FINDER	
 	USE MCOMMON
 	IMPLICIT NONE
 	integer ::  status, i, j
@@ -71,6 +69,7 @@ SUBROUTINE M_TOTAL_WEIGHT
 	DO i=1,50
 		READ(20,4000,iostat=status)LINE
 		IF(status .eq. -1) THEN
+			CLOSE(20)
 			exit
 		END IF
 
@@ -101,15 +100,20 @@ SUBROUTINE M_TOTAL_WEIGHT
 5000	CONTINUE
 
 
+	PROP_RADIUS = radius
+
 !--- Cweight of blades, need to estimate Sigma and the hub Mass...
-	PROP_BLADE_SIGMA = 0.0002 ! kg/cm²
+	PROP_BLADE_SIGMA = 0.0003 ! kg/cm²
 	PROP_HUB_COEFF = 0.0001 ! kg/cm (assuming that the hub mass is proportional to the propeller radius)
 
-	M_PROP = NR_BLADE * S * PROP_BLADE_SIGMA + chord * PROP_HUB_COEFF
+	M_PROP = NR_BLADE * S * PROP_BLADE_SIGMA + radius * PROP_HUB_COEFF
 
+!	WRITE(*,*)radius, chord
 !	WRITE(*,*)'The propeller weights approximatively ', M_PROP, 'kg'	!debug
 
-	END SUBROUTINE PROP_WEIGHT_ESTIMATOR
+			CLOSE(20)
+
+	END SUBROUTINE PROP_DATA_FINDER
 
 
 

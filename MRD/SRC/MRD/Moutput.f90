@@ -102,7 +102,6 @@
 	CALL SORT_TABLE
 
 	DO i=1,n 
-!		WRITE(*,*) table1(1,i), table1(2,i)
 		CALL WRITE_OUTPUT(table1(2,i), table1(1,i), table2(1,i), table2(2,i), table2(3,i), table2(4,i), table2(5,i), &
 		table3(1,i))
 	END DO

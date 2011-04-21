@@ -37,10 +37,14 @@
 
 !!! The mass depends on the propeller and the engine used so it cannot be calculated before the loop for now.
 
+	CALL PROP_DATA_FINDER
+
+!The PROP_RADIUS has been set and the optimun size can be computed
+	CALL MFRAME
+
 	CALL M_TOTAL_WEIGHT
 	Thrust(wcn) = M_TOTAL * GRAV_ACC / NR_MOTOR
 
-	
 
 !	write(*,*)qprop_in_command
 	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), Thrust(wcn), trim(qprop_outfile) 

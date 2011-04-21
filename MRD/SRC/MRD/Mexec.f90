@@ -23,7 +23,7 @@
 	WRITE(*,*)' Execution Subroutine '
 
 !--- Starting by generating the Frame
-	CALL MFRAME 
+!	CALL MFRAME 
 !--- MFRAME should have output the frame weight...
 !--- Sum up all the components
 !	CALL M_TOTAL_WEIGHT
