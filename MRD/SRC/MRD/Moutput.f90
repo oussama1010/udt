@@ -23,9 +23,10 @@
 	IMPLICIT NONE
 
 
-!Create an output file
-!Write the simulation results inside one by one
+!Create an output file from the result table
 
+
+! the table is red backward to havs the best configurations on top of the file
 	DO k=n, 1, -1
 	OPEN(10,file='output.dat', status='unknown',position="append")
 	WRITE (10,*)'Config', n-k+1
@@ -57,8 +58,9 @@
 	SUBROUTINE CREATE_OUTPUT_TABLE(prop, motor, nrg, mass, hoverthrust, fpower, twratio, maxftime)
 	USE MCOMMON
 	IMPLICIT NONE
-!generate a sorted table after each simulation
-!Sort the results by endurance
+
+!add results of a simulation inside a sorted table
+
 
 	character(len=25),intent(in) :: prop, motor
 
@@ -71,8 +73,9 @@
 
 	WRITE(*,*)'adding results to ouptput table'
 
-! the results are sorted by in flight power consumption
+! the results are sorted by in flight power consumption, the higher consumption first
 	DO i=1,n+1
+		! all the lines showing a lower power consumption are shifted one row down
 		IF (table2(4,i) .Le. fpower) THEN
 			DO j=n,i,-1
 				table1(1,j+1) = trim(table1(1,j))
@@ -84,7 +87,7 @@
 				table2(5,j+1) = table2(5,j)
 				table3(1,j+1) = table3(1,j)
 			END DO
-
+		! the new row is inserted in the free space created
 			table1(1,i) = prop
 			table1(2,i) = motor
 			table2(1,i) = nrg
@@ -93,7 +96,7 @@
 			table2(4,i) = fpower
 			table2(5,i) = twratio
 			table3(1,i) = maxftime
-
+		! the number of rows is updated
 			n = n + 1
 			
 			EXIT
