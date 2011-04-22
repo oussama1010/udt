@@ -69,7 +69,7 @@
 !	WRITE(*,*)' Number of motors in the list : ',n_motor
 !	WRITE(*,*)' Number of props in the list : ',n_prop
 !######################################################
-
+!	CALL INIT_TABLE
 !---Main Loops will be defined here and then EXECuted 1by1
 	CALL MEXEC()
 
@@ -87,7 +87,6 @@
 !	WRITE(*,*)' Input Line is : ',LINE
 !	WRITE(*,*)' Input Line 5th ch is : ',LINE(3:5)
 
-	CALL SORT_OUTPUT()
 
 5000	FORMAT(A120)
 

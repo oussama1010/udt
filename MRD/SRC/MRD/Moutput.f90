@@ -16,221 +16,100 @@
 !    with this program; if not, write to the Free Software Foundation, Inc.,  |
 !    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.              |
 !-----------------------------------------------------------------------------|
-	SUBROUTINE WRITE_OUTPUT(prop, motor, nrg, mass, hoverthrust, fpower, twratio, maxftime)
+
+
+	SUBROUTINE CREATE_OUTPUT_FILE()
 	USE MCOMMON
 	IMPLICIT NONE
+
+
+!Create an output file
+!Write the simulation results inside one by one
+
+	DO k=n, 1, -1
+	OPEN(10,file='output.dat', status='unknown',position="append")
+	WRITE (10,*)'Config', n-k+1
+	WRITE (10,*)'###############################	',table1(1,k),table1(2,k),'	 #######################################'
+	WRITE (10,*)'Battery Energy:',  table2(1,k), 'Wh'
+	WRITE (10,*)'Flying weight:',table2(2,k), 'kg'
+	WRITE (10,*)'Thrust to hover:', table2(3,k), 'N'
+	WRITE (10,*)'Flight power:', table2(4,k), 'W'
+	WRITE (10,*)'Thrust/Weight ratio:', table2(5,k)
+	WRITE (10,*)'Max flying time:', table3(1,k), 'min'
+	WRITE (10,*)
+	WRITE (10,*)
+	END DO
+	CLOSE (10)
+
+	END SUBROUTINE CREATE_OUTPUT_FILE
+
+
+
+
+
+
+
+
+
+
+
+
+	SUBROUTINE CREATE_OUTPUT_TABLE(prop, motor, nrg, mass, hoverthrust, fpower, twratio, maxftime)
+	USE MCOMMON
+	IMPLICIT NONE
+!generate a sorted table after each simulation
+!Sort the results by endurance
 
 	character(len=25),intent(in) :: prop, motor
 
 	Integer,intent(in) ::  maxftime
 
 	real,intent(in) :: mass, nrg, hoverthrust, fpower, twratio
-!Create an output file
-!Write the simulation results inside one by one
 
 
-	OPEN(10,file='output.dat', status='unknown',position="append")
+	Integer ::  i, j
 
-	WRITE (10,*)'######################################################################'
-	WRITE (10,*)'Motor:', trim(motor)
-	WRITE (10,*)'Propeller:', trim(prop)
-	WRITE (10,*)'Battery Energy:',  nrg, 'Wh'
-	WRITE (10,*)'Flying weight:', mass, 'kg'
-	WRITE (10,*)'Thrust to hover:', hoverthrust, 'N'
-	WRITE (10,*)'Flight power:', fpower, 'W'
-	WRITE (10,*)'Thrust/Weight ratio:', twratio
-	WRITE (10,*)'Max flying time:', maxftime, 'min'
-	WRITE (10,*)
+	WRITE(*,*)'adding results to ouptput table'
 
-	CLOSE (10)
+! the results are sorted by in flight power consumption
+	DO i=1,n+1
+		IF (table2(4,i) .Le. fpower) THEN
+			DO j=n,i,-1
+				table1(1,j+1) = trim(table1(1,j))
+				table1(2,j+1) = trim(table1(2,j))
+				table2(1,j+1) = table2(1,j)
+				table2(2,j+1) = table2(2,j)
+				table2(3,j+1) = table2(3,j)
+				table2(4,j+1) = table2(4,j)
+				table2(5,j+1) = table2(5,j)
+				table3(1,j+1) = table3(1,j)
+			END DO
 
-	END SUBROUTINE WRITE_OUTPUT
+			table1(1,i) = prop
+			table1(2,i) = motor
+			table2(1,i) = nrg
+			table2(2,i) = mass
+			table2(3,i) = hoverthrust
+			table2(4,i) = fpower
+			table2(5,i) = twratio
+			table3(1,i) = maxftime
 
-
-
-
-
-
-
-
-
-
-
-
-	SUBROUTINE SORT_OUTPUT()
-	USE MCOMMON
-	IMPLICIT NONE
-!generate a table from the raw output file
-!Sort the results by endurance
-
-
-	Integer :: maxtime, i, status
-
-		WRITE(*,*)'Sorting output '    !---- Debug 
-
-	OPEN(30,file='output.dat', status='old',iostat=status)
-!--- If the file doesnt exists tell to copy it from src...
-		IF (status .ne. 0) then 
-		WRITE(*,*)
-		WRITE(*,*)' ******!!! WARNING !!!******' 
-		WRITE(*,*)'the outputfile cannot be found' 
-		WRITE(*,*)' ******!!! WARNING !!!******'
-		WRITE(*,*)
-		CLOSE(30)
-		GOTO 5000
+			n = n + 1
+			
+			EXIT
 		END IF
-!--- File exists so read it...
-	DO i=1,1000
-	READ(30,4000,iostat=status)LINE
-	IF(status.eq.-1) THEN
-	exit
-	ELSE IF (LINE(2:2).EQ.' ') THEN
-	GOTO 1000
-	END IF
-
-
-	CALL EXTRACT_OUTPUT
-	
-
-1000	CONTINUE ! Just skipped the commented line !!!
-	END DO
-
-	CLOSE(30)
-
-	CALL SYSTEM("rm output.dat")
-
-	CALL SORT_TABLE
-
-	DO i=1,n 
-		CALL WRITE_OUTPUT(table1(2,i), table1(1,i), table2(1,i), table2(2,i), table2(3,i), table2(4,i), table2(5,i), &
-		table3(1,i))
-	END DO
-
-4000	FORMAT(A120)
-
-5000	CONTINUE
-
-
-	END SUBROUTINE SORT_OUTPUT
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	SUBROUTINE EXTRACT_OUTPUT()
-	USE MCOMMON
-	IMPLICIT NONE
-
-!--- Find the first ":" char, assume that COMMAND ends there (to avoid issue with spaces or tab)---!
-	KBLANK =INDEX(LINE,':')
-	COMMAND = LINE(1:KBLANK-1)
-	LEFT_ARGS = LINE(KBLANK+1:120)
-!	WRITE(*,*)'========================'        !---- Debug 
-!	WRITE(*,*)' COMMAND is : ',COMMAND          !---- Debug 
-!	WRITE(*,*)' LEFT_ARGS are : ',LEFT_ARGS     !---- Debug 
-!	WRITE(*,*)'========================'        !---- Debug 
-
-
-	SELECT CASE (COMMAND)	
-
-	CASE (' Motor')
-		n = n + 1
-		READ(LEFT_ARGS,*) table1(1,n)
-!		WRITE (*,*) table1(1,n)
-	CASE (' Propeller')
-		READ(LEFT_ARGS,*) table1(2,n)
-!		WRITE (*,*) table1(2,n)
-	CASE (' Battery Energy')
-		READ(LEFT_ARGS,*) table2(1,n)
-	CASE (' Flying weight')
-		READ(LEFT_ARGS,*) table2(2,n)
-	CASE (' Thrust to hover')
-		READ(LEFT_ARGS,*) table2(3,n)
-	CASE (' Flight power')
-		READ(LEFT_ARGS,*) table2(4,n)
-	CASE (' Thrust/Weight ratio')
-		READ(LEFT_ARGS,*) table2(5,n)
-	CASE (' Max flying time')
-		READ(LEFT_ARGS,*) table3(1,n)
-
-	CASE DEFAULT
-		GOTO 7000	
-	END SELECT
-
-	GOTO 7000
-
-!---If a COMMAND has been recognized but it's associated data could not be found---!
-6000	WRITE(*,*)'!!!   ERROR   !!!'
-	WRITE(*,*)' Could not get dat for ', COMMAND
-
-7000	CONTINUE
-
-	END SUBROUTINE
-
-
-
-
-
-
-	SUBROUTINE SORT_TABLE()
-	USE MCOMMON
-	IMPLICIT NONE
-
-	Integer  :: indexmax, indexbegin, indexend, i 
-	
-	indexmax =0
-	indexbegin = 1
-	indexend = n
-
-	DO While (indexbegin .Ne. n)
-		indexmax = indexbegin
-		DO i= indexbegin, n
-			If ( table2(4,i) .Le. table2(4,indexmax)) Then
-				indexmax = i
-			END If
-		END DO
-		
-		table1(1,n+1) = trim(table1(1,indexbegin))
-		table1(2,n+1) = trim(table1(2,indexbegin))
-		table2(1,n+1) = table2(1,indexbegin)
-		table2(2,n+1) = table2(2,indexbegin)
-		table2(3,n+1) = table2(3,indexbegin)
-		table2(4,n+1) = table2(4,indexbegin)
-		table2(5,n+1) = table2(5,indexbegin)
-		table3(1,n+1) = table3(1,indexbegin)
-
-
-		table1(1,indexbegin) = trim(table1(1,indexmax))
-		table1(2,indexbegin) = trim(table1(2,indexmax))
-		table2(1,indexbegin) = table2(1,indexmax)
-		table2(2,indexbegin) = table2(2,indexmax)
-		table2(3,indexbegin) = table2(3,indexmax)
-		table2(4,indexbegin) = table2(4,indexmax)
-		table2(5,indexbegin) = table2(5,indexmax)
-		table3(1,indexbegin) = table3(1,indexmax)
-
-		table1(1,indexmax) = trim(table1(1,n+1))
-		table1(2,indexmax) = trim(table1(2,n+1))
-		table2(1,indexmax) = table2(1,n+1)
-		table2(2,indexmax) = table2(2,n+1)
-		table2(3,indexmax) = table2(3,n+1)
-		table2(4,indexmax) = table2(4,n+1)
-		table2(5,indexmax) = table2(5,n+1)
-		table3(1,indexmax) = table3(1,n+1)
-
-		indexbegin = indexbegin + 1
-		
 	END DO
 
 
 
-	END SUBROUTINE SORT_TABLE
+	END SUBROUTINE CREATE_OUTPUT_TABLE
+
+
+
+
+
+
+
+
+
+
