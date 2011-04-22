@@ -79,7 +79,8 @@
 		CALL M_MAX_FLIGHT_TIME
 		CALL TW_RATIO_ESTIMATOR
 
-		CALL WRITE_OUTPUT(prop_name, motor_name, BATT_SPEC_NRG * M_BATT, M_TOTAL, Qprop_T, TOTAL_FLYING_POWER, TW_RATIO, MAX_FLIGHT_TIME)
+		CALL CREATE_OUTPUT_TABLE(prop_name, motor_name, BATT_SPEC_NRG * M_BATT, M_TOTAL, Qprop_T, TOTAL_FLYING_POWER, &
+			TW_RATIO, MAX_FLIGHT_TIME)
 !--- Just after having all the coeffs, Simulation needs to be called in Mexec.f90, to calculte the mission...
 
 	indx_prop=indx_prop+1
@@ -88,7 +89,21 @@
 	end do ! indx_motor loop
 
 
+
 	END SUBROUTINE M_PROP_ANALYSE
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	SUBROUTINE M_MAX_FLIGHT_TIME
@@ -145,6 +160,21 @@
 
 
 	END SUBROUTINE CONTROLLER_EFFICIENCY_ESTIMATOR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 SUBROUTINE TW_RATIO_ESTIMATOR
