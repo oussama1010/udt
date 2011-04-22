@@ -63,7 +63,7 @@ QUESTIONS/ANSWERS
 =================
 I will try to answer & document your questions here, so feel free to ask Qs :
 
-Q1: When will the program finish ?
+Q1: When will the program be finish ?
 A1: Soon :)
 
 Q2: 
