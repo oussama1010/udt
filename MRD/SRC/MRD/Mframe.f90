@@ -37,21 +37,21 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
-	Real :: framespan, volume
+	Real ::  volume
 
-	framespan = SQRT(((2.3*PROP_RADIUS)*(1.2*PROP_RADIUS))/2)
+	FRAME_SPAN = SQRT(((2.3*PROP_RADIUS)*(1.2*PROP_RADIUS))/2)
 
 	SELECT CASE (FRAME_SHAPE)
 	CASE(0)
 		SELECT CASE (FRAME_MAT)
 			CASE(0)	
-				volume = (0.088 *framespan)*(0.035 *framespan)*framespan*4
+				volume = (0.088 *FRAME_SPAN)*(0.035 *FRAME_SPAN)*FRAME_SPAN*4
 				M_frame = volume *1.333/1000+ 0.05
 			CASE(1)	
-				volume = (0.088 *framespan)*(0.035 *framespan)*framespan*4
+				volume = (0.088 *FRAME_SPAN)*(0.035 *FRAME_SPAN)*FRAME_SPAN*4
 				M_frame = volume *1.4/1000+ 0.05
 			CASE(2)
-				volume = (0.2 *framespan)*(0.3 *framespan)*framespan*4
+				volume = (0.2 *FRAME_SPAN)*(0.3 *FRAME_SPAN)*FRAME_SPAN*4
 				M_frame = volume *0.333/1000+ 0.05
 		END SELECT	
 	CASE(1)
