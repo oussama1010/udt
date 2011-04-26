@@ -72,16 +72,16 @@
 
 
 	Integer ::  i, j
-
-	CALL CALCULATE_MISSION_SCORE(fpower,twratio)
+	
+	CALL CALCULATE_MISSION_SCORE(maxftime,twratio)
 
 	WRITE(*,*)'adding results to ouptput table'
 
-! the results are sorted by in flight power consumption, the higher consumption first
+! the results are sorted by mission score
 	DO i=1,n+1
-		! all the lines showing a lower power consumption are shifted one row down
+		! all the lines showing a lower mission score are shifted one row down
 		IF (table3(2,i) .Le. MISSION_SCORE) THEN
-			DO j=n,i,-1
+			DO j=n+1,i,-1
 				table1(1,j+1) = trim(table1(1,j))
 				table1(2,j+1) = trim(table1(2,j))
 				table2(1,j+1) = table2(1,j)
@@ -103,7 +103,7 @@
 			table2(4,i) = fpower
 			table2(5,i) = twratio
 			table2(6,i) = FRAME_SPAN
-			table2(7,i) = batt_mass
+			table2(7,i) = M_BATT
 			table3(1,i) = maxftime
 			table3(2,i) = MISSION_SCORE
 		! the number of rows is updated
@@ -114,7 +114,6 @@
 	END DO
 
 
-
 	END SUBROUTINE CREATE_OUTPUT_TABLE
 
 
@@ -122,12 +121,16 @@
 
 
 
-	SUBROUTINE CALCULATE_MISSION_SCORE(fpower,twratio)
+	SUBROUTINE CALCULATE_MISSION_SCORE(ftime,twratio)
 	USE MCOMMON
 	IMPLICIT NONE
 
-	real,intent(in) :: fpower, twratio
+	integer,intent(in) :: ftime
+	real,intent(in) :: twratio
 
-	MISSION_SCORE = FPOWER_COEFF*(100/fpower) + SIZE_COEFF*(10/FRAME_SPAN) + TW_COEFF*(twratio/3)
+	MISSION_SCORE = (FTIME_COEFF*ftime)/15 + SIZE_COEFF*(10/FRAME_SPAN) + TW_COEFF*(twratio/3)
+
+	write(*,*)'mission score', MISSION_SCORE, FTIME_COEFF,ftime
+
 
 	END SUBROUTINE CALCULATE_MISSION_SCORE
