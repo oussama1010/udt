@@ -29,12 +29,13 @@
 !the rows have been sorted according to their respective mission scores
 	DO k=1, n, 1
 	OPEN(10,file='output.dat', status='unknown',position="append")
-	WRITE (10,*)'Config', n-k+1, '		MISSION SCORE :', table3(2,k)
+	WRITE (10,*)'Config', k, '		MISSION SCORE :', table3(2,k)
 	WRITE (10,*)'###############################	',table1(1,k),table1(2,k),'	 #######################################'
 	WRITE (10,*)'Battery Mass:',  table2(7,k), 'kg'
 	WRITE (10,*)'Battery Energy:',  table2(1,k), 'Wh'
 	WRITE (10,*)'Flying weight:',table2(2,k), 'kg'
 	WRITE (10,*)'Frame size:', 2 * table2(6,k), 'cm'
+	WRITE (10,*)'Frame weight:',  table2(8,k), 'kg'
 	WRITE (10,*)'Thrust to hover:', table2(3,k), 'N'
 	WRITE (10,*)'Flight power:', table2(4,k), 'W'
 	WRITE (10,*)'Thrust/Weight ratio:', table2(5,k)
@@ -91,6 +92,7 @@
 				table2(5,j+1) = table2(5,j)
 				table2(6,j+1) = table2(6,j)
 				table2(7,j+1) = table2(7,j)
+				table2(8,j+1) = table2(8,j)
 				table3(1,j+1) = table3(1,j)
 				table3(2,j+1) = table3(2,j)
 			END DO
@@ -104,6 +106,7 @@
 			table2(5,i) = twratio
 			table2(6,i) = FRAME_SPAN
 			table2(7,i) = M_BATT
+			table2(8,i) = M_FRAME
 			table3(1,i) = maxftime
 			table3(2,i) = MISSION_SCORE
 		! the number of rows is updated
@@ -129,8 +132,6 @@
 	real,intent(in) :: twratio
 
 	MISSION_SCORE = (FTIME_COEFF*ftime)/15 + SIZE_COEFF*(10/FRAME_SPAN) + TW_COEFF*(twratio/3)
-
-	write(*,*)'mission score', MISSION_SCORE, FTIME_COEFF,ftime
 
 
 	END SUBROUTINE CALCULATE_MISSION_SCORE

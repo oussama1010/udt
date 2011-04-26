@@ -192,7 +192,6 @@ SUBROUTINE TW_RATIO_ESTIMATOR
 	TW_RATIO = NR_MOTOR *  Qprop_T / (M_TOTAL * GRAV_ACC )
 
 	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO
-	write (*,*)
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
 
