@@ -133,7 +133,7 @@
 		WRITE(*,*)' PAYLOAD_POWER is : ',PAYLOAD_POWER    !---- Debug
 	CASE ('MIN_TW_RATIO')
 		READ(LEFT_ARGS,*, err = 6000)MIN_TW_RATIO
-		WRITE(*,*)' PAYLOAD_POWER is : ',MIN_TW_RATIO    !---- Debug
+		WRITE(*,*)'MIN TW ratio is : ',MIN_TW_RATIO    !---- Debug
 	CASE ('ENDURANCE_COEFF')
 		READ(LEFT_ARGS,*, err = 6000)FTIME_COEFF
 		WRITE(*,*)' ENDURANCE_COEFF is : ',FTIME_COEFF    !---- Debug

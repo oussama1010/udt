@@ -39,20 +39,20 @@
 
 	Real ::  volume
 
-	FRAME_SPAN = SQRT(((2.3*PROP_RADIUS)*(1.2*PROP_RADIUS))/2)
+	FRAME_SPAN = SQRT(((2.2*PROP_RADIUS)*(2.2*PROP_RADIUS))/2)
 
 	SELECT CASE (FRAME_SHAPE)
 	CASE(0)
 		SELECT CASE (FRAME_MAT)
 			CASE(0)	
-				volume = (0.088 *FRAME_SPAN)*(0.035 *FRAME_SPAN)*FRAME_SPAN*4
-				M_frame = volume *1.333/1000+ 0.05
+				volume = (0.1 *FRAME_SPAN)*(0.0533 *FRAME_SPAN)*FRAME_SPAN*4
+				M_frame = volume *0.6111/1000+ 0.03
 			CASE(1)	
 				volume = (0.088 *FRAME_SPAN)*(0.035 *FRAME_SPAN)*FRAME_SPAN*4
-				M_frame = volume *1.4/1000+ 0.05
+				M_frame = volume *1.4/1000+ 0.03
 			CASE(2)
 				volume = (0.2 *FRAME_SPAN)*(0.3 *FRAME_SPAN)*FRAME_SPAN*4
-				M_frame = volume *0.333/1000+ 0.05
+				M_frame = volume *0.333/1000+ 0.03
 		END SELECT	
 	CASE(1)
 	END SELECT
