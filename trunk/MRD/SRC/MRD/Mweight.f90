@@ -46,7 +46,7 @@ SUBROUTINE M_TOTAL_WEIGHT
 	END SUBROUTINE M_TOTAL_WEIGHT
 
 
-!---Estimates the weight of a propeller from the data file...!
+!---retrieves propeller data from the data file...!
 	SUBROUTINE PROP_DATA_FINDER	
 	USE MCOMMON
 	IMPLICIT NONE
