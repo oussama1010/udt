@@ -25,15 +25,20 @@ NR_MOTOR:   4            ! Motor number
 !--- Frame Specs ---!
 
 FRAME_TYPE:      1
-FRAME_MAT:       2    ! Frame Material 0:carbon,1:aluminium,2:EPP...
+FRAME_MAT:       0    ! Frame Material 0:carbon,1:aluminium,2:EPP...
 FRAME_SHAPE :    0    ! 0 cross, 1 round ...
 FRAME_FIX_MASS: 0  ! kg, If defined, the prog doesnt estimate the mass... otherwise leave 0.0
 FRAME_SIZE: 0 0 0 ! Array, min,max,delta	If not defined the prog estimate the size according to the propellers used
 
 
 !--- Constraints & Checks ---!
-PROP_AR
-MIN_TW_RATIO 
+PROP_AR:
+MIN_TW_RATIO:	3	!minimum thrust/weight ratio to reach 
+
+!---Mission Scoring---!
+ENDURANCE_COEFF:	100	!set importance of max endurance for the scoring
+SIZE_COEFF:		0	!set importance of the size for the scoring
+MANEUVRABILITY_COEFF:	0	!set importance of maneuvrability (thrust/weight ratio) for the scoring
 
 
 !--- Energy Source ---!

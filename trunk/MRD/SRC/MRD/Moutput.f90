@@ -26,13 +26,14 @@
 !Create an output file from the result table
 
 
-! the table is red backward to havs the best configurations on top of the file
-	DO k=n, 1, -1
+!the rows have been sorted according to their respective mission scores
+	DO k=1, n, 1
 	OPEN(10,file='output.dat', status='unknown',position="append")
-	WRITE (10,*)'Config', n-k+1
+	WRITE (10,*)'Config', n-k+1, '		MISSION SCORE :', table3(2,k)
 	WRITE (10,*)'###############################	',table1(1,k),table1(2,k),'	 #######################################'
 	WRITE (10,*)'Battery Energy:',  table2(1,k), 'Wh'
 	WRITE (10,*)'Flying weight:',table2(2,k), 'kg'
+	WRITE (10,*)'Frame size:', 2 * table2(6,k), 'cm'
 	WRITE (10,*)'Thrust to hover:', table2(3,k), 'N'
 	WRITE (10,*)'Flight power:', table2(4,k), 'W'
 	WRITE (10,*)'Thrust/Weight ratio:', table2(5,k)
@@ -71,12 +72,14 @@
 
 	Integer ::  i, j
 
+	CALL CALCULATE_MISSION_SCORE(fpower,twratio)
+
 	WRITE(*,*)'adding results to ouptput table'
 
 ! the results are sorted by in flight power consumption, the higher consumption first
 	DO i=1,n+1
 		! all the lines showing a lower power consumption are shifted one row down
-		IF (table2(4,i) .Le. fpower) THEN
+		IF (table3(2,i) .Le. MISSION_SCORE) THEN
 			DO j=n,i,-1
 				table1(1,j+1) = trim(table1(1,j))
 				table1(2,j+1) = trim(table1(2,j))
@@ -85,7 +88,9 @@
 				table2(3,j+1) = table2(3,j)
 				table2(4,j+1) = table2(4,j)
 				table2(5,j+1) = table2(5,j)
+				table2(6,j+1) = table2(6,j)
 				table3(1,j+1) = table3(1,j)
+				table3(2,j+1) = table3(2,j)
 			END DO
 		! the new row is inserted in the free space created
 			table1(1,i) = prop
@@ -95,7 +100,9 @@
 			table2(3,i) = hoverthrust
 			table2(4,i) = fpower
 			table2(5,i) = twratio
+			table2(6,i) = FRAME_SPAN
 			table3(1,i) = maxftime
+			table3(2,i) = MISSION_SCORE
 		! the number of rows is updated
 			n = n + 1
 			
@@ -112,7 +119,12 @@
 
 
 
+	SUBROUTINE CALCULATE_MISSION_SCORE(fpower,twratio)
+	USE MCOMMON
+	IMPLICIT NONE
 
+	real,intent(in) :: fpower, twratio
 
+	MISSION_SCORE = FPOWER_COEFF*(100/fpower) + SIZE_COEFF*(10/FRAME_SPAN) + TW_COEFF*(twratio/3)
 
-
+	END SUBROUTINE CALCULATE_MISSION_SCORE

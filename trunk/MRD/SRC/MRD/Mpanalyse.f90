@@ -79,8 +79,10 @@
 		CALL M_MAX_FLIGHT_TIME
 		CALL TW_RATIO_ESTIMATOR
 
-		CALL CREATE_OUTPUT_TABLE(prop_name, motor_name, BATT_SPEC_NRG * M_BATT, M_TOTAL, Qprop_T, TOTAL_FLYING_POWER, &
-			TW_RATIO, MAX_FLIGHT_TIME)
+		IF ( MIN_TW_RATIO .Le. TW_RATIO) THEN
+			CALL CREATE_OUTPUT_TABLE(prop_name, motor_name, BATT_SPEC_NRG * M_BATT, M_TOTAL, Qprop_T, TOTAL_FLYING_POWER, &
+				TW_RATIO, MAX_FLIGHT_TIME)
+		END IF
 !--- Just after having all the coeffs, Simulation needs to be called in Mexec.f90, to calculte the mission...
 
 	indx_prop=indx_prop+1

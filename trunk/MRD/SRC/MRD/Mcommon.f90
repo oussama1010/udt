@@ -75,7 +75,7 @@
 	INTEGER :: n_prop, n_motor !these are the motor and prop number in the directory... we should change the name I guess...
 
 !--- New addition from Charles
-	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF, PROP_RADIUS
+	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF, PROP_RADIUS, FRAME_SPAN
 
 	REAL :: M_PAYLOAD, M_AUTOP, M_MISC, BATT_SPEC_NRG
 
@@ -86,9 +86,9 @@
 	INTEGER :: MAX_FLIGHT_TIME
 
 	Character(len=30),dimension(2,100) :: table1
-	Real,dimension(5,100) :: table2
-	Integer,dimension(1,100) :: table3
+	Real,dimension(6,100) :: table2
+	Integer,dimension(2,100) :: table3
 
-	Integer :: n
+	Integer :: n, MISSION_SCORE, FPOWER_COEFF, SIZE_COEFF, TW_COEFF, MIN_TW_RATIO
 
 	END MODULE MCOMMON
