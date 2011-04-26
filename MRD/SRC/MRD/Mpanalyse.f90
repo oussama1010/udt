@@ -27,6 +27,9 @@
 	do while (indx_motor .le. indx_motor_ary(2))
 	indx_prop=indx_prop_ary(1)
 	do while (indx_prop .le.indx_prop_ary(2))
+	M_BATT = M_BATT_MIN
+	do while (M_BATT .le. M_BATT_MAX)
+	
 
 !According to the index number, get the motor name for Qprop calculations
 
@@ -85,6 +88,8 @@
 		END IF
 !--- Just after having all the coeffs, Simulation needs to be called in Mexec.f90, to calculte the mission...
 
+	M_BATT = M_BATT + M_BATT_DELTA
+	end do ! M_BATT loop
 	indx_prop=indx_prop+1
 	end do ! indx_prop loop
 	indx_motor=indx_motor+1
@@ -93,13 +98,6 @@
 
 
 	END SUBROUTINE M_PROP_ANALYSE
-
-
-
-
-
-
-
 
 
 
@@ -170,15 +168,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 SUBROUTINE TW_RATIO_ESTIMATOR
 	USE MCOMMON
 	IMPLICIT NONE
@@ -197,19 +186,7 @@ SUBROUTINE TW_RATIO_ESTIMATOR
                                     Qprop_Volts, Qprop_Amps, Qprop_Eff_mot, Qprop_Eff_prop, Qprop_Adv, Qprop_CT, & 
                                     Qprop_CP, Qprop_DV, Qprop_Eff_total, Qprop_P_elec, Qprop_P_prop, Qprop_cl_avg, &
                                     Qprop_cd_avg, qprop_outfile, err_nr )
-!--- Debug Print...
-!		write (*,*)
-!		write (*,*) 'Working Cond          :  ', wcn
-!		write (*,*) 'Motor Name            :  ', motor_name
-!		write (*,*) 'Prop Name             :  ', prop_name 
-!		write (*,*) 'MASS                  :  ', M_TOTAL 
-!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
-!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
-!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
-!		write (*,*) 'Torque                :  ', Qprop_Q
-!	 	write (*,*) 'Thrust                :  ', Qprop_T
-!	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
-!	 	write (*,*)
+
 
 	TW_RATIO = NR_MOTOR *  Qprop_T / (M_TOTAL * GRAV_ACC )
 
