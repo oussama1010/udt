@@ -85,11 +85,11 @@
 
 	INTEGER :: MAX_FLIGHT_TIME
 
-	Character(len=30),dimension(2,100) :: table1
-	Real,dimension(6,100) :: table2
-	Integer,dimension(2,100) :: table3
+	Character(len=30),dimension(2,1000) :: table1
+	Real,dimension(7,1000) :: table2
+	Integer,dimension(2,1000) :: table3
 
-	Integer :: n, MISSION_SCORE, FPOWER_COEFF, SIZE_COEFF, TW_COEFF, MIN_TW_RATIO
+	Integer :: n, MISSION_SCORE, FTIME_COEFF, SIZE_COEFF, TW_COEFF, MIN_TW_RATIO
 
 	REAL :: M_BATT_MIN, M_BATT_MAX, M_BATT_DELTA
 

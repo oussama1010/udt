@@ -82,6 +82,7 @@
 		CALL M_MAX_FLIGHT_TIME
 		CALL TW_RATIO_ESTIMATOR
 
+! Only the configurations meeting the mission constraints are stored
 		IF ( MIN_TW_RATIO .Le. TW_RATIO) THEN
 			CALL CREATE_OUTPUT_TABLE(prop_name, motor_name, BATT_SPEC_NRG * M_BATT, M_TOTAL, Qprop_T, TOTAL_FLYING_POWER, &
 				TW_RATIO, MAX_FLIGHT_TIME)
