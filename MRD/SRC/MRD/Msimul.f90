@@ -32,16 +32,28 @@
 
 !---Knowing the frame size the total weight can be calculated and gives the needed thrust of each motor 
 	CALL M_TOTAL_WEIGHT
-	Thrust(wcn) = M_TOTAL * GRAV_ACC / NR_MOTOR
+	
 
+	TRANSLATION_SPEED= 0
+	CALL TRANSLATION_BANK_ANGLE_ESTIMATOR
 
+	Thrust(wcn) = M_TOTAL * GRAV_ACC / (NR_MOTOR * COS(PHI))
+	
+	IF (TRANSLATION_SPEED .ne. 0) THEN	
+		Beta = 3.14 / 2 - PHI
+		Speed(wcn) = 0.06 + TRANSLATION_SPEED
+	ELSE 
+		Beta = 0
+	END IF
+
+	WRITE(*,*)'Beta', Beta
 !---The command to call Qprop is created and launched
 !	write(*,*)qprop_in_command
-	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), Thrust(wcn), trim(qprop_outfile) 
+	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Beta, Speed(wcn), Thrust(wcn), trim(qprop_outfile) 
 
 	write(*,*) qprop_in_command
 
-500	Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - 0 ',F5.2,' > ',A )
+500	Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
 	
 	Call system (qprop_in_command)
 
@@ -157,6 +169,8 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
+	Speed(wcn) = 0.1
+
 !--- The max thrust of a motor is computed using Qprop 
 	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
 
@@ -177,4 +191,51 @@
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
 
+
+
+
+	SUBROUTINE TRANSLATION_BANK_ANGLE_ESTIMATOR
+	USE MCOMMON
+	IMPLICIT NONE
+
+	REAL :: SCDRAG0, SCDRAG_MAX, PHI_MAX, THRUSTtemp, ERROR , PREV_ERROR, DELTA_PHI, F, &
+		DRAG, SCDRAG
+
+	write (*,*) 'bank angle estimator'
+
+
+	SCDRAG0 = 0.01
+	SCDRAG_MAX = 0.02
+	PHI_MAX = 0.6
+	DELTA_PHI = 0.4
+	PREV_ERROR = 1
+	SCDRAG=0
+
+	DO k=1, 100
+
+		SCDRAG = SCDRAG0 + (SCDRAG_MAX - SCDRAG0)*ABS(PHI/PHI_MAX)
+
+		DRAG = 0.5 * SCDRAG * TRANSLATION_SPEED**2
+
+		THRUSTtemp = M_TOTAL * GRAV_ACC / (NR_MOTOR * cos(PHI))
+
+		F = THRUSTtemp * sin (PHI)
+
+		ERROR = DRAG - F
+		WRITE(*,*)'PHI =', PHI
+
+		IF (ABS(ERROR) .Le. 0.01) THEN
+			EXIT
+		ELSE IF ( ERROR * PREV_ERROR .Le. 0) THEN
+			DELTA_PHI = DELTA_PHI / 2
+		END IF
+
+		PHI = PHI + SIGN( DELTA_PHI , ERROR)
+		PREV_ERROR = ERROR
+ 		
+	END DO
+	
+
+
+	END SUBROUTINE TRANSLATION_BANK_ANGLE_ESTIMATOR
 
