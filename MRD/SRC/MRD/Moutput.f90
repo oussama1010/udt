@@ -30,16 +30,16 @@
 	DO k=1, n, 1
 	OPEN(10,file='output.dat', status='unknown',position="append")
 	WRITE (10,*)'Config', k, '		MISSION SCORE :', table3(2,k)
-	WRITE (10,*)'###############################	',table1(1,k),table1(2,k),'	 #######################################'
-	WRITE (10,*)'Battery Mass:',  table2(7,k), 'kg'
-	WRITE (10,*)'Battery Energy:',  table2(1,k), 'Wh'
-	WRITE (10,*)'Flying weight:',table2(2,k), 'kg'
-	WRITE (10,*)'Frame size:', 2 * table2(6,k), 'cm'
-	WRITE (10,*)'Frame weight:',  table2(8,k), 'kg'
-	WRITE (10,*)'Thrust to hover:', table2(3,k), 'N'
-	WRITE (10,*)'Flight power:', table2(4,k), 'W'
-	WRITE (10,*)'Thrust/Weight ratio:', table2(5,k)
-	WRITE (10,*)'Max flying time:', table3(1,k), 'min'
+	WRITE (10,*)'##############################  ',table1(1,k),table1(2,k),'  #######################################'
+	WRITE (10,'(A,F5.3,A)') ' Battery Mass test   : ',  table2(7,k), ' kg'
+	WRITE (10,'(A,F5.2,A)') ' Battery Energy	     : ',  table2(1,k), ' Wh'
+	WRITE (10,'(A,F6.3,A)') ' Flying weight       : ',  table2(2,k), ' kg'
+	WRITE (10,'(A,F4.1,A)') ' Frame size          : ', 2 * table2(6,k), ' cm'
+	WRITE (10,'(A,F5.3,A)') ' Frame weight        : ',  table2(8,k), ' kg'
+	WRITE (10,'(A,F5.2,A)') ' Thrust to hover     : ',  table2(3,k), ' N'
+	WRITE (10,'(A,F5.2,A)') ' Flight power        : ',  table2(4,k), ' W'
+	WRITE (10,'(A,F3.1,A)') ' Thrust/Weight ratio : ',  table2(5,k)
+	WRITE (10,*)'Max flying time     : ', table3(1,k), ' min'
 	WRITE (10,*)
 	WRITE (10,*)
 	END DO
