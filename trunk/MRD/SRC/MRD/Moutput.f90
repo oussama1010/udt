@@ -34,10 +34,11 @@
 	WRITE (10,'(A,F5.3,A)') ' Battery Mass test   : ',  table2(7,k), ' kg'
 	WRITE (10,'(A,F5.2,A)') ' Battery Energy	     : ',  table2(1,k), ' Wh'
 	WRITE (10,'(A,F6.3,A)') ' Flying weight       : ',  table2(2,k), ' kg'
+	WRITE (10,'(A,F4.1,A)') ' Flying Speed        : ',  TRANSLATION_SPEED, ' m/s'
 	WRITE (10,'(A,F4.1,A)') ' Frame size          : ', 2 * table2(6,k), ' cm'
 	WRITE (10,'(A,F5.3,A)') ' Frame weight        : ',  table2(8,k), ' kg'
 	WRITE (10,'(A,F5.2,A)') ' Thrust to hover     : ',  table2(3,k), ' N'
-	WRITE (10,'(A,F5.2,A)') ' Flight power        : ',  table2(4,k), ' W'
+	WRITE (10,'(A,F6.2,A)') ' Flight power        : ',  table2(4,k), ' W'
 	WRITE (10,'(A,F3.1,A)') ' Thrust/Weight ratio : ',  table2(5,k)
 	WRITE (10,*)'Max flying time     : ', table3(1,k), ' min'
 	WRITE (10,*)
