@@ -34,7 +34,8 @@
 	WRITE (10,'(A,F5.3,A)') ' Battery Mass test   : ',  table2(7,k), ' kg'
 	WRITE (10,'(A,F5.2,A)') ' Battery Energy	     : ',  table2(1,k), ' Wh'
 	WRITE (10,'(A,F6.3,A)') ' Flying weight       : ',  table2(2,k), ' kg'
-	WRITE (10,'(A,F4.1,A)') ' Flying Speed        : ',  TRANSLATION_SPEED, ' m/s'
+	WRITE (10,'(A,F4.1,A)') ' Flying Speed        : ',  table2(9,k), ' m/s'
+	WRITE (10,'(A,F7.0,A)') ' Maximal Range       : ',  table2(10,k), ' m'
 	WRITE (10,'(A,F4.1,A)') ' Frame size          : ', 2 * table2(6,k), ' cm'
 	WRITE (10,'(A,F5.3,A)') ' Frame weight        : ',  table2(8,k), ' kg'
 	WRITE (10,'(A,F5.2,A)') ' Thrust to hover     : ',  table2(3,k), ' N'
@@ -59,7 +60,7 @@
 
 
 
-	SUBROUTINE CREATE_OUTPUT_TABLE(prop, motor, nrg, mass, hoverthrust, fpower, twratio, maxftime, batt_mass)
+	SUBROUTINE CREATE_OUTPUT_TABLE(prop, motor, nrg, mass, hoverthrust, fpower, twratio, maxftime, batt_mass,translaspeed)
 	USE MCOMMON
 	IMPLICIT NONE
 
@@ -70,7 +71,9 @@
 
 	Integer,intent(in) ::  maxftime
 
-	real,intent(in) :: mass, nrg, hoverthrust, fpower, twratio, batt_mass
+	real,intent(in) :: mass, nrg, hoverthrust, fpower
+	
+	real,intent(in) :: translaspeed, twratio, batt_mass		   
 
 
 	Integer ::  i, j
@@ -94,6 +97,8 @@
 				table2(6,j+1) = table2(6,j)
 				table2(7,j+1) = table2(7,j)
 				table2(8,j+1) = table2(8,j)
+				table2(9,j+1) = table2(9,j)
+				table2(10,j+1) = table2(10,j)
 				table3(1,j+1) = table3(1,j)
 				table3(2,j+1) = table3(2,j)
 			END DO
@@ -108,6 +113,8 @@
 			table2(6,i) = FRAME_SPAN
 			table2(7,i) = M_BATT
 			table2(8,i) = M_FRAME
+			table2(9,i) = TRANSLATION_SPEED
+			table2(10,i) = MAX_RANGE
 			table3(1,i) = maxftime
 			table3(2,i) = MISSION_SCORE
 		! the number of rows is updated
@@ -132,7 +139,6 @@
 	integer,intent(in) :: ftime
 	real,intent(in) :: twratio
 
-	MISSION_SCORE = (FTIME_COEFF*ftime)/15 + SIZE_COEFF*(10/FRAME_SPAN) + TW_COEFF*(twratio/3)
-
+	MISSION_SCORE = (FTIME_COEFF*ftime)/15 + SIZE_COEFF*(10/FRAME_SPAN) + TW_COEFF*(twratio/3) + RANGE_COEFF * MAX_RANGE
 
 	END SUBROUTINE CALCULATE_MISSION_SCORE
