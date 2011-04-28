@@ -36,10 +36,10 @@ PROP_AR:
 MIN_TW_RATIO:	3	!minimum thrust/weight ratio to reach 
 
 !---Mission Scoring---!
-ENDURANCE_COEFF:	0	!set importance of max endurance for the scoring
+ENDURANCE_COEFF:	70	!set importance of max endurance for the scoring
 SIZE_COEFF:		0	!set importance of the size for the scoring
-MANEUVRABILITY_COEFF:	0	!set importance of maneuvrability (thrust/weight ratio) for the scoring
-RANGE_COEFF:		100	!set importance of range for the scoring
+MANEUVRABILITY_COEFF:	10	!set importance of maneuvrability (thrust/weight ratio) for the scoring
+RANGE_COEFF:		20	!set importance of range for the scoring
 
 !--- Energy Source ---!
 BATT_SPEC_ENERGY:	160	! 100 Wh/kg
