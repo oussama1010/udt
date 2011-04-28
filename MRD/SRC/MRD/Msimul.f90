@@ -33,8 +33,6 @@
 !---Knowing the frame size the total weight can be calculated and gives the needed thrust of each motor 
 	CALL M_TOTAL_WEIGHT
 	
-
-	TRANSLATION_SPEED= 0
 	CALL TRANSLATION_BANK_ANGLE_ESTIMATOR
 
 	Thrust(wcn) = M_TOTAL * GRAV_ACC / (NR_MOTOR * COS(PHI))
@@ -46,7 +44,6 @@
 		Beta = 0
 	END IF
 
-	WRITE(*,*)'Beta', Beta
 !---The command to call Qprop is created and launched
 !	write(*,*)qprop_in_command
 	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Beta, Speed(wcn), Thrust(wcn), trim(qprop_outfile) 
@@ -63,23 +60,25 @@
                                     Qprop_CP, Qprop_DV, Qprop_Eff_total, Qprop_P_elec, Qprop_P_prop, Qprop_cl_avg, &
                                     Qprop_cd_avg, qprop_outfile, err_nr )
 !--- Debug Print...
-		write (*,*)
-		write (*,*) 'Working Cond          :  ', wcn
-		write (*,*) 'Motor Name            :  ', motor_name
-		write (*,*) 'Prop Name             :  ', prop_name 
-		write (*,*) 'MASS                  :  ', M_TOTAL 
-		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
-		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
-		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
-		write (*,*) 'Torque                :  ', Qprop_Q
-	 	write (*,*) 'Thrust                :  ', Qprop_T
-	 	write (*,*) 'Volts                 :  ', Qprop_Volts
-	 	write (*,*) 'Amps                  :  ', Qprop_Amps
-	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
-	 	write (*,*)
+!		write (*,*)
+!		write (*,*) 'Working Cond          :  ', wcn
+!		write (*,*) 'Motor Name            :  ', motor_name
+!		write (*,*) 'Prop Name             :  ', prop_name 
+!		write (*,*) 'MASS                  :  ', M_TOTAL 
+!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
+!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
+!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
+!		write (*,*) 'Torque                :  ', Qprop_Q
+!	 	write (*,*) 'Thrust                :  ', Qprop_T
+!	 	write (*,*) 'Volts                 :  ', Qprop_Volts
+!	 	write (*,*) 'Amps                  :  ', Qprop_Amps
+!	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
+!	 	write (*,*)
+
 
 !---Calls the subroutine finding the maximal flight time
 	CALL M_MAX_FLIGHT_TIME
+	CALL M_MAX_RANGE
 
 !---Calls the subroutine finding the maximal thrust/weight ratio
 	CALL TW_RATIO_ESTIMATOR
@@ -87,7 +86,7 @@
 ! Only the configurations meeting the mission constraints are stored
 		IF ( MIN_TW_RATIO .Le. TW_RATIO) THEN
 			CALL CREATE_OUTPUT_TABLE(prop_name, motor_name, BATT_SPEC_NRG * M_BATT, M_TOTAL, Qprop_T, TOTAL_FLYING_POWER, &
-				TW_RATIO, MAX_FLIGHT_TIME)
+				TW_RATIO, MAX_FLIGHT_TIME, TRANSLATION_SPEED)
 		END IF
 
 
@@ -211,8 +210,12 @@
 	PREV_ERROR = 1
 	SCDRAG=0
 
+!--- If Phi is not set to 0 the initial value is the result for the previous config so the convergeance is quicker
+!	PHI = 0
+
 	DO k=1, 100
 
+!---need to be improved to take into account the size and shape of the frame
 		SCDRAG = SCDRAG0 + (SCDRAG_MAX - SCDRAG0)*ABS(PHI/PHI_MAX)
 
 		DRAG = 0.5 * SCDRAG * TRANSLATION_SPEED**2
@@ -222,9 +225,8 @@
 		F = THRUSTtemp * sin (PHI)
 
 		ERROR = DRAG - F
-		WRITE(*,*)'PHI =', PHI
 
-		IF (ABS(ERROR) .Le. 0.01) THEN
+		IF (ABS(ERROR) .Le. 0.001) THEN
 			EXIT
 		ELSE IF ( ERROR * PREV_ERROR .Le. 0) THEN
 			DELTA_PHI = DELTA_PHI / 2
@@ -238,4 +240,15 @@
 
 
 	END SUBROUTINE TRANSLATION_BANK_ANGLE_ESTIMATOR
+
+
+
+	SUBROUTINE M_MAX_RANGE
+	USE MCOMMON
+	IMPLICIT NONE
+
+	MAX_RANGE = MAX_FLIGHT_TIME * 60 * TRANSLATION_SPEED
+
+
+	END SUBROUTINE M_MAX_RANGE
 

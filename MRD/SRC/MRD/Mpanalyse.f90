@@ -29,7 +29,8 @@
 	do while (indx_prop .le.indx_prop_ary(2))
 	M_BATT = M_BATT_MIN
 	do while (M_BATT .le. M_BATT_MAX)
-	
+	TRANSLATION_SPEED = TRANSLATION_SPEED_MIN
+	do while (TRANSLATION_SPEED .le. TRANSLATION_SPEED_MAX)
 
 !According to the index number, get the motor name for Qprop calculations
 
@@ -42,7 +43,8 @@
 !--- Just after having all the coeffs, Simulation needs to be called to calculte the mission...
 	CALL M_SIMUL
 
-
+	TRANSLATION_SPEED = TRANSLATION_SPEED + TRANSLATION_SPEED_DELTA
+	end do ! M_BATT loop
 	M_BATT = M_BATT + M_BATT_DELTA
 	end do ! M_BATT loop
 	indx_prop=indx_prop+1
