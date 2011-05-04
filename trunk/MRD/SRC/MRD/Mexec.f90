@@ -32,10 +32,12 @@
 !	THRUST(1) = TOTAL_WEIGHT/ NMOTOR  !convertion needed according to the units...
 
 !--- Choose Analyse/Design mode and execute 
-	IF(RUN_MODE .EQ. 2) THEN
+	IF(RUN_MODE .EQ. 1) THEN
 	CALL M_PROP_ANALYSE
-	ELSE IF (RUN_MODE .EQ. 1) THEN
+	ELSE IF (RUN_MODE .EQ. 2) THEN
 	CALL M_PROP_DESIGN
+	ELSE IF (RUN_MODE .EQ. 0) THEN
+!	CALL M_PROP_SIMPLE_ANALYSE
 	ELSE
 	WRITE(*,*)' !!! RUN MODE is not defined !!!  Quitting...'
 	STOP

@@ -23,7 +23,6 @@
 	WRITE(*,*)' Frame Building Subroutine '
 !--- Fixed Frame Weight for Type 10---
 
-		WRITE(*,*)M_frame_fix
 	IF (M_frame_fix .Eq. 0) THEN 
 		CALL ESTIMATE_MASS()
 	ELSE 
@@ -57,6 +56,5 @@
 	CASE(1)
 	END SELECT
 
-	WRITE(*,*)'M_FRAME', M_FRAME
-
+!	WRITE(*,*)'M_FRAME', M_FRAME 		- debug
 	END SUBROUTINE ESTIMATE_MASS
