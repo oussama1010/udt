@@ -31,21 +31,24 @@
 	OPEN(10,file='output.dat', status='unknown',position="append")
 	WRITE (10,*)'Config', k, '		MISSION SCORE :', table3(2,k)
 	WRITE (10,*)'##############################  ',table1(1,k),table1(2,k),'  #######################################'
-	WRITE (10,'(A,F5.3,A)') ' Battery Mass test   : ',  table2(7,k), ' kg'
-	WRITE (10,'(A,F5.2,A)') ' Battery Energy	     : ',  table2(1,k), ' Wh'
-	WRITE (10,'(A,F6.3,A)') ' Flying weight       : ',  table2(2,k), ' kg'
-	WRITE (10,'(A,F4.1,A)') ' Flying Speed        : ',  table2(9,k), ' m/s'
-	WRITE (10,'(A,F7.0,A)') ' Maximal Range       : ',  table2(10,k), ' m'
-	WRITE (10,'(A,F4.1,A)') ' Frame size          : ', 2 * table2(6,k), ' cm'
-	WRITE (10,'(A,F5.3,A)') ' Frame weight        : ',  table2(8,k), ' kg'
-	WRITE (10,'(A,F5.2,A)') ' Thrust to hover     : ',  table2(3,k), ' N'
-	WRITE (10,'(A,F6.2,A)') ' Flight power        : ',  table2(4,k), ' W'
-	WRITE (10,'(A,F3.1,A)') ' Thrust/Weight ratio : ',  table2(5,k)
-	WRITE (10,*)'Max flying time     : ', table3(1,k), ' min'
+	WRITE (10,'(A,F5.3,A)') ' Battery Mass test        : ',  table2(7,k), ' kg'
+	WRITE (10,'(A,F5.2,A)') ' Battery Energy           : ',  table2(1,k), ' Wh'
+	WRITE (10,'(A,F6.3,A)') ' Flying weight            : ',  table2(2,k), ' kg'
+	WRITE (10,'(A,F4.1,A)') ' Flying Speed             : ',  table2(9,k), ' m/s'
+	WRITE (10,'(A,F7.0,A)') ' Maximal Range            : ',  table2(10,k), ' m'
+	WRITE (10,'(A,F4.1,A)') ' Frame size               : ', 2 * table2(6,k), ' cm'
+	WRITE (10,'(A,F5.3,A)') ' Frame weight             : ',  table2(8,k), ' kg'
+	WRITE (10,'(A,F5.2,A)') ' Thrust to hover          : ',  table2(3,k), ' N'
+	WRITE (10,'(A,F6.2,A)') ' Flight power             : ',  table2(4,k), ' W'
+	WRITE (10,'(A,F3.1,A)') ' Thrust/Weight ratio      : ',  table2(5,k)
+	WRITE (10,'(A,F6.1,A)') ' Yaw angular acceleration : ',  table4(1,k) * 180/3.14,' deg/s²'
+	WRITE (10,'(A,I3,A)')   'Max flying time           : ', table3(1,k), ' min'
 	WRITE (10,*)
 	WRITE (10,*)
 	END DO
 	CLOSE (10)
+
+	WRITE(*,*)'See output.dat file for results'
 
 	END SUBROUTINE CREATE_OUTPUT_FILE
 
@@ -60,25 +63,14 @@
 
 
 
-	SUBROUTINE CREATE_OUTPUT_TABLE(prop, motor, nrg, mass, hoverthrust, fpower, twratio, maxftime, batt_mass,translaspeed)
+	SUBROUTINE CREATE_OUTPUT_TABLE
 	USE MCOMMON
 	IMPLICIT NONE
 
 !add results of a simulation inside a sorted table
-
-
-	character(len=25),intent(in) :: prop, motor
-
-	Integer,intent(in) ::  maxftime
-
-	real,intent(in) :: mass, nrg, hoverthrust, fpower
-	
-	real,intent(in) :: translaspeed, twratio, batt_mass		   
-
-
 	Integer ::  i, j
 	
-	CALL CALCULATE_MISSION_SCORE(maxftime,twratio)
+	CALL CALCULATE_MISSION_SCORE
 
 	WRITE(*,*)'adding results to ouptput table'
 
@@ -99,23 +91,25 @@
 				table2(8,j+1) = table2(8,j)
 				table2(9,j+1) = table2(9,j)
 				table2(10,j+1) = table2(10,j)
+				table4(1,j+1) = table4(1,j)
 				table3(1,j+1) = table3(1,j)
 				table3(2,j+1) = table3(2,j)
 			END DO
 		! the new row is inserted in the free space created
-			table1(1,i) = prop
-			table1(2,i) = motor
-			table2(1,i) = nrg
-			table2(2,i) = mass
-			table2(3,i) = hoverthrust
-			table2(4,i) = fpower
-			table2(5,i) = twratio
+			table1(1,i) = prop_name
+			table1(2,i) = motor_name
+			table2(1,i) = BATT_SPEC_NRG * M_BATT
+			table2(2,i) =  M_TOTAL
+			table2(3,i) = Thrust(wcn)
+			table2(4,i) = TOTAL_FLYING_POWER
+			table2(5,i) = TW_RATIO
 			table2(6,i) = FRAME_SPAN
 			table2(7,i) = M_BATT
 			table2(8,i) = M_FRAME
 			table2(9,i) = TRANSLATION_SPEED
 			table2(10,i) = MAX_RANGE
-			table3(1,i) = maxftime
+			table4(1,i) = YAW_ANGULAR_ACCELERATION
+			table3(1,i) = MAX_FLIGHT_TIME
 			table3(2,i) = MISSION_SCORE
 		! the number of rows is updated
 			n = n + 1
@@ -132,13 +126,11 @@
 
 
 
-	SUBROUTINE CALCULATE_MISSION_SCORE(ftime,twratio)
+	SUBROUTINE CALCULATE_MISSION_SCORE
 	USE MCOMMON
 	IMPLICIT NONE
 
-	integer,intent(in) :: ftime
-	real,intent(in) :: twratio
 
-	MISSION_SCORE = (FTIME_COEFF*ftime)/15 + SIZE_COEFF*(10/FRAME_SPAN) + TW_COEFF*(twratio/3) + RANGE_COEFF * MAX_RANGE/10000
+	MISSION_SCORE=(FTIME_COEFF*MAX_FLIGHT_TIME)/15+SIZE_COEFF*(10/FRAME_SPAN)+TW_COEFF*(TW_RATIO/3)+RANGE_COEFF*MAX_RANGE/5000
 
 	END SUBROUTINE CALCULATE_MISSION_SCORE
