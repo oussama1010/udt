@@ -54,15 +54,22 @@
 	CALL SYSTEM('ls -B DATA/MOTOR > DATA/motor_name_list.txt')
 	CALL SYSTEM('ls -B DATA/AIRFOIL > DATA/airfoil_name_list.txt')
 	CALL SYSTEM('ls -B DATA/PROPELLER > DATA/propeller_name_list.txt')
+	CALL SYSTEM('ls -B DATA/SIMPLE_PROPELLER > DATA/simple_propeller_name_list.txt')
 	CALL SYSTEM("rm output.dat")
 !######################################################
 
 	indx_motor_ary(1)=1
 	indx_prop_ary(1)=1
+	indx_simple_prop_ary(1)=1
+	indx_airfoil_ary(1)=1
 	call nmax_prop(n_prop)
 	indx_prop_ary(2)=n_prop
+	call nmax_simple_prop(n_simple_prop)
+	indx_simple_prop_ary(2)=n_simple_prop
 	call nmax_motor(n_motor)
-	indx_motor_ary(2)=n_motor
+	indx_motor_ary(2)=n_motor	
+	call nmax_airfoil(n_airfoil)
+	indx_airfoil_ary(2)=n_airfoil
 !	WRITE(*,*)' Number of motors in the list : ',n_motor
 !	WRITE(*,*)' Number of props in the list : ',n_prop
 !######################################################
