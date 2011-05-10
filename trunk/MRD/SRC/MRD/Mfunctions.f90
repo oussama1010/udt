@@ -58,9 +58,9 @@
 !	FQdes = 0.2
 !	Nout = 30
 
+	write(*,*)'creating', propeller_candidate
 
-
-	open (60, file=propeller_candidate, status='unknown')
+	open (60, file=propeller_candidate, status='new')
 !			write (60,1000) propeller_candidate, n_blade, CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l,  &
 !                                        CLCD0, REref, REexp, R1, R2, R3, RCL1, RCL2, RCL3, R_hub, R_tip, Speed(wcn), &
 !                                        RPM, Thrust(wcn) , Power(wcn) , Ldes, FQdes, Nout
@@ -165,48 +165,51 @@
 	if(charc.ne.'#') write(*,*)'Error reading Qprop output, Qmil is not converged !!!'
 	end subroutine qprop_read
 !################################################################################
-	Subroutine Get_airfoil_spec(indx,Airfoil_name,CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp)
+	Subroutine Get_airfoil_spec(indx)
+!,Airfoil_name,CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp)
+	USE MCOMMON
 	implicit none
-	character(len=25),intent(out) ::Airfoil_name
-	real,intent(out) :: CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp
+!	character(len=25),intent(out) ::Airfoil_name
+!	real,intent(out) :: CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp
 	integer,intent(in) :: indx
 	integer :: status, i
-	integer,parameter :: n=100
+!	integer,parameter :: k=100
 	character(len=25) :: Airfoil(100)
 
-		open(70,file='./DATA/airfoil_name_list.txt',status='old',iostat=status)
 
+		open(70,file='./DATA/airfoil_name_list.txt',status='old',iostat=status)
+	
 				do i=1,n
 				read(70,*,iostat=status) Airfoil(i)
+				WRITE(*,*)i,Airfoil(i)
 					if(status.eq.-1) exit
-
-				enddo				
+				end do				
 
 			close(70)
+	
+		open(80,file='./DATA/AIRFOILS/'//Airfoil(indx),status='old',iostat=status)
 
-		open(70,file='./DATA/AIRFOILS/'//Airfoil(indx),status='old',iostat=status)
-
-				read(70,*)Airfoil_name
-				read(70,*)CL0
-				read(70,*)CLA
-				read(70,*)CLmin
-				read(70,*)CLmax
-				read(70,*)CD0
-				read(70,*)CD2u
-				read(70,*)CD2l
-				read(70,*)CLCD0
-				read(70,*)REref
-				read(70,*)REexp
-				do i=1,n
-				read(70,*,iostat=status)
+				read(80,*)Airfoil_name
+				read(80,*)CL0
+				read(80,*)CLA
+				read(80,*)CLmin
+				read(80,*)CLmax
+				read(80,*)CD0
+				read(80,*)CD2u
+				read(80,*)CD2l
+				read(80,*)CLCD0
+				read(80,*)REref
+				read(80,*)REexp
+				do i=1,100
+				read(80,*,iostat=status)
 					if(status.eq.-1) exit
 
-				enddo				
+				end do				
 
-			close(70)
+			close(80)
 ! To check if they are correctly read from the file.
-!	write(*,*)Airfoil(indx)
-!	write(*,*)CL0,CLA,CLmin,REexp
+	write(*,*)Airfoil(indx)
+	write(*,*)CL0,CLA,CLmin,REexp
 
 
 	end subroutine Get_airfoil_spec
@@ -334,4 +337,97 @@
 			close(81)
 	end Subroutine nmax_prop
 !################################################################################
+	Subroutine nmax_simple_prop (n_simple_prop)
+	! Searches through the propeller list and gives the total number of propellers.
+	implicit none
+	integer,intent(out) :: n_simple_prop
+	integer :: status, i
+	integer,parameter :: n=100
 
+		open(81,file='./DATA/simple_propeller_name_list.txt',status='old',iostat=status)
+
+				do i=1,n
+				read(81,*,iostat=status) 
+					if(status.eq.-1) exit
+					n_simple_prop=i
+				enddo				
+
+			close(81)
+	end Subroutine nmax_simple_prop
+!################################################################################
+
+	Subroutine Get_prop_specs (indx,Prop_name, K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS)
+	implicit none
+	integer,intent(in) :: indx
+	integer :: status, i
+	integer,parameter :: n=100
+	character(len=25) :: Prop_name_array(100)
+	character(len=25),intent(out) :: Prop_name
+	REAL, intent(out) ::  K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS
+
+		open(80,file='./DATA/simple_propeller_name_list.txt',status='old',iostat=status)
+
+				do i=1,n
+				read(80,*,iostat=status) Prop_name_array(i)
+					if(status.eq.-1) exit
+
+				enddo				
+
+			close(80)
+
+	Prop_name=Prop_name_array(indx)
+
+	open(50,file='./DATA/SIMPLE_PROPELLER/'//Prop_name,status='old',iostat=status)
+
+				read(50,*)
+				read(50,*)K_THRUST
+				read(50,*)K_TORQUE
+				read(50,*)M_PROP
+				read(50,*)PROP_RADIUS
+
+
+	close(50)
+! To check if they are correctly read from the file.
+!	write(*,*)Prop_name					--debug
+!	write(*,*)K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS	--debug
+
+	END SUBROUTINE Get_prop_specs
+
+!################################################################################
+	Subroutine Get_motor_specs (indx,Motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR)
+	implicit none
+	integer,intent(in) :: indx
+	integer :: status, i
+	integer,parameter :: n=100
+	character(len=25) :: Motor_name_array(100)
+	character(len=25),intent(out) :: Motor_name
+	REAL, intent(out) ::  R_MOTOR, I0_MOTOR, KV_MOTOR
+
+
+		open(80,file='./DATA/motor_name_list.txt',status='old',iostat=status)
+
+				do i=1,n
+				read(80,*,iostat=status) Motor_name_array(i)
+					if(status.eq.-1) exit
+
+				enddo				
+
+			close(80)
+
+	Motor_name=Motor_name_array(indx)
+!	write(*,*)Motor_name
+
+	open(50,file='./DATA/MOTOR/'//Motor_name,status='old',iostat=status)
+
+				read(50,*)
+				read(50,*)
+				read(50,*)
+				read(50,*)
+				read(50,*)
+				read(50,*)R_MOTOR
+				read(50,*)I0_MOTOR
+				read(50,*)KV_MOTOR
+
+	close(50)
+
+	end subroutine Get_motor_specs

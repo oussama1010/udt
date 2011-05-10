@@ -60,19 +60,19 @@
                 Qprop_Amps, Qprop_Eff_mot, Qprop_Eff_prop, Qprop_Adv, Qprop_CT, Qprop_CP, Qprop_DV,&
                 Qprop_Eff_total, Qprop_P_elec, Qprop_P_prop, Qprop_cl_avg, Qprop_cd_avg 
 
-	CHARACTER(len=25) :: propeller_candidate, qprop_outfile, Prop_name, Motor_name, Airfoil_name
+	CHARACTER(len=25) :: propeller_candidate, qprop_outfile, Prop_name, Motor_name, Airfoil_name, Simple_Prop_name
 	CHARACTER(len=50) :: qprop_infile
 	CHARACTER(len=120) :: qprop_in_command
 	CHARACTER(len=27) :: dir_name
 
 	INTEGER :: wcn, err_nr
 
-	INTEGER :: indx_airfoil, indx_motor, indx_prop, indx_motor_ary(3),&
-		indx_airfoil_ary(3), indx_prop_ary(3)
+	INTEGER :: indx_airfoil, indx_motor, indx_prop, indx_simple_prop, indx_motor_ary(3),&
+		indx_airfoil_ary(3), indx_prop_ary(3), indx_simple_prop_ary(3)
 
 	REAL :: Speed(3), Thrust(3)
 
-	INTEGER :: n_prop, n_motor !these are the motor and prop number in the directory... we should change the name I guess...
+	INTEGER :: n_prop, n_motor, n_airfoil, n_simple_prop !these are the motor and prop number in the directory... we should change the name I guess...
 
 !--- New addition from Charles
 	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF, PROP_RADIUS, FRAME_SPAN
@@ -97,5 +97,10 @@
 	REAL ::  TRANSLATION_SPEED, TRANSLATION_SPEED_MIN, TRANSLATION_SPEED_MAX, TRANSLATION_SPEED_DELTA, MAX_RANGE 
 
 	REAL :: I_YAW_TOTAL, YAW_ANGULAR_ACCELERATION
+
+	real	:: CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp
+
+	REAL :: RPM, TORQUE, K_TORQUE, K_THRUST,  P_MECA, KV_MOTOR, R_MOTOR, I0_MOTOR,  AMPS, P_ELEC, VOLTS, RPM_MAX
+
 
 	END MODULE MCOMMON

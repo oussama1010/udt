@@ -22,7 +22,18 @@
 
 	WRITE(*,*)' Prop design Subroutine '
 
+	indx_airfoil=indx_airfoil_ary(1)
+	do while (indx_airfoil .le. indx_airfoil_ary(2))
 
+	WRITE(*,*)'index, index max',indx_airfoil,indx_airfoil_ary(2)
+	CALL Get_airfoil_spec(indx_airfoil)
+
+	CALL Qmil_prop_write('prop test',2,30, CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp, &
+				0, 0.5, 1, 0.6, 0.45, 0.4, 0.015, 0.090, 0.1, 2000, 1.70, 0, 0, 0.2)
+	
+
+	indx_airfoil=indx_airfoil+1
+	end do ! indx_prop loop
 
 
 

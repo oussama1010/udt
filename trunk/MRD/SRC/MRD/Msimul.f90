@@ -23,7 +23,7 @@
 ! the total weight is calculated according to the different components
 !A simulation is then launched and stored inside the output.dat file if the results meet the mission constraints
  
-	WRITE(*,*)'Simulation'
+	WRITE(*,*)'QProp Simulation'
 
 !!! The mass depends on the propeller and the engine used so it cannot be calculated before the loop for now.
 	CALL PROP_DATA_FINDER
@@ -79,7 +79,9 @@
 !	 	write (*,*) 'Amps                  :  ', Qprop_Amps
 !	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
 !	 	write (*,*)
-
+!	 	write (*,*) 'RPM      :  ', Qprop_rpm
+	VOLTS = Qprop_Volts
+	P_ELEC = Qprop_P_elec
 
 !---Calls the subroutine finding the maximal flight time and range
 	CALL M_MAX_FLIGHT_TIME
@@ -98,12 +100,88 @@
 
 	END SUBROUTINE M_SIMUL
 
+!##########################################################################################################################
 
 
+SUBROUTINE M_SIMPLIFIED_SIMUL
+	USE MCOMMON
+	IMPLICIT NONE
+! this subroutine run a Qprop simulation for the current aircraft configuration
+! the total weight is calculated according to the different components
+!A simulation is then launched and stored inside the output.dat file if the results meet the mission constraints
+ 
+	WRITE(*,*)'Simplified Simulation'
+
+!!! The mass depends on the propeller and the engine used so it cannot be calculated before the loop for now.
 
 
+!---The PROP_RADIUS is known and the optimun size can be computed
+	CALL MFRAME
+
+!---Knowing the frame size the total weight can be calculated and gives the needed thrust of each motor 
+	CALL M_TOTAL_WEIGHT
+	
+	CALL TRANSLATION_BANK_ANGLE_ESTIMATOR
+
+	Thrust(wcn) = M_TOTAL * GRAV_ACC / (NR_MOTOR * COS(PHI))
+
+!---Knowing the thrust need needed we can find the RPM which gives the torque
+	RPM = SQRT ( Thrust(wcn) / K_THRUST ) 
+	
+	TORQUE = K_TORQUE * RPM**2
+
+!---We can now calculate the power consumption using the motor parameters.
+	P_MECA = TORQUE * RPM *3.14*2/60
+
+	AMPS = TORQUE * KV_MOTOR*3.14*2/60 + I0_MOTOR
+
+	VOLTS = RPM / (KV_MOTOR) + R_MOTOR * AMPS
+
+	P_ELEC = VOLTS * AMPS
 
 
+!--- Debug Print...
+!		write (*,*)
+!		write (*,*) 'Working Cond          :  ', wcn
+!		write (*,*) 'Motor Name            :  ', motor_name
+!		write (*,*) 'Prop Name             :  ', prop_name 
+!		write (*,*) 'MASS                  :  ', M_TOTAL 
+!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
+!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
+!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
+!		write (*,*) 'Torque                :  ', TORQUE
+!	 	write (*,*) 'Thrust                :  ', Thrust(wcn)
+!	 	write (*,*) 'Kv                :  ', Kv_MOTOR
+!	 	write (*,*) 'RPM                   :  ', RPM
+!	 	write (*,*) 'Volts                 :  ', VOLTS
+!	 	write (*,*) 'Amps                  :  ', AMPS
+!	 	write (*,*) 'I0                  :  ', I0_MOTOR
+!	 	write (*,*) 'Mecanical Power      :  ', P_MECA
+!	 	write (*,*) 'Electrical Power      :  ', P_ELEC
+!	 	write (*,*)
+
+
+!---Calls the subroutine finding the maximal flight time and range
+	CALL M_MAX_FLIGHT_TIME
+	
+!--- The range cannot be accurately computed in this mode as the propeller model describes only the static condition
+	MAX_RANGE = 0
+
+!---Calls the subroutine finding the maximal thrust/weight ratio
+	CALL SIMPLIFIED_TW_RATIO_ESTIMATOR
+
+	CALL SIMPLIFIED_YAW_ANGULAR_ACCELERATION_ESTIMATOR
+
+! Only the configurations meeting the mission constraints are stored
+		IF ( MIN_TW_RATIO .Le. TW_RATIO) THEN
+			CALL CREATE_OUTPUT_TABLE
+		END IF
+
+
+	END SUBROUTINE M_SIMPLIFIED_SIMUL
+
+
+!##########################################################################################################################
 
 
 	SUBROUTINE M_MAX_FLIGHT_TIME
@@ -122,7 +200,7 @@
 
 
 !--- for the engines only, payload and autopilot power are added after
-	HOVER_POWER = Qprop_P_elec * Nr_motor
+	HOVER_POWER = P_ELEC * Nr_motor
 
 !	write (*,*)
 !	write (*,*) 'the total energy inboard is :  ', NRG, 'Wh'		! debug
@@ -136,19 +214,19 @@
 
 	MAX_FLIGHT_TIME = NRG / TOTAL_FLYING_POWER * 60	! flight time in minutes
 
-	MAX_FLIGHT_TIME_HOUR= MAX_FLIGHT_TIME/ 60
+!	MAX_FLIGHT_TIME_HOUR= MAX_FLIGHT_TIME/ 60
 
-	MAX_FLIGHT_TIME_MIN= modulo(MAX_FLIGHT_TIME,60)
+!	MAX_FLIGHT_TIME_MIN= modulo(MAX_FLIGHT_TIME,60)
 
-!	write (*,*) 'the total power needed is :  ', TOTAL_FLYING_POWER, 'W'		! debug
-!	write (*,*) 'the maximal flight time is  :  ', MAX_FLIGHT_TIME_HOUR,'h',MAX_FLIGHT_TIME_MIN		! debug
+	write (*,*) 'the total power needed is :  ', TOTAL_FLYING_POWER, 'W'		! debug
+	write (*,*) 'the maximal flight time is  :  ', MAX_FLIGHT_TIME,'min'		! debug
 !	write (*,*)
 	
 
 	END SUBROUTINE M_MAX_FLIGHT_TIME
 
 
-
+!##########################################################################################################################
 
 
 	SUBROUTINE CONTROLLER_EFFICIENCY_ESTIMATOR
@@ -163,14 +241,14 @@
 	MIN_EFF = 0.5
 	MAX_EFF = 0.9
 
-	CONTROLLER_ESTIMATED_EFFICIENCY = MIN_EFF  + (Qprop_Volts / BATT_MAX_VOLT) * (MAX_EFF - MIN_EFF)
+	CONTROLLER_ESTIMATED_EFFICIENCY = MIN_EFF  + (VOLTS / BATT_MAX_VOLT) * (MAX_EFF - MIN_EFF)
 
 
 	END SUBROUTINE CONTROLLER_EFFICIENCY_ESTIMATOR
 
 
 
-
+!##########################################################################################################################
 
 
 
@@ -203,7 +281,52 @@
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
 
+!##########################################################################################################################
 
+
+
+
+	SUBROUTINE SIMPLIFIED_TW_RATIO_ESTIMATOR
+	USE MCOMMON
+	IMPLICIT NONE
+
+	REAL :: Q, I, V, ERROR, PREV_ERROR, DELTA_RPM
+
+	WRITE(*,*)'Simplified  Thrust/weight estimator'
+
+
+	DELTA_RPM = 1000
+	PREV_ERROR = 1
+
+
+	DO k= 1, 100
+
+		Q = K_TORQUE * RPM_MAX**2
+
+		I = Q * KV_MOTOR*3.14*2/60 + I0_MOTOR
+
+		V = RPM_MAX / (KV_MOTOR) + R_MOTOR * I
+
+		ERROR = BATT_MAX_VOLT - V
+
+		IF (ABS(ERROR) .Le. 0.001) THEN
+			EXIT
+		ELSE IF ( ERROR * PREV_ERROR .Le. 0) THEN
+			DELTA_RPM = DELTA_RPM / 2
+		END IF
+
+		RPM_MAX = RPM_MAX + SIGN( DELTA_RPM , ERROR)
+		PREV_ERROR = ERROR
+
+	END DO
+	
+	TW_RATIO = NR_MOTOR * K_THRUST* RPM_MAX**2  / (M_TOTAL * GRAV_ACC )
+
+!	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO	 !debug
+
+	END SUBROUTINE SIMPLIFIED_TW_RATIO_ESTIMATOR
+
+!##########################################################################################################################
 
 
 	SUBROUTINE TRANSLATION_BANK_ANGLE_ESTIMATOR
@@ -255,7 +378,7 @@
 	END SUBROUTINE TRANSLATION_BANK_ANGLE_ESTIMATOR
 
 
-
+!##########################################################################################################################
 
 
 	SUBROUTINE M_MAX_RANGE
@@ -270,7 +393,7 @@
 	END SUBROUTINE M_MAX_RANGE
 
 
-
+!##########################################################################################################################
 
 
 
@@ -278,7 +401,7 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
-	REAL :: TORQUE, COUNTER_TORQUE
+	REAL :: TOTAL_TORQUE, COUNTER_TORQUE
 	
 	WRITE(*,*)'yaw angular acceleration estimator'
 
@@ -298,7 +421,7 @@
                          Qprop_CP, Qprop_DV, Qprop_Eff_total, Qprop_P_elec, Qprop_P_prop, Qprop_cl_avg, &
                          Qprop_cd_avg, qprop_outfile, err_nr )
 
-	TORQUE = 2 * Qprop_Q
+	TOTAL_TORQUE = 2 * Qprop_Q
 
 !--- Computing the remaining torque on the 2 other engines (for now they are set to give 20% of the total lift to keep sufficient control)
 	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 0.2, trim(qprop_outfile) 
@@ -313,10 +436,42 @@
 
 	COUNTER_TORQUE = 2 * Qprop_Q
 
-	TORQUE = TORQUE - COUNTER_TORQUE
+	TOTAL_TORQUE = TOTAL_TORQUE - COUNTER_TORQUE
 
-	YAW_ANGULAR_ACCELERATION = TORQUE / I_YAW_TOTAL
+	YAW_ANGULAR_ACCELERATION = TOTAL_TORQUE / I_YAW_TOTAL
 
 
 	END SUBROUTINE YAW_ANGULAR_ACCELERATION_ESTIMATOR
+
+!##########################################################################################################################
+
+
+
+	SUBROUTINE SIMPLIFIED_YAW_ANGULAR_ACCELERATION_ESTIMATOR
+	USE MCOMMON
+	IMPLICIT NONE
+
+	REAL :: Q, TOTAL_TORQUE, COUNTER_TORQUE
+	
+	WRITE(*,*)'Simplified yaw angular acceleration estimator'
+
+	CALL MOMENT_OF_INERTIA
+
+	Q =  K_TORQUE * ( Thrust(wcn) * 1.8 / K_THRUST )
+	
+
+	TOTAL_TORQUE = 2 * Q
+
+!--- Computing the remaining torque on the 2 other engines (for now they are set to give 20% of the total lift to keep sufficient control)
+	Q =  K_TORQUE * ( Thrust(wcn) * 0.2 / K_THRUST )
+
+	COUNTER_TORQUE = 2 * Qprop_Q
+
+	TOTAL_TORQUE = TOTAL_TORQUE - COUNTER_TORQUE
+
+	YAW_ANGULAR_ACCELERATION = TOTAL_TORQUE / I_YAW_TOTAL
+
+
+	END SUBROUTINE SIMPLIFIED_YAW_ANGULAR_ACCELERATION_ESTIMATOR
+
 
