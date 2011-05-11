@@ -19,14 +19,15 @@
 
 	Subroutine Qmil_prop_write (propeller_candidate, n_blade , Nout, CL0, CLA, CLmin, CLmax, &
                    CD0, CD2u, CD2l, CLCD0, REref, REexp, R1, R2, R3, RCL1, RCL2, RCL3, R_hub, R_tip, &
-                   Speed, RPM, Thrust , Power , Ldes, FQdes, main )
+                   Speed, RPM, Thrust , Power , Ldes, FQdes) !, main )
 	implicit none
 	
-	character(len=25),intent(in) :: propeller_candidate
+	character(len=25), intent(in) :: propeller_candidate
 
-	integer,intent(in) :: n_blade , Nout, main  ! Main Working Condition Number
-	real,intent(in) :: CL0, CLA, CLmin, CLmax, CD0, CD2u, CLCD0, CD2l, REref, REexp, R1, R2, R3, RCL1, &
-                RCL2, RCL3, R_hub, R_tip, Speed(:), RPM, Thrust(:) , Power(:) , Ldes, FQdes
+	integer, intent(in) :: n_blade , Nout	!, main  ! Main Working Condition Number
+	real, intent(in)  :: CL0, CLA, CLmin, CLmax, CD0, CD2u, CLCD0, CD2l, REref, REexp, R1, R2, &
+			 R3, RCL1, RCL2, RCL3, R_hub, R_tip, Speed, RPM, Thrust , Power , Ldes, FQdes
+
 
 !	main= ! IMPORTANT  , so that it takes the first wc as a main one...Thkn About It !!!
 
@@ -58,34 +59,34 @@
 !	FQdes = 0.2
 !	Nout = 30
 
-	write(*,*)'creating', propeller_candidate
-
-	open (60, file=propeller_candidate, status='new')
+	write(*,*)'creating ',propeller_candidate
+	write(*,*)
+	open (60, file=propeller_candidate, status='unknown')
 !			write (60,1000) propeller_candidate, n_blade, CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l,  &
 !                                        CLCD0, REref, REexp, R1, R2, R3, RCL1, RCL2, RCL3, R_hub, R_tip, Speed(wcn), &
 !                                        RPM, Thrust(wcn) , Power(wcn) , Ldes, FQdes, Nout
-			write (60,1000) propeller_candidate, n_blade, CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l,  &
-                                        CLCD0, REref, REexp, R1, R2, R3, RCL1, RCL2, RCL3, R_hub, R_tip, Speed(main), &
-                                        RPM, Thrust(main) , Power(main) , Ldes, FQdes, Nout
+		write (60,1000) propeller_candidate, n_blade, CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l,  &
+                                CLCD0, REref, REexp, R1, R2, R3, RCL1, RCL2, RCL3, R_hub, R_tip, Speed, &
+                                RPM, Thrust , Power , Ldes, FQdes, Nout
 
 1000	Format ( &
-/A ,'! Propeller Name'& 
-//1X,I3,3X, '! Number of Blades' &
-//1X,2F8.4 , '! CL0   CL_a' &
-/1X,2F8.4 ,  '! CLmin CLmax' &
-//1X,3F9.5,F8.4, '! CD0  CD2u  CD2l CLCD0' &
-/1X,F10.1,F8.3,8X, '! REref  REexp ' &
+/A ,'	! Propeller Name' & 
+//1X,I3,3X, '	! Number of Blades' &
+//1X,2F8.4 , '	! CL0   CL_a' &
+/1X,2F8.4 ,  '	! CLmin CLmax' &
+//1X,3F9.5,F8.4, '	! CD0  CD2u  CD2l CLCD0' &
+/1X,F10.1,F8.3,8X, '	! REref  REexp ' &
 //1X,3F8.4, '   !  XIdes' &
 /1X,3F8.4, '   !  CLdes' &
-//1X,F8.3 , '! Hub Radius (m)' &
-/1X,F8.3 , '! Tip Radius (m)' &
-/1X,F8.1 , '! Speed (m/s)'&
-/1X,F12.1 , '! RPM ' &
-//1X,F8.2 , '! Thrust (N) ( 0 if power  specified )' &
-/1X,F8.2 , '! Power (W) ( 0 if thrust specified )' &
-//1X,F6.1 , F6.2 , ' ! Ldes  FQdes ' & 
-//1X,I3,8X , '! Nout     number of output stations (optional)' )
-		close (60)
+//1X,F8.3 , '	! Hub Radius (m)' &
+/1X,F8.3 , '	! Tip Radius (m)' &
+/1X,F8.1 , '	! Speed (m/s)'&
+/1X,F12.1 , '	! RPM ' &
+//1X,F8.2 , '	! Thrust (N) ( 0 if power  specified )' &
+/1X,F8.2 , '	! Power (W) ( 0 if thrust specified )' &
+//1X,F6.1 , F6.2 , '	 ! Ldes  FQdes ' & 
+//1X,I3,8X , '	! Nout     number of output stations (optional)' )
+	close (60)
 
 
 
@@ -165,12 +166,10 @@
 	if(charc.ne.'#') write(*,*)'Error reading Qprop output, Qmil is not converged !!!'
 	end subroutine qprop_read
 !################################################################################
-	Subroutine Get_airfoil_spec(indx)
-!,Airfoil_name,CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp)
-	USE MCOMMON
+	Subroutine Get_airfoil_spec(indx, Airfoil_name,CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp)
 	implicit none
-!	character(len=25),intent(out) ::Airfoil_name
-!	real,intent(out) :: CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp
+	character(len=25),intent(out) ::Airfoil_name
+	real,intent(out) :: CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp
 	integer,intent(in) :: indx
 	integer :: status, i
 !	integer,parameter :: k=100
@@ -179,15 +178,17 @@
 
 		open(70,file='./DATA/airfoil_name_list.txt',status='old',iostat=status)
 	
-				do i=1,n
+				do i=1,100
 				read(70,*,iostat=status) Airfoil(i)
-				WRITE(*,*)i,Airfoil(i)
 					if(status.eq.-1) exit
 				end do				
 
 			close(70)
 	
-		open(80,file='./DATA/AIRFOILS/'//Airfoil(indx),status='old',iostat=status)
+				WRITE(*,*)'Airfoil(indx)', Airfoil(indx)
+
+		open(80,file='./DATA/AIRFOIL/'//Airfoil(indx),status='old',iostat=status)
+
 
 				read(80,*)Airfoil_name
 				read(80,*)CL0

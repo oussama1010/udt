@@ -19,7 +19,7 @@
 	SUBROUTINE M_SIMUL
 	USE MCOMMON
 	IMPLICIT NONE
-! this subroutine run a Qprop simulation for the current aircraft configuration
+! this subroutine runs a Qprop simulation for the current aircraft configuration
 ! the total weight is calculated according to the different components
 !A simulation is then launched and stored inside the output.dat file if the results meet the mission constraints
  
@@ -100,19 +100,17 @@
 
 	END SUBROUTINE M_SIMUL
 
+
+
 !##########################################################################################################################
-
-
-SUBROUTINE M_SIMPLIFIED_SIMUL
+	SUBROUTINE M_SIMPLIFIED_SIMUL
 	USE MCOMMON
 	IMPLICIT NONE
-! this subroutine run a Qprop simulation for the current aircraft configuration
+! this subroutine uses a mathematical model of the current aircraft configuration
 ! the total weight is calculated according to the different components
-!A simulation is then launched and stored inside the output.dat file if the results meet the mission constraints
+!the result is stored inside the output.dat file if the mission constraints are met
  
 	WRITE(*,*)'Simplified Simulation'
-
-!!! The mass depends on the propeller and the engine used so it cannot be calculated before the loop for now.
 
 
 !---The PROP_RADIUS is known and the optimun size can be computed
@@ -181,9 +179,8 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 	END SUBROUTINE M_SIMPLIFIED_SIMUL
 
 
+
 !##########################################################################################################################
-
-
 	SUBROUTINE M_MAX_FLIGHT_TIME
 	USE MCOMMON
 	IMPLICIT NONE
@@ -226,9 +223,8 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 	END SUBROUTINE M_MAX_FLIGHT_TIME
 
 
+
 !##########################################################################################################################
-
-
 	SUBROUTINE CONTROLLER_EFFICIENCY_ESTIMATOR
 	USE MCOMMON
 	IMPLICIT NONE
@@ -249,10 +245,6 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 
 
 !##########################################################################################################################
-
-
-
-
 	SUBROUTINE TW_RATIO_ESTIMATOR
 	USE MCOMMON
 	IMPLICIT NONE
@@ -281,11 +273,9 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
 
+
+
 !##########################################################################################################################
-
-
-
-
 	SUBROUTINE SIMPLIFIED_TW_RATIO_ESTIMATOR
 	USE MCOMMON
 	IMPLICIT NONE
@@ -326,9 +316,9 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 
 	END SUBROUTINE SIMPLIFIED_TW_RATIO_ESTIMATOR
 
+
+
 !##########################################################################################################################
-
-
 	SUBROUTINE TRANSLATION_BANK_ANGLE_ESTIMATOR
 	USE MCOMMON
 	IMPLICIT NONE
@@ -378,9 +368,8 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 	END SUBROUTINE TRANSLATION_BANK_ANGLE_ESTIMATOR
 
 
+
 !##########################################################################################################################
-
-
 	SUBROUTINE M_MAX_RANGE
 	USE MCOMMON
 	IMPLICIT NONE
@@ -393,10 +382,8 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 	END SUBROUTINE M_MAX_RANGE
 
 
+
 !##########################################################################################################################
-
-
-
 	SUBROUTINE YAW_ANGULAR_ACCELERATION_ESTIMATOR
 	USE MCOMMON
 	IMPLICIT NONE
@@ -443,10 +430,9 @@ SUBROUTINE M_SIMPLIFIED_SIMUL
 
 	END SUBROUTINE YAW_ANGULAR_ACCELERATION_ESTIMATOR
 
+
+
 !##########################################################################################################################
-
-
-
 	SUBROUTINE SIMPLIFIED_YAW_ANGULAR_ACCELERATION_ESTIMATOR
 	USE MCOMMON
 	IMPLICIT NONE
