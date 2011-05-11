@@ -48,7 +48,7 @@ BATT_MAX_VOLT:		12	! 12 V
 
 
 !--- PROGRAM RUN MODE ---!
-RUN_MODE:	0	! Simplified analyse:0, Analyse:1, Design:2
+RUN_MODE:	2	! Simplified analyse:0, Analyse:1, Design:2
 
 
 !--- Power Consumption ---!
@@ -69,7 +69,7 @@ TRANSLATION_SPEED: 0 0 1	! translation speed, min, max , delta in m/s
 
 
 !--- Propeller Settings ---!
-2 2 1            ! n_blade_ary=(/2,2,1/) min max delta
+NR_BLADE:	2	 8	 1            ! n_blade_ary=(/2,2,1/) min max delta
 0.20 0.22 0.01   ! R_tip_ary=(/0.20,0.22,0.01/) in meters
 2200 2400 100    ! RPM_ary=(/2200,2400,100/) rev/min
 0.035            ! R_hub = 0.035 in meters
