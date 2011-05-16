@@ -22,7 +22,7 @@
                    Speed, RPM, Thrust , Power , Ldes, FQdes) !, main )
 	implicit none
 	
-	character(len=25), intent(in) :: propeller_candidate
+	character(*), intent(in) :: propeller_candidate
 
 	integer, intent(in) :: n_blade , Nout	!, main  ! Main Working Condition Number
 	real, intent(in)  :: CL0, CLA, CLmin, CLmax, CD0, CD2u, CLCD0, CD2l, REref, REexp, R1, R2, &
