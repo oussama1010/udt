@@ -87,7 +87,7 @@ C
 C
       INCLUDE 'QDEF.INC'
 C
-      DATA PI / 3.141592653589793238 /
+      DATA PI / 3.14159265 /
       DATA EPS / 1.0e-6 /
 C
       DATA VERSION / 1.13 /
@@ -798,19 +798,6 @@ C-------------------------------------------------------------------
       PP = QP*OMG
       WRITE(*,1260) NBLDS, RAD, VEL, OMG, RPM, TP, QP, PP, EFF,
      &              RHO, RMU, VSO
-! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MURAT : added for an custom output
-
-	open (70, file='qmil_output.dat' , position= 'append',
-     &		 status='unknown')
-
-	write (70,1265)  NBLDS, RAD, VEL, OMG, RPM, TP, QP, PP, EFF,
-     &              RHO, RMU, VSO
-
-	close (70)
- 1265 FORMAT(I4, G12.4, G12.4, G12.4, G12.4, G12.4, G12.4, G12.4, 
-     & G12.4, G12.4, G12.4, G12.4)	
-! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
  1260 FORMAT(/'   B =', I4,
      &       /'   R =', G12.4,' m'
      &       /'   V =', G12.4,' m/s'
@@ -824,18 +811,7 @@ C-------------------------------------------------------------------
      &       /'   mu  =', G12.4,' kg/m-s'
      &       /'   a   =', G12.4,' m/s' )
 
-
-      c0 = 0.
-      c1 = 0.
-      c2 = 0.
-      c3 = 0.
-
-      s0 = 0.
-      s1 = 0.
-      s2 = 0.
-      s3 = 0.
-
-
+C
       WRITE(*,*)
       WRITE(*,1280)
      & '   r/R    phi     c/R    beta  ',
@@ -862,23 +838,6 @@ C
 C
         PHI = ATAN2( WA , WT )
 C
-
-        cphi = cos(phi)
-        sphi = sin(phi)
-
-
-      c0 = c0 + cphi * ch(i)/rad * dr(i)/rad 
-      c1 = c1 + cphi * ch(i)/rad * dr(i)/rad * (r(i)/rad)
-      c2 = c2 + cphi * ch(i)/rad * dr(i)/rad * (r(i)/rad)**2
-      c3 = c3 + cphi * ch(i)/rad * dr(i)/rad * (r(i)/rad)**3
-
-      s0 = s0 + sphi * ch(i)/rad * dr(i)/rad 
-      s1 = s1 + sphi * ch(i)/rad * dr(i)/rad * (r(i)/rad)
-      s2 = s2 + sphi * ch(i)/rad * dr(i)/rad * (r(i)/rad)**2
-      s3 = s3 + sphi * ch(i)/rad * dr(i)/rad * (r(i)/rad)**3
-
-
-
         IF(WA.NE.0.0 .AND. WT.NE.0.0) THEN
           ADWI = (WA/WT) * XI(I)
           EFFI = (ADV/XI(I)) * (WT/WA)
@@ -916,65 +875,7 @@ C
      &            F7.3 , F10.0,F8.4, F8.4, F8.4, F8.4,
      &           2F9.5)
       ENDDO
-
-
-
-
-      ror = 0.75
-
-      do i = 2, n
-        if(r(i)/rad .gt. ror .and. r(i-1)/rad .le. ror) then
-
-         fo = (ror-r(i-1)/rad) / (r(i)/rad - r(i-1)/rad)
-         fm = 1.0-fo
-
-         vaf = va(i)*fo + va(i-1)*fm
-         vtf = vt(i)*fo + vt(i-1)*fm
-         chf = ch(i)*fo + ch(i-1)*fm
-
-         rf = r(i)*fo + r(i-1)*fm
-
-        ua = vel     + u0a
-        ut = omg*rf  - u0t
-c
-        wa = ua + vaf
-        wt = ut - vtf
-c
-        wsq = wa**2 + wt**2
-        w = sqrt(wsq)
-c
-        phi = atan2( wa , wt )
-c
-        cphi = cos(phi)
-        sphi = sin(phi)
-c
-        cor = chf/rad
-c
-        write(*,*) 'C0', c0/(cor*cphi)       , c0/(cor*cphi)       
-        write(*,*) 'C1', c1/(cor*cphi*ror   ), c1/(cor*cphi)
-        write(*,*) 'C2', c2/(cor*cphi*ror**2), c2/(cor*cphi)
-        write(*,*) 'C3', c3/(cor*cphi*ror**3), c3/(cor*cphi)
-        write(*,*)                                                 
-        write(*,*) 'S0', s0/(cor*sphi)       , s0/(cor*sphi)       
-        write(*,*) 'S1', s1/(cor*sphi*ror   ), s1/(cor*sphi)
-        write(*,*) 'S2', s2/(cor*sphi*ror**2), s2/(cor*sphi)
-        write(*,*) 'S3', s3/(cor*sphi*ror**3), s3/(cor*sphi)
-
-        endif
-      enddo
-
-
-      write(*,'(/1x,8f7.4/)')
-     &   s0*blds,
-     &   c0*blds,
-     &   s1*blds,
-     &   c1*blds,
-     &   s2*blds,
-     &   c2*blds,
-     &   s3*blds,
-     &   c3*blds
-
-
+C
 
       WRITE(*,*)
       WRITE(*,*) 'Outputting prop definition in QPROP format...'

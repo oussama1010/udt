@@ -279,13 +279,14 @@ ccc   WRITE(*,*) 'GETINT: String-to-integer conversion error.'
 
 
 
+
+
       SUBROUTINE PPARSE(LINE,P1,P2,NP,IERR)
       CHARACTER*(*) LINE
 C----------------------------------------------------
 C     Extracts sequence parameters from string LINE,
 C     which must have one of the following formats:
 C
-C       ?
 C       P1
 C       P1,P2
 C       P1,P2,DP
@@ -293,16 +294,6 @@ C       P1,P2/NP
 C----------------------------------------------------
 C
       N = LEN(LINE)
-C
-      IF(INDEX(LINE,'- ') .NE. 0) THEN
-C----- only minus character is present... 
-       P1 = 0.
-       P2 = 0.
-       NP = 0
-       RETURN
-      ENDIF
-C
-C---- usual number data...
 C
       KCOMMA1 = INDEX(LINE,',')
       KSLASH  = INDEX(LINE,'/')
@@ -367,12 +358,10 @@ C
 C
  80   CONTINUE
       IERR = +1
-      NP = 0
       RETURN
 C
  90   CONTINUE
       IERR = -1
-      NP = 0
       RETURN
 C
       END ! PPARSE

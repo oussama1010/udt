@@ -45,14 +45,21 @@
 		Beta = 0
 	END IF
 
+		WRITE(*,500) trim(prop_name), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile)
 
-
-!---If in normal mode the command to call Qprop is created and launched
+!---The command to call Qprop is created and launched
+	IF (RUN_MODE .EQ. 2) THEN 
 		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile) 
+	ELSE
+		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile) 
+	END IF
+
+500		Format ('../../BIN/qprop',' ./RESULTS/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
+550		Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
 
 		write(*,*) qprop_in_command
 
-500		Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
+
 	
 		Call system (qprop_in_command)
 
@@ -65,21 +72,21 @@
 
 
 !--- Debug Print...
-!		write (*,*)
-!		write (*,*) 'Working Cond          :  ', wcn
-!		write (*,*) 'Motor Name            :  ', motor_name
-!		write (*,*) 'Prop Name             :  ', prop_name 
-!		write (*,*) 'MASS                  :  ', M_TOTAL 
-!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
-!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
-!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
-!		write (*,*) 'Torque                :  ', Qprop_Q
-!	 	write (*,*) 'Thrust                :  ', Qprop_T
-!	 	write (*,*) 'Volts                 :  ', Qprop_Volts
-!	 	write (*,*) 'Amps                  :  ', Qprop_Amps
-!	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
-!	 	write (*,*)
-!	 	write (*,*) 'RPM      :  ', Qprop_rpm
+		write (*,*)
+		write (*,*) 'Working Cond          :  ', wcn
+		write (*,*) 'Motor Name            :  ', motor_name
+		write (*,*) 'Prop Name             :  ', prop_name 
+		write (*,*) 'MASS                  :  ', M_TOTAL 
+		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
+		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
+		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
+		write (*,*) 'Torque                :  ', Qprop_Q
+	 	write (*,*) 'Thrust                :  ', Qprop_T
+	 	write (*,*) 'Volts                 :  ', Qprop_Volts
+	 	write (*,*) 'Amps                  :  ', Qprop_Amps
+	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
+	 	write (*,*)
+	 	write (*,*) 'RPM      :  ', Qprop_rpm
 	VOLTS = Qprop_Volts
 	P_ELEC = Qprop_P_elec
 
@@ -254,9 +261,15 @@
 	Speed(wcn) = 0.1
 
 !--- The max thrust of a motor is computed using Qprop 
-	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
+	IF (RUN_MODE .EQ. 2) THEN 
+		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
+	ELSE
+		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
+	END IF
 
-500	Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - ',F5.2,'0 > ',A )
+
+500	Format ('../../BIN/qprop',' ./RESULTS/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - ',F5.2,'0 > ',A )
+550	Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - ',F5.2,'0 > ',A )
 	
 	Call system (qprop_in_command)
 
@@ -269,7 +282,7 @@
 !---The thrust weight ratio is then calculated
 	TW_RATIO = NR_MOTOR *  Qprop_T / (M_TOTAL * GRAV_ACC )
 
-!	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO
+	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
 
@@ -291,7 +304,7 @@
 
 	DO k= 1, 100
 
-		Q = K_TORQUE * RPM_MAX**2
+		Q = K_TORQUE * RPM**2
 
 		I = Q * KV_MOTOR*3.14*2/60 + I0_MOTOR
 
@@ -305,7 +318,7 @@
 			DELTA_RPM = DELTA_RPM / 2
 		END IF
 
-		RPM_MAX = RPM_MAX + SIGN( DELTA_RPM , ERROR)
+		RPM = RPM + SIGN( DELTA_RPM , ERROR)
 		PREV_ERROR = ERROR
 
 	END DO
@@ -396,9 +409,14 @@
 
 
 !--- Computing the torque making the UAV turn
-	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 1.8, trim(qprop_outfile) 
+	IF (RUN_MODE .EQ. 2) THEN 
+		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 1.6, trim(qprop_outfile) 
+	ELSE
+		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 1.6, trim(qprop_outfile) 
+	END IF
 
-500	Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - 0 ',F5.2,' > ',A )
+500	Format ('../../BIN/qprop',' ./RESULTS/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - 0 ',F5.2,' > ',A )
+550	Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - 0 ',F5.2,' > ',A )
 	
 	Call system (qprop_in_command)
 
@@ -411,7 +429,12 @@
 	TOTAL_TORQUE = 2 * Qprop_Q
 
 !--- Computing the remaining torque on the 2 other engines (for now they are set to give 20% of the total lift to keep sufficient control)
-	WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 0.2, trim(qprop_outfile) 
+	IF (RUN_MODE .EQ. 2) THEN 
+		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 0.4, trim(qprop_outfile)  
+	ELSE
+		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 0.4, trim(qprop_outfile)  
+	END IF
+	
 
 	Call system (qprop_in_command)
 
@@ -443,13 +466,13 @@
 
 	CALL MOMENT_OF_INERTIA
 
-	Q =  K_TORQUE * ( Thrust(wcn) * 1.8 / K_THRUST )
+	Q =  K_TORQUE * ( Thrust(wcn) * 1.6 / K_THRUST )
 	
 
 	TOTAL_TORQUE = 2 * Q
 
 !--- Computing the remaining torque on the 2 other engines (for now they are set to give 20% of the total lift to keep sufficient control)
-	Q =  K_TORQUE * ( Thrust(wcn) * 0.2 / K_THRUST )
+	Q =  K_TORQUE * ( Thrust(wcn) * 0.4 / K_THRUST )
 
 	COUNTER_TORQUE = 2 * Qprop_Q
 

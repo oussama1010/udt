@@ -60,9 +60,9 @@
                 Qprop_Amps, Qprop_Eff_mot, Qprop_Eff_prop, Qprop_Adv, Qprop_CT, Qprop_CP, Qprop_DV,&
                 Qprop_Eff_total, Qprop_P_elec, Qprop_P_prop, Qprop_cl_avg, Qprop_cd_avg 
 
-	CHARACTER(len=25) ::  qprop_outfile, Prop_name, Motor_name, Airfoil_name, propeller_candidate
-	CHARACTER(len=50) :: qprop_infile, qmil_outfile
-	CHARACTER(len=120) :: qprop_in_command, qmil_in_command
+	CHARACTER(len=25) ::  qprop_outfile, Motor_name, Airfoil_name
+	CHARACTER(len=50) :: qprop_infile, qmil_outfile, Prop_name, propeller_candidate
+	CHARACTER(len=200) :: qprop_in_command, qmil_in_command
 	CHARACTER(len=27) :: dir_name
 
 	INTEGER :: wcn, err_nr
@@ -100,8 +100,16 @@
 
 	real	:: CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp
 
-	REAL :: RPM, TORQUE, K_TORQUE, K_THRUST,  P_MECA, KV_MOTOR, R_MOTOR, I0_MOTOR,  AMPS, P_ELEC, VOLTS, RPM_MAX
+	REAL ::  TORQUE, K_TORQUE, K_THRUST,  P_MECA, KV_MOTOR, R_MOTOR, I0_MOTOR,  AMPS, P_ELEC, VOLTS
 
 	INTEGER :: NR_BLADE_MIN, NR_BLADE_MAX, DELTA_NR_BLADE
+
+	REAL ::  PROP_RADIUS_MIN, PROP_RADIUS_MAX, PROP_RADIUS_DELTA
+
+	INTEGER :: RPM, RPM_MIN, RPM_MAX, RPM_DELTA
+
+	REAL :: BLADE_ASPECT_RATIO, Qmil_RPM
+
+	REAL :: Thrust_MIN, Thrust_MAX, Thrust_DELTA
 
 	END MODULE MCOMMON

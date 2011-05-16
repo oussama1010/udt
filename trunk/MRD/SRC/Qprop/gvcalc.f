@@ -64,12 +64,11 @@ C          ()_CH   derivatives  d()/dCHORD
 C          ()_BE   derivatives  d()/dBETA
 C--------------------------------------------------------------
 C
-      DATA PI / 3.141592653589793238 /
+      DATA PI / 3.14159265 /
       DATA EPS / 1.0E-6 /
 cc      DATA EPS / 1.0E-10 /
 C
-      DATA MSQMAX  / 0.9    /
-      DATA WAMIN   / 0.02 /
+      DATA MSQMAX    / 0.9    /
 C
 C---- perturbation imposed axial and tangential velocities
       U0A = 0.
@@ -111,16 +110,6 @@ C
         WT_VEL =              0.5*WZ_VEL*COSP
         WT_OMG = 0.5*UT_OMG + 0.5*WZ_OMG*COSP
 C
-C------ limit WA to prevent reverse flow through disk
-        IF(WA .LT. WAMIN*UA) THEN
-         WA     = WAMIN*UA
-         WA_PSI = 0.
-         WA_VEL = WAMIN*UA_VEL
-         WA_OMG = 0.
-        ENDIF
-
-cc        write(*,*) psi, ua, wz, wa
-
 C------ modified Prandtl's F function
         IF(WA.EQ.0.0) THEN
          F     = 1.0
@@ -267,11 +256,11 @@ c        pause
 
 C------ Newton change
         DPSI = -RES/RES_PSI
-        DPSI = MAX( -0.03 , MIN ( 0.03 , DPSI ) )
+        DPSI = MAX( -0.1 , MIN ( 0.1 , DPSI ) )
 
 c        if(iter.gt.10) then
-c          write(*,9922) iter, r, wa, cl, psi, dpsi
-c 9922     format(1x,i4, 4f12.5, e13.4)
+c          write(*,9922) iter, r, cl, psi, dpsi
+c 9922     format(1x,i4, 3f12.5, e13.4)
 c        endif
 
 C------ exit if converged
@@ -283,8 +272,7 @@ C
 C------ Newton update
         PSI = PSI + DPSI
       ENDDO
-      WRITE(*,2200) RES, A*180.0/PI, CL
- 2200 FORMAT(' GVCALC: Not converged.  Res alpha CL =', E12.4, 3f10.4)
+      WRITE(*,*) 'GVCALC: Not converged.  Res a CL =', RES, A, CL
 C
 C-----------------
  50   CONTINUE

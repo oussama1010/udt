@@ -38,7 +38,6 @@ SUBROUTINE M_TOTAL_WEIGHT
 !	WRITE(*,*)' M_prop: ', M_prop		!debug
 !	WRITE(*,*)' M_motor: ', M_motor	!debug
 !	WRITE(*,*)' M_FRAME: ', M_FRAME		!debug
-!	WRITE(*,*)' M_PAYLOAD: ',M_PAYLOAD		!debug
 !	WRITE(*,*)' M_AUTOP: ', M_AUTOP		!debug
 !	WRITE(*,*)' Total quad Weight is: ', M_total		!debug
 
@@ -51,21 +50,18 @@ SUBROUTINE M_TOTAL_WEIGHT
 	USE MCOMMON
 	IMPLICIT NONE
 	integer ::  status, i, j
-	REAL :: radius, chord, radius1, chord1, S
+	REAL :: radius, chord, radius1, chord1, S, Rfac, Cfac, Bfac
 
-	OPEN(20,file='DATA/PROPELLER/'//trim(prop_name), status='old', iostat=status)
-!--- If the file doesnt exists tell to copy it from src...
-	IF (status .ne. 0) then 
-	WRITE(*,*)
-	WRITE(*,*)' ******!!! WARNING !!!******' 
-	WRITE(*,*)' PROPELLER DATA file doesnt exists...' 
-	WRITE(*,*)' Check this file is inside the DATA/PROPELLER folder ;'
-	WRITE(*,*)' ******!!! WARNING !!!******'
-	WRITE(*,*)prop_name
-	CLOSE(20)
-	GOTO 5000
+	radius = 0
+	chord = 0
+	S = 0
+
+	IF (RUN_MODE .EQ. 2) THEN 
+		OPEN(20,file='RESULTS/PROPELLER/'//trim(prop_name), status='old', iostat=status)
+	ELSE
+		OPEN(20,file='DATA/PROPELLER/'//trim(prop_name), status='old', iostat=status)
 	END IF
-!--- File exists so read it...
+
 	DO i=1,50
 		READ(20,4000,iostat=status)LINE
 		IF(status .eq. -1) THEN
@@ -73,10 +69,17 @@ SUBROUTINE M_TOTAL_WEIGHT
 			exit
 		END IF
 
+
 !--- Find the number of blades...
 		IF ( LINE( (INDEX(LINE,'!')+2) : (INDEX(LINE,'!')+9) ) .Eq. 'Nblades') THEN
 			READ(LINE,*)NR_BLADE
-!			WRITE(*,*)'The selected propeller has', NR_BLADE, ' blades'	!debug
+			WRITE(*,*)'The selected propeller has', NR_BLADE, ' blades'	!debug
+		END IF
+
+!--- Find the unit coefficients...
+		IF ( LINE( (INDEX(LINE,'!')+3) : (INDEX(LINE,'!')+7) ) .Eq. 'Rfac') THEN
+			READ(LINE,*)Rfac, Cfac, Bfac
+!			WRITE(*,*)'Rfac, Cfac, Bfac', Rfac, Cfac, Bfac	!debug
 		END IF
 
 !--- Find the geometry of the blade and calculate its surface...
@@ -84,11 +87,15 @@ SUBROUTINE M_TOTAL_WEIGHT
 			DO j=1,15
 				READ(20,*,iostat=status) radius1, chord1
 
+				radius1 = radius1 * Rfac
+				chord1 = chord1 * Cfac
+
 				IF(status.eq.-1) THEN
 					GOTO 5000
 				END IF
 
-				S= (radius1-radius)*(chord1+chord)*0.5+S
+				S=(radius1-radius)*(chord1+chord)*0.5 + S
+
 				radius = radius1
 				chord = chord1
 			END DO			
@@ -99,17 +106,18 @@ SUBROUTINE M_TOTAL_WEIGHT
 
 5000	CONTINUE
 
-
-	PROP_RADIUS = radius
+	IF (RUN_MODE .EQ. 1) THEN 
+		PROP_RADIUS = radius
+	END IF
 
 !--- Cweight of blades, need to estimate Sigma and the hub Mass...
-	PROP_BLADE_SIGMA = 0.0003 ! kg/cm²
-	PROP_HUB_COEFF = 0.0001 ! kg/cm (assuming that the hub mass is proportional to the propeller radius)
+	PROP_BLADE_SIGMA = 2 ! kg/m²
+	PROP_HUB_COEFF = 0.09 ! kg/m (assuming that the hub mass is proportional to the propeller radius)
 
 	M_PROP = NR_BLADE * S * PROP_BLADE_SIGMA + radius * PROP_HUB_COEFF
 
-!	WRITE(*,*)radius, chord
-!	WRITE(*,*)'The propeller weights approximatively ', M_PROP, 'kg'	!debug
+
+	BLADE_ASPECT_RATIO = radius**2 / S
 
 			CLOSE(20)
 
@@ -129,9 +137,9 @@ SUBROUTINE M_TOTAL_WEIGHT
 
 	IMOTOR = (M_prop + M_MOTOR)* FRAME_SPAN**2
 
-	I_YAW_TOTAL = (IFRAME + Nr_motor* IMOTOR)/1000
+	I_YAW_TOTAL = (IFRAME + Nr_motor* IMOTOR)
 
-!	WRITE(*,*)'I_YAW_TOTAL =',I_YAW_TOTAL,'kg.m^2'  -debug
+!	WRITE(*,*)'I_YAW_TOTAL =',I_YAW_TOTAL,'kg.m^2'  !-debug
 
 
 	END SUBROUTINE MOMENT_OF_INERTIA
