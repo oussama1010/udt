@@ -34,7 +34,7 @@ C---------------------------------------------------------------
       REAL R(N), DR(N), CL(N), CD(N), CL0(N), DCLDA(N)
       REAL GAM(N), CH(N), BETA(N)
 C
-      DATA PI / 3.141592653589793238 /
+      DATA PI / 3.14159265 /
 C
       TDES = TDES1
       PDES = PDES1

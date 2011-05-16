@@ -36,7 +36,6 @@
 !--- Will be CALL READCASE() later, to read the CASE.txt input file...
 
 	NR_PROP = NR_MOTOR ! Number of Propellers
-	NR_BLADE = 2 ! Blade number, will be array later
 
 	TIP_CLRNC = 0.01 ! Tip Clearance in meters
 

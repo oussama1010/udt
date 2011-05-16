@@ -21,18 +21,21 @@ C***********************************************************************
       PROGRAM QPROP
 C--------------------------------------------------------
 C     Propeller/motor performance program
-C     Version 1.30   25 Mar 09
+C     Version 1.20   12 Mar 06
 C
 C     Usage:
 C
 C % qprop propfile motorfile Vel Rpm Volt dBeta    (single-point)
 C
-C % qprop propfile motorfile Vel1,Vel2,dVel Rpm             (1-param multi-point)
+C % qprop propfile motorfile Vel1,Vel2,dVel Rpm Volt dBeta  (1-param multi-point)
 C
-C % qprop propfile motorfile Vel1,Vel2/NVel  -  Volt dBeta  (1-param multi-point)
+C % qprop propfile motorfile Vel1,Vel2/NVel Rpm Volt dBeta  (1-param multi-point)
 C
-C % qprop propfile motorfile Vel1,Vel2/NVel  -  Volt1,Volt2,dVolt dBeta  
+C % qprop propfile motorfile Vel1,Vel2/NVel Rpm Volt1,Volt2,dVolt dBeta  
 C                                                           (2-param multi-point)
+C
+C % qprop propfile motorfile runfile               (multi-point)
+C
 C
 C--------------------------------------------------------
       IMPLICIT REAL (A-H,M,O-Z)
@@ -58,9 +61,8 @@ C
      &     QP_C(IDIM), QP_B(IDIM)
 C
 C---- motor parameters
-      PARAMETER (NMPDIM=500)
-      REAL PARMOT(2,NMPDIM)
-      INTEGER NMPLIN(NMPDIM)
+      PARAMETER (NMPDIM=10)
+      REAL PARMOT(NMPDIM)
       CHARACTER*32 PMLAB(NMPDIM)
 C
 C---- various character variables
@@ -72,53 +74,26 @@ C---- various character variables
       CHARACTER*128 LINE
 C
       LOGICAL LRDUMP
+      LOGICAL LRPMSET,
+     &        LVOLTSET,
+     &        LTHRUSET,
+     &        LTORQSET,
+     &        LAMPSSET,
+     &        LPELESET
       LOGICAL ERROR
-C
-C---- parameter pointers
-      PARAMETER(IPVEL  = 1,
-     &          IPRPM  = 2,
-     &          IPVOLT = 3,
-     &          IPDBET = 4,
-     &          IPTHRU = 5,
-     &          IPTORQ = 6,
-     &          IPAMPS = 7,
-     &          IPPELE = 8,
-     &          IPTOT  = 8 )
-      REAL PAR(IPTOT),
-     &     PAR1(IPTOT), 
-     &     PAR2(IPTOT),
-     &     DPAR(IPTOT)
-      INTEGER NPAR(IPTOT)
-      LOGICAL LPAR(IPTOT)
-      CHARACTER*6 PARNAME(IPTOT)
-      INTEGER IPSWEEP(IPTOT), NSWEEP
-C
-      REAL ASYS(4,4), RES(4)
-C
-C---- input-receiving arrays
-      REAL RVAL(15)
-      INTEGER IVAL(15)
-C
-      LOGICAL LQMATCH
 C
       INCLUDE 'QDEF.INC'
 C
-      DATA PARNAME /
-     &  'Vel   ' ,
-     &  'Rpm   ' ,
-     &  'Volt  ' ,
-     &  'Dbeta ' ,
-     &  'Thrust' ,
-     &  'Torque' ,
-     &  'Amps  ' ,
-     &  'Pele  '   /
-C   
-      DATA PI / 3.141592653589793238 /
+C---- input receiving arrays
+      REAL RVAL(15)
+      INTEGER IVAL(15)
+C
+      DATA PI / 3.14159265 /
 ccc      DATA EPS / 1.0E-6 /
       DATA EPS / 1.0E-8 /
 C
-      DATA VERSION / 1.31 /
-C
+      DATA VERSION / 1.22 /
+
 C---- default Mcrit
       MCRIT0 = 0.70
 C
@@ -137,18 +112,18 @@ C
       IF(ARGP1.EQ.' ') THEN
        WRITE(*,1005)
  1005  FORMAT(
-     & /' QPROP usage (parameters in brackets are optional):'
+     & /' QPROP usage:'
      &//' % qprop propfile motorfile Vel Rpm ',
-     &             ' [ Volt dBeta Thrust Torque Amps Pele ]',
+     &             '[ Volt dBeta Thrust Torque Amps Pele ]',
      &  '   (single-point)'
-     &//' % qprop propfile motorfile Vel1,Vel2,dVel Rpm             ',
+     &//' % qprop propfile motorfile Vel1,Vel2,dVel Rpm ["]           ',
      &  '   (multi-point 1-parameter sweep over Vel, Rpm set)'
-     &//' % qprop propfile motorfile Vel1,Vel2/nVel Rpm             ',
-     &  '   (multi-point 1-parameter sweep over Vel, Rpm set)'
-     &//' % qprop propfile motorfile Vel1,Vel2,dVel  -  Volt        ',
+     &//' % qprop propfile motorfile Vel1,Vel2,dVel 0 Volt ["]        ',
      &  '   (multi-point 1-parameter sweep over Vel, Volt set)'
-     &//' % qprop propfile motorfile Vel1,Vel2,dVel Rpm1,Rpm2,dRpm  ',
+     &//' % qprop propfile motorfile Vel1,Vel2,dVel Rpm1,Rpm2,dRpm ["]',
      &  '   (multi-point 2-parameter sweep over Vel and Rpm)'
+     &//' % qprop propfile motorfile runfile                          ',
+     &  '   (multi-point, via file specification)'
      &       )
        WRITE(*,*)
        WRITE(*,*) 'Run with default inputs?  Y'
@@ -232,12 +207,9 @@ C----------------------------------------------------
 C---- default motor/gear combo
       MNAME = "Speed-400 3321 (6V) direct drive"
       IMOTYPE = 1
-      PARMOT(1,1) = 0.31    ! Rmotor  (Ohms)
-      PARMOT(1,2) = 0.77    ! Io      (Amps)
-      PARMOT(1,3) = 2760.0  ! Kv      (rpm/Volt)
-      NMPLIN(1) = 1
-      NMPLIN(2) = 1
-      NMPLIN(3) = 1
+      PARMOT(1) = 0.31    ! Rmotor  (Ohms)
+      PARMOT(2) = 0.77    ! Io      (Amps)
+      PARMOT(3) = 2760.0  ! Kv      (rpm/Volt)
       PMLAB(1) = 'R  (Ohm)'
       PMLAB(2) = 'Io (Amp)'
       PMLAB(3) = 'Kv (rpm/Volt)'
@@ -245,27 +217,37 @@ C---- default motor/gear combo
 C
 C----------------------------------------------------
 C---- default parameter sweeps
-      DO IP = 1, IPTOT
-        PAR1(IP) = 0.
-        PAR2(IP) = 0.
-        NPAR(IP) = 0
-      ENDDO
+      VEL1 =  0.0
+      VEL2 = 10.0
+      NVEL = 6
 C
-      NSWEEP = 2
+      RPM1 = 10000.0
+      RPM2 = 16000.0
+      NRPM = 7
 C
-      IPSWEEP(1) = IPVEL
-      PAR1(IPVEL) =  0.0
-      PAR2(IPVEL) = 10.0
-      NPAR(IPVEL) = 6
+      VOLT1 = 6.0
+      VOLT2 = 9.0
+      NVOLT = 4
 C
-      IPSWEEP(2) = IPRPM
-      PAR1(IPRPM) = 10000.0
-      PAR2(IPRPM) = 16000.0
-      NPAR(IPRPM) = 7
+      DBET1 = -2.0
+      DBET2 =  2.0
+      NDBET = 5
 C
-      NPAR(IPVOLT) = 1
-      NPAR(IPDBET) = 1
-
+      THRU1 = 0.
+      THRU2 = 0.
+      NTHRU = 1
+C
+      AMPS1 = 0.
+      AMPS2 = 0.
+      NAMPS = 1
+C
+      PELE1 = 0.
+      PELE2 = 0.
+      NPELE = 1
+C
+C---- do not dump radial distributions
+      LRDUMP = .FALSE.
+C
 C==========================================================
  1000 FORMAT(A)
 C
@@ -404,7 +386,7 @@ C
  18   CONTINUE
       WRITE(*,*)
       WRITE(*,*) 'Prop file not found:  ', FILNAM(1:48)
-      WRITE(*,*) 'Default prop used'
+      WRITE(*,*) 'Default prop used  :  ', PNAME
 C
 C
  19   CONTINUE
@@ -453,10 +435,8 @@ C
 C
 C---- clear motor data in case it's not all in the file
       DO IMPAR = 1, NMPDIM
+        PARMOT(IMPAR) = 0.0
         PMLAB(IMPAR) = ' '
-        PARMOT(1,IMPAR) = 0.0
-        PARMOT(2,IMPAR) = 0.0
-        NMPLIN(IMPAR) = 0
       ENDDO
 C
       ILINE = 0
@@ -476,9 +456,7 @@ C---- motor model index
 C
 C---- extract parameters on data lines
       DO IMPAR = 1, NMPDIM+1
-        NVAL = 2
-        RVAL(1) = 0.
-        RVAL(2) = 0.
+        NVAL = 1
         CALL RREAD(LU,LINE,ILINE,IERR,NVAL,RVAL)
         IF(IERR.EQ.+1) GO TO 900
         IF(IERR.EQ.-1) GO TO 25
@@ -487,10 +465,7 @@ C---- extract parameters on data lines
          WRITE(*,*) '* Motor parameter array overflow. Increase NMPDIM'
          STOP
         ENDIF
-        PARMOT(1,IMPAR) = RVAL(1)
-        PARMOT(2,IMPAR) = RVAL(2)
-        NMPLIN(IMPAR) = NVAL
-C
+        PARMOT(IMPAR) = RVAL(1)
         KEX = INDEX(LINE,'!')
         IF(KEX.GE.1) THEN
          PMLAB(IMPAR) = LINE(KEX+1:80)
@@ -508,7 +483,7 @@ C
  28   CONTINUE
       WRITE(*,*)
       WRITE(*,*) 'Motor file not found:  ', FILNAM(1:48)
-      WRITE(*,*) 'Default motor used'
+      WRITE(*,*) 'Default motor used  :  ', MNAME
 C
  29   CONTINUE
 C
@@ -517,71 +492,209 @@ C---- operating parameter data file, or single-point parameters
       FILNAM = ARGP3
       IF(FILNAM.EQ.' ') GO TO 80
 C
-C---- default parameters
-      DO IP = 1, IPTOT
-        PAR1(IP) = 0.
-        PAR2(IP) = 0.
-        NPAR(IP) = 0
-      ENDDO
+C---- first assume that 3rd Unix argument is parameter data filename
+      LU = 4
+      OPEN(LU,FILE=FILNAM,STATUS='OLD',ERR=31)
 C
-      DO IP = 1, 4
-        NPAR(IP) = MAX( 1 , NPAR(IP) )
-      ENDDO
+C---- file open successful... read parameter data
+      ILINE = 0
+C
+C---- extract parameters on data lines
+      NVAL = 3
+      CALL RREAD(LU,LINE,ILINE,IERR,NVAL,RVAL)
+      IF(IERR.EQ.+1) GO TO 900
+      IF(IERR.EQ.-1) GO TO 950
+      IF(NVAL.LT. 3) GO TO 980
+      VEL1 = RVAL(1)
+      VEL2 = RVAL(2)
+      NVEL = INT( RVAL(3) + 0.01 )
+C
+C---- extract parameters on data lines
+      NVAL = 3
+      CALL RREAD(LU,LINE,ILINE,IERR,NVAL,RVAL)
+      IF(IERR.EQ.+1) GO TO 900
+      IF(IERR.EQ.-1) GO TO 950
+      IF(NVAL.LT. 3) GO TO 980
+      RPM1 = RVAL(1)
+      RPM2 = RVAL(2)
+      NRPM = INT( RVAL(3) + 0.01 )
+C
+C---- extract parameters on data lines
+      NVAL = 3
+      CALL RREAD(LU,LINE,ILINE,IERR,NVAL,RVAL)
+      IF(IERR.EQ.+1) GO TO 900
+      IF(IERR.EQ.-1) GO TO 950
+      IF(NVAL.LT. 3) GO TO 980
+      VOLT1 = RVAL(1)
+      VOLT2 = RVAL(2)
+      NVOLT = INT( RVAL(3) + 0.01 )
+C
+C---- extract parameters on data lines
+      NVAL = 3
+      CALL RREAD(LU,LINE,ILINE,IERR,NVAL,RVAL)
+      IF(IERR.EQ.+1) GO TO 900
+      IF(IERR.EQ.-1 .OR. NVAL.LT. 3) THEN
+       DBET1 = 0.0
+       DBET2 = 0.0
+       NDBET = 0
+      ELSE
+       DBET1 = RVAL(1)
+       DBET2 = RVAL(2)
+       NDBET = INT( RVAL(3) + 0.01 )
+      ENDIF
+      NDBET = MAX( 1 , NDBET )
+C
+      NVAL = 3
+      CALL RREAD(LU,LINE,ILINE,IERR,NVAL,RVAL)
+      IF(IERR.EQ.+1) GO TO 900
+      IF(IERR.EQ.-1 .OR. NVAL.LT. 3) THEN
+       THRU1 = 0.0
+       THRU2 = 0.0
+       NTHRU = 0
+      ELSE
+       THRU1 = RVAL(1)
+       THRU2 = RVAL(2)
+       NTHRU = INT( RVAL(3) + 0.01 )
+      ENDIF
+      NTHRU = MAX( 1 , NTHRU )
+C
+      CLOSE(LU)
+      GO TO 82
+C
+C-------------------------------------------------------
+C---- pick up here if 3rd Unix argument is not a filename
+ 31   CONTINUE
 C
 C---- try reading velocity 3rd Unix argument
-      IP = IPVEL
-      CALL PPARSE(ARGP3,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
+      CALL PPARSE(ARGP3,VEL1,VEL2,NVEL,IERR)
+      IF(IERR.EQ.+1) GO TO 80
+      IF(IERR.EQ.-1) GO TO 80
+C
+C---- set new default single-point RPM or VOLT
+      RPM1 = 0.
+      RPM2 = 0.
+      NRPM = 0
+C
+      VOLT1 = 0.
+      VOLT2 = 0.
+      NVOLT = 0
+C
+      DBET1 = 0.
+      DBET2 = 0.
+      NDBET = 1
+C
+      THRU1 = 0.
+      THRU2 = 0.
+      NTHRU = 1
+C
+      TORQ1 = 0.
+      TORQ2 = 0.
+      NTORQ = 1
+C
+      AMPS1 = 0.
+      AMPS2 = 0.
+      NAMPS = 1
+C
+      PELE1 = 0.
+      PELE2 = 0.
+      NPELE = 1
+C
+C---- try reading Rpm from 4th Unix argument
+      CALL PPARSE(ARGP4,RPM1,RPM2,NRPM,IERR)
       IF(IERR.EQ.+1 .OR.
-     &   IERR.EQ.-1      ) THEN
-       WRITE(*,*)
-       WRITE(*,*) 'Run parameters not specified'
-       WRITE(*,*) 'Default velocities, voltages, pitch used'
-       GO TO 80
+     &   IERR.EQ.-1     ) THEN
+       RPM = 0.0
+       NRPM = 0
       ENDIF
 C
-C---- try reading remaining parameters from remaining Unix arguments, if any
-      IP = IPRPM
-      CALL PPARSE(ARGP4,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
+C---- try reading Voltage from 5th Unix argument
+      CALL PPARSE(ARGP5,VOLT1,VOLT2,NVOLT,IERR)
+      IF(IERR.EQ.+1 .OR.
+     &   IERR.EQ.-1     ) THEN
+       VOLT = 0.0
+       NVOLT = 0
+      ENDIF
 C
-      IP = IPVOLT
-      CALL PPARSE(ARGP5,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
+C---- try reading pitch change from 6th Unix argument
+      CALL PPARSE(ARGP6,DBET1,DBET2,NDBET,IERR)
+      IF(IERR.EQ.+1 .OR.
+     &   IERR.EQ.-1     ) THEN
+       DBET = 0.0
+       NDBET = 1
+      ENDIF
 C
-      IP = IPDBET
-      CALL PPARSE(ARGP6,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
+C---- try reading thrust from 7th Unix argument
+      CALL PPARSE(ARGP7,THRU1,THRU2,NTHRU,IERR)
+      IF(IERR.EQ.+1 .OR.
+     &   IERR.EQ.-1     ) THEN
+       THRU = 0.0
+       NTHRU = 1
+      ENDIF
 C
-      IP = IPTHRU
-      CALL PPARSE(ARGP7,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
+C---- try reading torque from 8th Unix argument
+      CALL PPARSE(ARGP8,TORQ1,TORQ2,NTORQ,IERR)
+      IF(IERR.EQ.+1 .OR.
+     &   IERR.EQ.-1     ) THEN
+       TORQ = 0.0
+       NTHRU = 1
+      ENDIF
 C
-      IP = IPTORQ
-      CALL PPARSE(ARGP8,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
+C---- try reading current from 9th Unix argument
+      CALL PPARSE(ARGP9,AMPS1,AMPS2,NAMPS,IERR)
+      IF(IERR.EQ.+1 .OR.
+     &   IERR.EQ.-1     ) THEN
+       AMPS = 0.0
+       NAMPS = 1
+      ENDIF
 C
-      IP = IPAMPS
-      CALL PPARSE(ARGP9,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
-C
-      IP = IPPELE
-      CALL PPARSE(ARGP10,PAR1(IP),PAR2(IP),NPAR(IP),IERR)
-C
-C---- find which parameter(s) are to have have multiple values
-      DO KP = 1, IPTOT
-        IPSWEEP(KP) = 0
-      ENDDO
-C
-      NSWEEP = 0
-      DO IP = 1, IPTOT
-        IF(NPAR(IP) .GT. 1) THEN
-         NSWEEP = NSWEEP + 1
-         IPSWEEP(NSWEEP) = IP
-        ENDIF
-      ENDDO
-C
-C- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-C---- pick up here after reading everything
- 80   CONTINUE
+C---- try reading Pele from 10th Unix argument
+      CALL PPARSE(ARGP10,PELE1,PELE2,NPELE,IERR)
+      IF(IERR.EQ.+1 .OR.
+     &   IERR.EQ.-1     ) THEN
+       PELE = 0.0
+       NPELE = 1
+      ENDIF
 C
 C---- if this is a single-point case... will dump radial distributions
-      LRDUMP = NSWEEP .EQ. 0
+      LRDUMP = NVEL .LE.1
+     &   .AND. NRPM .LE.1
+     &   .AND. NVOLT.LE.1
+     &   .AND. NDBET.LE.1
+     &   .AND. NTHRU.LE.1
+     &   .AND. NTORQ.LE.1
+     &   .AND. NAMPS.LE.1
+     &   .AND. NPELE.LE.1
+C
+      GO TO 82
 C
 C
+ 80   CONTINUE
+      WRITE(*,*)
+      WRITE(*,*) 'Run parameter file not found: ', FILNAM(1:48)
+      WRITE(*,*) 'Default velocities, voltages, pitch used'
+C
+ 82   CONTINUE
+C
+      IF(NRPM .EQ.0 .AND. 
+     &   NVOLT.EQ.0 .AND. 
+     &   NTHRU.EQ.0 .AND.
+     &   NAMPS.EQ.0 .AND.
+     &   NPELE.EQ.0       ) THEN
+       WRITE(*,*) 
+     &  'Must specify either Rpm or Volts or Thrust or Amps or Pele'
+       STOP
+      ENDIF
+C
+      LRPMSET  = NRPM  .GT. 0 .AND. (RPM1  .NE. 0.0 .OR. RPM2  .NE. 0.0)
+      LVOLTSET = NVOLT .GT. 0 .AND. (VOLT1 .NE. 0.0 .OR. VOLT2 .NE. 0.0)
+      LTHRUSET = NTHRU .GT. 0 .AND. (THRU1 .NE. 0.0 .OR. THRU2 .NE. 0.0)
+      LTORQSET = NTORQ .GT. 0 .AND. (TORQ1 .NE. 0.0 .OR. TORQ2 .NE. 0.0)
+      LAMPSSET = NAMPS .GT. 0 .AND. (AMPS1 .NE. 0.0 .OR. AMPS2 .NE. 0.0)
+      LPELESET = NPELE .GT. 0 .AND. (PELE1 .NE. 0.0 .OR. PELE2 .NE. 0.0)
+C
+cc    write(*,*)
+cc   &  lrpmset, lvoltset, lthruset, ltorqset, lampsset, lpeleset
+
 C==========================================================
 C
 C---- set up finely-spaced radial arrays
@@ -709,11 +822,9 @@ C
       WRITE(LU,1100) PNAME
       WRITE(LU,1100)
       WRITE(LU,1100) MNAME
-      IF(IMOTYPE .LT. 10) THEN
-       DO IMPAR=1, NMPAR
-         WRITE(LU,1110) PARMOT(1,IMPAR), PMLAB(IMPAR)
-       ENDDO
-      ENDIF
+      DO IMPAR=1, NMPAR
+        WRITE(LU,1110) PARMOT(IMPAR), PMLAB(IMPAR)
+      ENDDO
       WRITE(LU,1100)
       WRITE(LU,1120) RHO, RMU, VSO
       WRITE(LU,1100)
@@ -735,387 +846,366 @@ C
        CHARF = ' '
       ENDIF
 C
+      NVELM = MAX( 1 , NVEL-1 )
+      DVEL = (VEL2-VEL1)/FLOAT(NVELM)
 C
-      DO IP = 1, IPTOT
-        NPM = MAX( 1 , NPAR(IP)-1 )
-        DPAR(IP) = (PAR2(IP)-PAR1(IP))/FLOAT(NPM)
-      ENDDO
+      NDBETM = MAX( 1 , NDBET-1 )
+      DDBET = (DBET2-DBET1)/FLOAT(NDBETM)
 C
+      IF(LRPMSET) THEN
+       NRPMM = MAX( 1 , NRPM-1 )
+       PAR1 = RPM1
+       PAR2 = RPM2
+       DPAR = (RPM2-RPM1)/FLOAT(NRPMM)
+       NPAR = NRPM
+      ELSEIF(LVOLTSET) THEN
+       NVOLTM = MAX( 1 , NVOLT-1 )
+       PAR1 = VOLT1
+       PAR2 = VOLT2
+       DPAR = (VOLT2-VOLT1)/FLOAT(NVOLTM)
+       NPAR = NVOLT
+      ELSEIF(LTHRUSET) THEN
+       NTHRUM = MAX( 1 , NTHRU-1 )
+       PAR1 = THRU1
+       PAR2 = THRU2
+       DPAR = (THRU2-THRU1)/FLOAT(NTHRUM)
+       NPAR = NTHRU
+      ELSEIF(LTORQSET) THEN
+       NTORQM = MAX( 1 , NTORQ-1 )
+       PAR1 = TORQ1
+       PAR2 = TORQ2
+       DPAR = (TORQ2-TORQ1)/FLOAT(NTORQM)
+       NPAR = NTORQ
+      ELSEIF(LAMPSSET) THEN
+       NAMPSM = MAX( 1 , NAMPS-1 )
+       PAR1 = AMPS1
+       PAR2 = AMPS2
+       DPAR = (AMPS2-AMPS1)/FLOAT(NAMPSM)
+       NPAR = NAMPS
+      ELSEIF(LPELESET) THEN
+       NPELEM = MAX( 1 , NPELE-1 )
+       PAR1 = PELE1
+       PAR2 = PELE2
+       DPAR = (PELE2-PELE1)/FLOAT(NPELEM)
+       NPAR = NPELE
+      ELSE
+       WRITE(*,*) 'Additional parameter not specified'
+       WRITE(*,*) ' RPM   :',  lrpmset
+       WRITE(*,*) ' Volt  :',  lvoltset
+       WRITE(*,*) ' Thrust:',  lthruset
+       WRITE(*,*) ' Torque:',  ltorqset
+       WRITE(*,*) ' Amps  :',  lampsset
+       WRITE(*,*) ' Pelec :',  lpeleset
+       STOP
+      ENDIF
+C
+      LRDUMP = NVEL .LE.1
+     &   .AND. NRPM .LE.1
+     &   .AND. NVOLT.LE.1
+     &   .AND. NDBET.LE.1
+     &   .AND. NTHRU.LE.1
+     &   .AND. NTORQ.LE.1
+     &   .AND. NAMPS.LE.1
+     &   .AND. NPELE.LE.1
 
-      IPA = IPSWEEP(1)
-      IPB = IPSWEEP(2)
-      IPC = IPSWEEP(3)
-      IPD = IPSWEEP(4)
 C
-      NPA = MAX( 1 , NPAR(IPA) )
-      NPB = MAX( 1 , NPAR(IPB) )
-      NPC = MAX( 1 , NPAR(IPC) )
-      NPD = MAX( 1 , NPAR(IPD) )
-
-c      write(*,'(1x,8i4)') (npar(ip)  , ip = 1, iptot)
-c      write(*,'(1x,8i4)') (ipsweep(k),  k = 1, iptot)
-c      write(*,'(1x,8i4)') ipa, ipb, ipc, ipd
-c      write(*,'(1x,8g12.4)') (par1(ip), ip=1,iptot)
-
-
-      DO 500 KPA = 1, NPA
-      DO 400 KPB = 1, NPB
-      DO 300 KPC = 1, NPC
-      DO 200 KPD = 1, NPD
-        DO IP = 1, IPTOT
-          PAR(IP) = PAR1(IP)
-C
-          IF(IP.EQ.IPA) THEN
-           PAR(IP) = PAR1(IP) + DPAR(IP)*FLOAT(KPA-1)
-          ENDIF
-C
-          IF(IP.EQ.IPB) THEN
-           PAR(IP) = PAR1(IP) + DPAR(IP)*FLOAT(KPB-1)
-          ENDIF
-C
-          IF(IP.EQ.IPC) THEN
-           PAR(IP) = PAR1(IP) + DPAR(IP)*FLOAT(KPC-1)
-          ENDIF
-C
-          IF(IP.EQ.IPD) THEN
-           PAR(IP) = PAR1(IP) + DPAR(IP)*FLOAT(KPD-1)
-          ENDIF
-        ENDDO
-C
-C------ set specified or current parameter values
-        VEL  = PAR(IPVEL )
-        RPM  = PAR(IPRPM )
-        VOLT = PAR(IPVOLT)
-        DBET = PAR(IPDBET)
-C
+      DO IDBET = 1, NDBET
+        DBET = DBET1 + DDBET*FLOAT(IDBET-1)
         DBE = DBET * PI/180.0
-        OMG = RPM  * PI/30.0
 C
-C------ set initial omega if necessary
-        IF(OMG .LE. 0.0) THEN
-C------- guess using 80% radius effective pitch angle
-         I = MAX( 1 , (8*N)/10 )
-         RT = R(I)
-         BT = B(I) - CL0(I)/DCLDA(I) + DBE
-         BT = MAX( 0.02 , MIN( 0.45*PI , BT ) )
-         IF(VEL.EQ.0.0) THEN
-          OMG = 1.0
-         ELSE
-          OMG = VEL/(RT*TAN(BT))
-         ENDIF
-        ENDIF
+        DO IPAR = 1, NPAR
+          PAR = PAR1 + DPAR*FLOAT(IPAR-1)
 C
-c        IF(VOLT .EQ. 0.0) THEN
-cC------- set voltage to get zero torque
-c         QP = 0.
-c         CALL VOLTM(OMG,QP, IMOTYPE, PARMOT,NMPAR,
-c     &              VM,VM_OMG,VM_QP,
-c     &              AM,AM_OMG,AM_QP )
-c         VOLT = VM
-c        ENDIF
+          IF    (LRPMSET ) THEN
+           RPM = PAR
+          ELSEIF(LVOLTSET) THEN
+           VOLT = PAR
+          ELSEIF(LTHRUSET) THEN
+           THRU = PAR
+          ELSEIF(LTORQSET) THEN
+           TORQ = PAR
+          ELSEIF(LAMPSSET ) THEN
+           AMPS = PAR
+          ELSEIF(LPELESET) THEN
+           PELE = PAR
+          ENDIF
 C
-C------ Newton iteration on state, to converge on specified quantities
-        DO 100 ITER = 1, 25
+          DO IVEL = 1, NVEL
+            VEL = VEL1 + DVEL*FLOAT(IVEL-1)
 C
-C-------- clear Newton system
-          DO K = 1, 4
-            DO L = 1, 4
-              ASYS(K,L) = 0.
+C---------- set initial omega
+            IF    (LRPMSET) THEN
+             OMG = RPM * PI/30.0
+C
+            ELSEIF(LVOLTSET) THEN
+C----------- guess using 80% radius effective pitch angle
+             I = MAX( 1 , (8*N)/10 )
+             RT = R(I)
+             BT = B(I) - CL0(I)/DCLDA(I) + DBE
+             BT = MAX( 0.02 , MIN( 0.45*PI , BT ) )
+             IF(VEL.EQ.0.0) THEN
+              OMG = 1.0
+             ELSE
+              OMG = VEL/(RT*TAN(BT))
+             ENDIF
+C
+            ELSE
+C----------- guess using 80% radius effective pitch angle
+             I = MAX( 1 , (8*N)/10 )
+             RT = R(I)
+             BT = B(I) - CL0(I)/DCLDA(I) + DBE
+             BT = MAX( 0.02 , MIN( 0.45*PI , BT ) )
+             IF(VEL.EQ.0.0) THEN
+              OMG = 1.0
+             ELSE
+              OMG = VEL/(RT*TAN(BT))
+             ENDIF
+C
+C----------- set voltage to get zero torque
+             QP = 0.
+             CALL VOLTM(OMG,QP, IMOTYPE, PARMOT,NMPAR,
+     &                  VM,VM_OMG,VM_QP,
+     &                  AM,AM_OMG,AM_QP )
+             VOLT = VM
+            ENDIF
+C
+C---------- Newton iteration to converge on trimmed omega
+            DO 100 ITER = 1, 25
+              CALL TQCALC(N,C,B,R,DR,
+     &              VA,VT,CL,CD,STALL,
+     &              BLDS,RAD,VEL,OMG,DBE,
+     &              RHO,RMU,VSO,
+     &              CL0,DCLDA,CLMIN,CLMAX,MCRIT,
+     &              CD0,CD2U,CD2L,CLCD0,REREF,REEXP,
+     &              TP, TP_VEL, TP_OMG, TP_DBE, TP_C, TP_B,
+     &              QP, QP_VEL, QP_OMG, QP_DBE, QP_C, QP_B )
+C
+              IF(LRPMSET) THEN
+C------------- Residual  =  prop omega  -  prescribed omega
+               RES = 0.
+               RES_OMG = 1.0
+C
+C------------- Newton change
+               DOMG = -RES/RES_OMG
+               DVOLT = 0.
+C
+C------------- set voltage = f(w,Q) by inverting MOTORQ's Q(w,voltage) function
+               CALL VOLTM(OMG,QP, IMOTYPE, PARMOT,NMPAR,
+     &                  VM,VM_OMG,VM_QP,
+     &                  AM,AM_OMG,AM_QP )
+               VOLT = VM
+               AMPS = AM
+C
+              ELSEIF(LVOLTSET) THEN
+               CALL MOTORQ(OMG,VOLT, IMOTYPE, PARMOT,NMPAR, 
+     &                     QM,QM_OMG,QM_VOLT,
+     &                     AM,AM_OMG,AM_VOLT )
+C
+C------------- Residual  =  prop torque - motor torque  at current omega
+               RES     = QP     - QM
+               RES_OMG = QP_OMG - QM_OMG
+C
+C------------- Newton change
+               DOMG = -RES/RES_OMG
+               DVOLT = 0.
+C
+               AMPS = AM
+C
+              ELSEIF(LTHRUSET) THEN
+               CALL MOTORQ(OMG,VOLT, IMOTYPE, PARMOT,NMPAR, 
+     &                     QM,QM_OMG,QM_VOLT,
+     &                     AM,AM_OMG,AM_VOLT )
+C
+C------------- Residual  =  prop torque - motor torque  at current omega
+               RES1      = QP     - QM
+               RES1_OMG  = QP_OMG - QM_OMG
+               RES1_VOLT =        - QM_VOLT
+C
+C------------- Residual  =  prop thrust - specified thrust
+               RES2      = TP     - THRU
+               RES2_OMG  = TP_OMG
+               RES2_VOLT = 0.
+C
+               A11 = RES1_OMG
+               A12 = RES1_VOLT
+               A21 = RES2_OMG
+               A22 = RES2_VOLT
+C
+               DET   =   A11 *A22  - A12 *A21
+               DOMG  = -(RES1*A22  - A12 *RES2) / DET
+               DVOLT = -(A11 *RES2 - RES1*A21 ) / DET
+C
+               AMPS = AM
+C
+              ELSEIF(LTORQSET) THEN
+               CALL MOTORQ(OMG,VOLT, IMOTYPE, PARMOT,NMPAR, 
+     &                     QM,QM_OMG,QM_VOLT,
+     &                     AM,AM_OMG,AM_VOLT )
+C
+C------------- Residual  =  prop torque - motor torque  at current omega
+               RES1      = QP     - QM
+               RES1_OMG  = QP_OMG - QM_OMG
+               RES1_VOLT =        - QM_VOLT
+C
+C------------- Residual  =  prop torque - specified torque
+               RES2      = QP     - TORQ
+               RES2_OMG  = QP_OMG
+               RES2_VOLT = 0.
+C
+               A11 = RES1_OMG
+               A12 = RES1_VOLT
+               A21 = RES2_OMG
+               A22 = RES2_VOLT
+C
+               DET   =   A11 *A22  - A12 *A21
+               DOMG  = -(RES1*A22  - A12 *RES2) / DET
+               DVOLT = -(A11 *RES2 - RES1*A21 ) / DET
+C
+               AMPS = AM
+C
+              ELSEIF(LAMPSSET) THEN
+               CALL MOTORQ(OMG,VOLT, IMOTYPE, PARMOT,NMPAR, 
+     &                     QM,QM_OMG,QM_VOLT, 
+     &                     AM,AM_OMG,AM_VOLT )
+C
+C------------- Residual  =  prop torque - motor torque  at current omega
+               RES1      = QP     - QM
+               RES1_OMG  = QP_OMG - QM_OMG
+               RES1_VOLT =        - QM_VOLT
+C
+C------------- Residual  = amps - specified amps
+               RES2      = AM   - AMPS
+               RES2_OMG  = AM_OMG
+               RES2_VOLT = AM_VOLT
+C
+               A11 = RES1_OMG
+               A12 = RES1_VOLT
+               A21 = RES2_OMG
+               A22 = RES2_VOLT
+C
+               DET   =   A11 *A22  - A12 *A21
+               DOMG  = -(RES1*A22  - A12 *RES2) / DET
+               DVOLT = -(A11 *RES2 - RES1*A21 ) / DET
+C
+              ELSEIF(LPELESET) THEN
+               CALL MOTORQ(OMG,VOLT, IMOTYPE, PARMOT,NMPAR, 
+     &                     QM,QM_OMG,QM_VOLT, 
+     &                     AM,AM_OMG,AM_VOLT )
+C
+C------------- Residual  =  prop torque - motor torque  at current omega
+               RES1      = QP     - QM
+               RES1_OMG  = QP_OMG - QM_OMG
+               RES1_VOLT =        - QM_VOLT
+C
+C------------- Residual  =  Pele - specified Pele
+               RES2      = VOLT*AM   - PELE
+               RES2_OMG  = VOLT*AM_OMG
+               RES2_VOLT = VOLT*AM_VOLT + AM
+C
+               A11 = RES1_OMG
+               A12 = RES1_VOLT
+               A21 = RES2_OMG
+               A22 = RES2_VOLT
+C
+               DET   =   A11 *A22  - A12 *A21
+               DOMG  = -(RES1*A22  - A12 *RES2) / DET
+               DVOLT = -(A11 *RES2 - RES1*A21 ) / DET
+C
+               AMPS = AM
+C
+              ENDIF
+C
+              RLX = 1.0
+              IF(RLX*DOMG  .GT.  1.0*OMG) RLX =  1.0*OMG/DOMG
+              IF(RLX*DOMG  .LT. -0.5*OMG) RLX = -0.5*OMG/DOMG
+C
+              IF(RLX*DVOLT .GT.  2.0*VOLT) RLX =  2.0*VOLT/DVOLT
+              IF(RLX*DVOLT .LT. -0.5*VOLT) RLX = -0.5*VOLT/DVOLT
+
+c           write(*,'(1x,i3,2(f12.3,e12.4),f7.3)') 
+c    &            iter, omg, domg, volt, dvolt, rlx
+
+C------------ convergence check
+              IF(ABS(DOMG) .LT. EPS*ABS(OMG)) GO TO 110
+C
+C------------ Newton update
+              OMG  = OMG  + RLX*DOMG
+              VOLT = VOLT + RLX*DVOLT
+ 100        CONTINUE
+cc            WRITE(*,*) 'QPROP: Convergence failed. Res =', RES
+C
+ 110        CONTINUE
+
+c        Q = 1.0 / (Kv*pi/30.0) * (I-Io)
+c        I = Io + Q*(Kv*pi/30.0)
+c        P = (V-I*R) * (I-Io)
+c        eff = P / (I*V)
+c        rpm = Kv * (V-I*R)
+C
+C---------- compute thrust-average blade cl and cd
+            DTSUM = 0.
+            CLAVG = 0.
+            CDAVG = 0.
+            DO I = 1, N
+              WA = VEL + VA(I)
+              WT = OMG*R(I) - VT(I)
+              WSQ = WA**2 + WT**2
+              DTSUM = DTSUM + WSQ*C(I)*DR(I)
+              CLAVG = CLAVG + WSQ*C(I)*DR(I)*CL(I)
+              CDAVG = CDAVG + WSQ*C(I)*DR(I)*CD(I)
             ENDDO
-            RES(K) = 0.
+            CLAVG = CLAVG / DTSUM
+            CDAVG = CDAVG / DTSUM
+C
+C---------- print output
+            RPM = OMG*30.0/PI
+            PPROP = TP*VEL
+            POWER = QP*OMG
+C
+            PINPUT = VOLT*AMPS
+C
+            IF(POWER .NE. 0.0) THEN
+             EFFP = PPROP/POWER
+            ELSE
+             EFFP = 0.
+            ENDIF
+C
+            IF(PINPUT .NE. 0.0) THEN
+             EFFM = POWER/PINPUT
+            ELSE
+             EFFM = 0.0
+            ENDIF
+C
+            EFF = EFFM*EFFP
+C
+            IF(ABS(OMG).GT.0.0) THEN
+             ADV = VEL/(OMG*RAD)
+            ELSE
+             ADV = 0.
+            ENDIF
+C
+            IF(OMG .EQ. 0.0) THEN
+             WRI = 0.
+            ELSE
+             WRI = 1.0 / (OMG*RAD)
+            ENDIF
+C
+            CT = TP * WRI**2 * 2.0 / (RHO * PI * RAD**2)
+            CP = QP * WRI**2 * 2.0 / (RHO * PI * RAD**3)
+            DV = SQRT(VEL**2 + TP * 2.0/(RHO*PI*RAD**2)) - VEL
+C
+            WRITE(LU,2100) CHARF,
+     &        VEL,   RPM,  DBET,   TP,     QP, POWER, 
+     &       VOLT,AMPS,  EFFM,  EFFP, ADV, CT, CP, DV, 
+     &       EFF, PINPUT, PPROP, CLAVG, CDAVG
+ 2100       FORMAT(A,
+     &       F8.3,  G12.4,  F7.3, G12.4, G12.4, G12.4,
+     &       F8.3, F10.4,  F9.4, F9.4, F10.5, G12.4, G12.4, F9.4,
+     &       F9.4, G12.4, G12.4, F9.4, G12.4)
           ENDDO
-C
-C-------- calculate prop operation for current state
-C-        TP(VEL,OMG,DBR) 
-C-        QP(VEL,OMG,DBR) 
-
-          CALL TQCALC(N,C,B,R,DR,
-     &            VA,VT,CL,CD,STALL,
-     &            BLDS,RAD,VEL,OMG,DBE,
-     &            RHO,RMU,VSO,
-     &            CL0,DCLDA,CLMIN,CLMAX,MCRIT,
-     &            CD0,CD2U,CD2L,CLCD0,REREF,REEXP,
-     &            TP, TP_VEL, TP_OMG, TP_DBE, TP_C, TP_B,
-     &            QP, QP_VEL, QP_OMG, QP_DBE, QP_C, QP_B )
-C
-C-------- set motor torque 
-C-        QM(OMG,VOLT)
-          CALL MOTORQ(OMG,VOLT, IMOTYPE, PARMOT,NMPAR,
-     &                QM,QM_OMG,QM_VOLT,
-     &                AM,AM_OMG,AM_VOLT )
-
-c          write(*,*) qm, qm_omg, qm_volt
-c          write(*,*) am, am_omg, am_volt
-
-C
-          AMPS = AM
-          PELE = AM*VOLT
-C
- 7000     FORMAT(/ 1X,'*** Ill-posed problem:  Unable to set  ', A / )
-C
-C-------- initialize Newton equation row index, and torque-match flag
-          KEQ = 0
-          LQMATCH = .FALSE.
-C
-          IF(NPAR(IPVEL).GT.0) THEN
-C--------- Res = VEL - VEL_spec
-           KEQ = KEQ + 1
-           RES(KEQ)    = VEL - PAR(IPVEL)
-           ASYS(KEQ,1) = 1.0
-          ELSEIF(.NOT.LQMATCH) THEN
-C--------- Res = QM - QP
-           KEQ = KEQ + 1
-           RES(KEQ)    = QM      - QP
-           ASYS(KEQ,1) =         - QP_VEL
-           ASYS(KEQ,2) = QM_OMG  - QP_OMG
-           ASYS(KEQ,3) = QM_VOLT
-           ASYS(KEQ,4) =         - QP_DBE
-           LQMATCH = .TRUE.
-c          ELSE
-c           WRITE(*,7000) PARNAME(IPVEL)
-c           STOP
-          ENDIF
-C
-          IF(NPAR(IPRPM).GT.0) THEN
-C--------- Res = OMG - OMG_spec
-           KEQ = KEQ + 1
-           RES(KEQ)    = OMG - PAR(IPRPM)*PI/30.0
-           ASYS(KEQ,2) = 1.0
-          ELSEIF(.NOT.LQMATCH) THEN
-C--------- Res = QM - QP
-           KEQ = KEQ + 1
-           RES(KEQ)    = QM      - QP
-           ASYS(KEQ,1) =         - QP_VEL
-           ASYS(KEQ,2) = QM_OMG  - QP_OMG
-           ASYS(KEQ,3) = QM_VOLT
-           ASYS(KEQ,4) =         - QP_DBE
-           LQMATCH = .TRUE.
-c          ELSE
-c           WRITE(*,7000) PARNAME(IPRPM)
-c           STOP
-          ENDIF
-C
-          IF(NPAR(IPVOLT).GT.0) THEN
-C--------- Res = VOLT - VOLT_spec
-           KEQ = KEQ + 1
-           RES(KEQ)    = VOLT - PAR(IPVOLT)
-           ASYS(KEQ,3) = 1.0
-          ELSEIF(.NOT.LQMATCH) THEN
-C--------- Res = QM - QP
-           KEQ = KEQ + 1
-           RES(KEQ)    = QM      - QP
-           ASYS(KEQ,1) =         - QP_VEL
-           ASYS(KEQ,2) = QM_OMG  - QP_OMG
-           ASYS(KEQ,3) = QM_VOLT
-           ASYS(KEQ,4) =         - QP_DBE
-           LQMATCH = .TRUE.
-c          ELSE
-c           WRITE(*,7000) PARNAME(IPVOLT)
-c           STOP
-          ENDIF
-C
-          IF(NPAR(IPDBET).GT.0) THEN
-C--------- Res = DBE - DBE_spec
-           KEQ = KEQ + 1
-           RES(KEQ)    = DBE - PAR(IPDBET)*PI/180.0
-           ASYS(KEQ,4) = 1.0
-          ELSEIF(.NOT.LQMATCH) THEN
-C--------- Res = QM - QP
-           KEQ = KEQ + 1
-           RES(KEQ)    = QM      - QP
-           ASYS(KEQ,1) =         - QP_VEL
-           ASYS(KEQ,2) = QM_OMG  - QP_OMG
-           ASYS(KEQ,3) = QM_VOLT
-           ASYS(KEQ,4) =         - QP_DBE
-           LQMATCH = .TRUE.
-          ELSEIF(KEQ.LT.4) THEN
-C--------- Res = DBE - DBE_spec
-           KEQ = KEQ + 1
-           RES(KEQ)    = DBE - PAR(IPDBET)*PI/180.0
-           ASYS(KEQ,4) = 1.0
-c          ELSE
-c           WRITE(*,7000) PARNAME(IPDBET)
-c           STOP
-          ENDIF
-C
-          IF(NPAR(IPTHRU).GT.0 .AND. KEQ.LT.4) THEN
-C--------- Res = TP - THRU
-           KEQ = KEQ + 1
-           RES(KEQ)    = TP - PAR(IPTHRU)
-           ASYS(KEQ,1) = TP_VEL
-           ASYS(KEQ,2) = TP_OMG
-           ASYS(KEQ,4) = TP_DBE
-          ENDIF
-C
-          IF(NPAR(IPTORQ).GT.0 .AND. KEQ.LT.4) THEN
-C--------- Res = QP - TORQ
-           KEQ = KEQ + 1
-           RES(KEQ)    = QP - PAR(IPTORQ)
-           ASYS(KEQ,1) = QP_VEL
-           ASYS(KEQ,2) = QP_OMG
-           ASYS(KEQ,4) = QP_DBE
-          ENDIF
-C
-          IF(NPAR(IPAMPS).GT.0 .AND. KEQ.LT.4) THEN
-C--------- Res = AM - AMPS
-           KEQ = KEQ + 1
-           RES(KEQ)    = AM - PAR(IPAMPS)
-           ASYS(KEQ,2) = AM_OMG
-           ASYS(KEQ,3) = AM_VOLT
-          ENDIF
-C
-          IF(NPAR(IPPELE).GT.0 .AND. KEQ.LT.4) THEN
-C--------- Res = VOLT*AM - PELE
-           KEQ = KEQ + 1
-           RES(KEQ)    = VOLT*AM  - PAR(IPPELE)
-           ASYS(KEQ,2) = VOLT*AM_OMG
-           ASYS(KEQ,3) = VOLT*AM_VOLT + AM
-          ENDIF
-C
-ccc       IF(KEQ .NE. 4) WRITE(*,*) '? KEQ =', KEQ
-
-c         write(*,*)
-c         do k = 1, 4
-c           write(*,'(1x,4f11.5,e14.4)') (asys(k,l), l=1,4), res(k)
-c         enddo
-
-          CALL GAUSSN0(4,4,ASYS,RES,1,KZERO)
-C
-          IF(KZERO.NE.0) THEN
-           WRITE(*,8000) PARNAME(KZERO)
- 8000      FORMAT(/' *** Ill-posed problem: Unable to determine  ',A /)
-           STOP
-          ENDIF
-C
-          DVEL  = -RES(1)
-          DOMG  = -RES(2)
-          DVOLT = -RES(3)
-          DDBE  = -RES(4)
-
-c         write(*,'(1x,4e12.4)'), (-res(k), k=1, 4)
-c         pause
-
-
-          RLX = 1.0
-C
-          VTIP = OMG*RAD
-          IF(RLX*DVEL  .GT.  0.1*VTIP) RLX =  0.1*VTIP/DVEL
-          IF(RLX*DVEL  .LT. -0.1*VTIP) RLX = -0.1*VTIP/DVEL
-C
-          IF(RLX*DOMG  .GT.  1.0*OMG ) RLX =  1.0*OMG /DOMG
-          IF(RLX*DOMG  .LT. -0.5*OMG ) RLX = -0.5*OMG /DOMG
-C
-          IF(RLX*DVOLT .GT.  2.0     ) RLX =  2.0/DVOLT
-          IF(RLX*DVOLT .LT. -2.0     ) RLX = -2.0/DVOLT
-C
-          IF(RLX*DDBE  .GT.  0.02    ) RLX =  0.02/DDBE 
-          IF(RLX*DDBE  .LT. -0.02    ) RLX = -0.02/DDBE 
-C
-
-c          ddbet = ddbe*180.0/pi
-c           write(*,'(1x,i3,4f12.3,2x,4e12.4,f9.3)') 
-c     &     iter, vel, omg, volt, dbet, dvel, domg, dvolt, ddbe,rlx
-
-C-------- convergence check
-          DMAX = MAX( ABS(DVEL )/VTIP,
-     &                ABS(DOMG )/OMG ,
-     &                ABS(DVOLT)     ,
-     &                ABS(DDBE )/0.05  )
-          IF(DMAX .LT. EPS) GO TO 110
-C
-C-------- Newton update
-          VEL  = VEL  + RLX*DVEL
-          OMG  = OMG  + RLX*DOMG
-          VOLT = VOLT + RLX*DVOLT
-          DBE  = DBE  + RLX*DDBE 
-C
-          RPM  = OMG *  30.0/PI
-          DBET = DBE * 180.0/PI
-C
-C
- 100    CONTINUE
-        WRITE(*,'(1X,A,8G12.4)') 
-     &       'QPROP: Convergence failed. Res =', (RES(K), K=1, 4), DMAX
-C
- 110    CONTINUE
-
-c      Q = 1.0 / (Kv*pi/30.0) * (I-Io)
-c      I = Io + Q*(Kv*pi/30.0)
-c      P = (V-I*R) * (I-Io)
-c      eff = P / (I*V)
-c      rpm = Kv * (V-I*R)
-C
-C------ compute thrust-average blade cl and cd
-        DTSUM = 0.
-        CLAVG = 0.
-        CDAVG = 0.
-        DO I = 1, N
-          WA = VEL + VA(I)
-          WT = OMG*R(I) - VT(I)
-          WSQ = WA**2 + WT**2
-          DTSUM = DTSUM + WSQ*C(I)*DR(I)
-          CLAVG = CLAVG + WSQ*C(I)*DR(I)*CL(I)
-          CDAVG = CDAVG + WSQ*C(I)*DR(I)*CD(I)
+          IF(.NOT.LRDUMP .AND. NVEL.GT.1) WRITE(LU,1000)
         ENDDO
-        CLAVG = CLAVG / DTSUM
-        CDAVG = CDAVG / DTSUM
-C
-C------ print output
-        RPM = OMG*30.0/PI
-        PPROP = TP*VEL
-        POWER = QP*OMG
-C
-        PINPUT = VOLT*AMPS
-C
-        IF(POWER .NE. 0.0) THEN
-         EFFP = PPROP/POWER
-        ELSE
-         EFFP = 0.
-        ENDIF
-C
-        IF(PINPUT .NE. 0.0) THEN
-         EFFM = POWER/PINPUT
-        ELSE
-         EFFM = 0.0
-        ENDIF
-C
-        EFF = EFFM*EFFP
-C
-        IF(ABS(OMG).GT.0.0) THEN
-         ADV = VEL/(OMG*RAD)
-        ELSE
-         ADV = 0.
-        ENDIF
-C
-        IF(OMG .EQ. 0.0) THEN
-         WRI = 0.
-        ELSE
-         WRI = 1.0 / (OMG*RAD)
-        ENDIF
-C
-        CT = TP * WRI**2 * 2.0 / (RHO * PI * RAD**2)
-        CP = QP * WRI**2 * 2.0 / (RHO * PI * RAD**3)
-        DV = SQRT(VEL**2 + TP * 2.0/(RHO*PI*RAD**2)) - VEL
-C
-        WRITE(LU,2100) CHARF,
-     &      VEL,   RPM,  DBET,   TP,     QP, POWER, 
-     &     VOLT,AMPS,  EFFM,  EFFP, ADV, CT, CP, DV, 
-     &     EFF, PINPUT, PPROP, CLAVG, CDAVG
- 2100   FORMAT(A,
-     &     F8.3,  G12.4,  F7.3, G12.4, G12.4, G12.4,
-     &     F8.3, F10.4,  F9.4, F9.4, F10.5, G12.4, G12.4, F9.4,
-     &     F9.4, G12.4, G12.4, F9.4, G12.4)
-C
- 200  CONTINUE ! with next KPD
-      IF(NPD.GT.1) WRITE(LU,1000)
-C
- 300  CONTINUE ! with next KPC
-      IF(NPC.GT.1) WRITE(LU,1000)
-C
- 400  CONTINUE ! with next KPB
-      IF(NPB.GT.1) WRITE(LU,1000)
-C
- 500  CONTINUE ! with next KPA
+      ENDDO
 C
       IF(LRDUMP) THEN
 C----- dump radial distributions
