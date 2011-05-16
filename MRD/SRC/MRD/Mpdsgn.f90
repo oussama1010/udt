@@ -53,8 +53,9 @@
 		ELSE 
 			indx_motor=indx_motor_ary(1)
 			do while (indx_motor .le. indx_motor_ary(2))
-			M_BATT = M_BATT_MIN + M_BATT_DELTA
+			M_BATT = M_BATT_MIN 
 			do while (M_BATT .le. M_BATT_MAX)
+
 				CALL Get_motor_name (indx_motor,motor_name)
 			WRITE(*,*)'*****************	',trim(prop_name) ,'	', trim(motor_name),'	**********'
 				CALL M_SIMUL	
@@ -91,8 +92,8 @@
 			WRITE(propeller_candidate,650)trim(Airfoil_name),NR_BLADE,PROP_RADIUS,RPM,Thrust(wcn)
 		END IF
 
-600 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I4,'-T',F3.2)
-650 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I5,'-T',F3.2)
+600 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I4,'-T',F3.1)
+650 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I5,'-T',F3.1)
 
 		Qmil_RPM = RPM
 
@@ -104,12 +105,14 @@
 
 		write(*,*) qmil_in_command
 
-500		Format ('../../BIN/qmil ',A,' ./RESULTS/PROPELLER/',A)
+500		Format ('../../BIN/qmil ',A,' ./RESULTS/PROPELLER/',A,' >null')
 
 		prop_name = trim(propeller_candidate)
 
 
 		Call system (qmil_in_command)
+
+		WRITE(*,*)'Propeller candidate',propeller_candidate 
 		Call system ('rm '//propeller_candidate)
 
 	END SUBROUTINE GENERATE_PROPELLER

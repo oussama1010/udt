@@ -70,9 +70,9 @@ TRANSLATION_SPEED: 0 0 1	! translation speed, min, max , delta in m/s
 
 !--- Propeller Settings ---!
 NR_BLADE:	2	 2	 1           	! n_blade_ary=(/2,2,1/) min max delta
-PROP_RADIUS:		0.1 	0.12 	0.01   		! R_TIP in meters
-RPM:		6000	8000 	500    ! RPM_ary=(/2200,2400,100/) rev/min
-Thrust:		0.5	3	0.5	!RPM_ary min max Delta in N
+PROP_RADIUS:		0.1 	0.14 	0.01   		! R_TIP in meters
+RPM:		6000	8000 	1000    ! RPM_ary=(/2200,2400,100/) rev/min
+Thrust:		0.5	2	0.5	!RPM_ary min max Delta in N
 0.035            ! R_hub = 0.035 in meters
 
 

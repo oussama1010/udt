@@ -49,7 +49,7 @@
 				M_frame = volume *611.1+ 0.03
 			CASE(1)	
 				volume = (0.088 *FRAME_SPAN)*(0.035 *FRAME_SPAN)*FRAME_SPAN*4
-				M_frame = volume *1.4/1000+ 0.03
+				M_frame = volume *1.4/1000+ 0.03			! FRAME_SPAN = 24cm -> 110g
 			CASE(2)
 				volume = (0.2 *FRAME_SPAN)*(0.3 *FRAME_SPAN)*FRAME_SPAN*4
 				M_frame = volume *0.333/1000+ 0.03
