@@ -49,6 +49,14 @@
 	END DO
 	CLOSE (10)
 
+	DO k=1, n, 1
+	OPEN(20,file='raw_output.dat', status='unknown',position="append")
+!---Batt mass, FlightTime
+	WRITE (20,*) table2(7,k),table3(1,k)
+	CLOSE (20)
+	END DO
+
+
 	WRITE(*,*)'See output.dat file for results'
 
 	END SUBROUTINE CREATE_OUTPUT_FILE

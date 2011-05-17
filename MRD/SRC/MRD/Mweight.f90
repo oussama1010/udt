@@ -28,7 +28,7 @@ SUBROUTINE M_TOTAL_WEIGHT
 
 !	CALL ENGINE_WEIGHT
 
-	M_MOTOR = 0.02
+!	M_MOTOR = 0.02
 
 !---- Summing all the mass...
 

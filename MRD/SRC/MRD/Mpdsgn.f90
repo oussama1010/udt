@@ -55,7 +55,8 @@
 			M_BATT = M_BATT_MIN 
 			do while (M_BATT .le. M_BATT_MAX)
 
-				CALL Get_motor_name (indx_motor,motor_name)
+				!CALL Get_motor_name (indx_motor,motor_name)
+				CALL Get_motor_specs (indx_motor,motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR,M_MOTOR, MAX_POW_MOTOR)
 			WRITE(*,*)'*****************	',trim(prop_name) ,'	', trim(motor_name),'	**********'
 				CALL M_SIMUL	
 			M_BATT = M_BATT + M_BATT_DELTA
