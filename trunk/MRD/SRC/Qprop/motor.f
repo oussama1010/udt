@@ -41,7 +41,7 @@ C-----------------------------------------------------------
       REAL PARMOT(*)
       REAL I, I_OMEGA, I_VOLT
 C
-      REAL KVRPM, KQRPM, KVRAD, KQRAD
+      REAL KVRPM, KQRPM, KVRAD, KQRAD, MOTORMASS, MOTORMAXPOW
       DATA PI /3.1415926/
       DATA EPS /1.0E-6/
 C
@@ -119,6 +119,35 @@ C
        Q_OMEGA = (I_OMEGA - ZLOADI_OMEGA) / KQRAD
        Q_VOLT  =  I_VOLT                  / KQRAD
 C
+      ELSEIF(IMOTYPE.EQ.3) THEN
+C----- Brushed DC motor - 1st-order model with MASS and MAX Power
+       IF(NMPAR.LT.5) THEN
+        WRITE(*,*) 'MOTORQ: Motor model 3 needs  5  parameters.',
+     &             '  Number passed in:', IMOTYPE
+        STOP
+       ENDIF
+C
+       RMOTOR = PARMOT(1)    ! R   (Ohms)      motor resistance
+       ZLOADI = PARMOT(2)    ! Io  (Amps)      zero-load current
+       KVRPM  = PARMOT(3)    ! Kv  (rpm/Volt)  motor constant
+       MOTORMASS  = PARMOT(4)! Mass(kg)        motor mass
+       MOTORMAXPOW= PARMOT(5)! MaxPower(Watt)  motor max power capable of handling
+
+C
+       KVRAD = KVRPM * PI/30.0
+       KQRAD = KVRAD
+C     
+       VM       = OMEGA/KVRAD
+       VM_OMEGA = 1.0  /KVRAD
+C
+       I       = (VOLT - VM      )/RMOTOR
+       I_OMEGA =       - VM_OMEGA /RMOTOR
+       I_VOLT  =  1.0             /RMOTOR
+C
+       Q       = (I       - ZLOADI)/KQRAD
+       Q_OMEGA =  I_OMEGA          /KQRAD
+       Q_VOLT  =  I_VOLT           /KQRAD
+C
       ELSE
 C----- Other motor models would go here
        WRITE(*,*) 'MOTORQ: Undefined motor type index:', IMOTYPE
@@ -169,6 +198,14 @@ C-    May need to be different for different IMOTYPE.
        AMPS = Q*KQRAD + ZLOADI
        VOLT = AMPS*RMOTOR + OMEGA/KVRAD
       ELSEIF(IMOTYPE.EQ.2) THEN
+       RMOTOR = PARMOT(1)    ! R   (Ohms)      motor resistance
+       ZLOADI = PARMOT(2)    ! Io  (Amps)      zero-load current
+       KVRPM  = PARMOT(3)    ! Kv  (rpm/Volt)  motor constant
+       KVRAD = KVRPM*PI/30.0
+       KQRAD = KVRAD
+       AMPS = Q*KQRAD + ZLOADI
+       VOLT = AMPS*RMOTOR + OMEGA/KVRAD
+      ELSEIF(IMOTYPE.EQ.3) THEN
        RMOTOR = PARMOT(1)    ! R   (Ohms)      motor resistance
        ZLOADI = PARMOT(2)    ! Io  (Amps)      zero-load current
        KVRPM  = PARMOT(3)    ! Kv  (rpm/Volt)  motor constant

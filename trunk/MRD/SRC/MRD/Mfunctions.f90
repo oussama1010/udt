@@ -114,7 +114,7 @@
 	err = 1 !No errors...
 		open(60,file=qprop_outfile,status='old',iostat=status)
 
-				do i=1,17
+				do i=1,19
 				read(60,*,iostat=status) 
 					if(status.eq.-1) then
 					charc='er'
@@ -140,6 +140,8 @@
 			read(60,*)
 			read(60,*)
 			read(60,*) 
+			read(60,*)
+			read(60,*)
 			read(60,*)			
 			read(60,*)
 			read(60,*) 
@@ -395,14 +397,14 @@
 	END SUBROUTINE Get_prop_specs
 
 !################################################################################
-	Subroutine Get_motor_specs (indx,Motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR)
+	Subroutine Get_motor_specs (indx,Motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR, M_MOTOR, MAX_POW_MOTOR)
 	implicit none
 	integer,intent(in) :: indx
 	integer :: status, i
 	integer,parameter :: n=100
 	character(len=25) :: Motor_name_array(100)
 	character(len=25),intent(out) :: Motor_name
-	REAL, intent(out) ::  R_MOTOR, I0_MOTOR, KV_MOTOR
+	REAL, intent(out) ::  R_MOTOR, I0_MOTOR, KV_MOTOR, M_MOTOR, MAX_POW_MOTOR
 
 
 		open(80,file='./DATA/motor_name_list.txt',status='old',iostat=status)
@@ -428,6 +430,8 @@
 				read(50,*)R_MOTOR
 				read(50,*)I0_MOTOR
 				read(50,*)KV_MOTOR
+				read(50,*)M_MOTOR
+				read(50,*)MAX_POW_MOTOR
 
 	close(50)
 

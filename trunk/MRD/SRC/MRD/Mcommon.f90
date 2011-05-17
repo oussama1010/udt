@@ -75,6 +75,11 @@
 
 	INTEGER :: n_prop, n_motor, n_airfoil, n_simple_prop !these are the motor and prop number in the directory... we should change the name I guess...
 
+
+	REAL :: CNTRLR_MIN_EFF, CNTRLR_MAX_EFF !speed controller min and max eff coefficients
+
+	REAL :: MAX_POW_MOTOR  !max motor power that can be handled...
+
 !--- New addition from Charles
 	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF, PROP_RADIUS, FRAME_SPAN
 

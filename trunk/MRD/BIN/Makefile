@@ -11,12 +11,12 @@ MRDOBJS = Mcommon.o Mcase_read1.o Mfunctions.o Mframe.o Mpanalyse.o Mpdsgn.o \
 Mweight.o Mexec.o MRD.o Moutput.o Msimul.o
 #Mcase_read.o \
 
-QPOBJS = qprop.o gvcalc.o cdfun.o tqcalc.o motor.o spline.o io.o qcget.o #gaussn0.o
+QPOBJS = qprop.o gvcalc.o cdfun.o tqcalc.o motor.o spline.o io.o qcget.o gaussn0.o
 QMOBJS = qmil.o tpdes.o gvcalc.o cdfun.o tqcalc.o bnsolv.o spline.o io.o qcget.o
 
 #------------------------------------
 # Default Unix Fortran compiler
-FC = gfortran-4.5
+FC = gfortran-4.3
 #FTNLIB = 
 
 #------------------------------------

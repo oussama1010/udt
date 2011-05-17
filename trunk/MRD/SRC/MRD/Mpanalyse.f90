@@ -34,7 +34,8 @@
 
 !According to the index number, get the motor name for Qprop calculations
 
-	CALL Get_motor_name (indx_motor,motor_name)
+!	CALL Get_motor_name (indx_motor,motor_name)
+	CALL Get_motor_specs (indx_motor,motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR,M_MOTOR, MAX_POW_MOTOR)
 	CALL Get_prop_name (indx_prop,prop_name)
 	WRITE(*,*)'*****************	',trim(prop_name) ,'	', trim(motor_name), '		**************************************'
 !	write(*,500) trim(qprop_infile), trim(motor_name), Speed(wcn), Thrust(wcn), trim(qprop_outfile)
@@ -79,7 +80,7 @@
 
 !According to the index number, get the motor name for Qprop calculations
 
-	CALL Get_motor_specs (indx_motor,motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR)
+	CALL Get_motor_specs (indx_motor,motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR,M_MOTOR, MAX_POW_MOTOR)
 	CALL Get_prop_specs (indx_simple_prop,prop_name, K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS)
 	WRITE(*,*)'*****************	',trim(prop_name) ,'	', trim(motor_name),' 		**************************************'
 
