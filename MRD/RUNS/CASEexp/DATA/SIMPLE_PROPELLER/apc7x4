@@ -1,0 +1,5 @@
+apc7x4 
+0.0000000283 		!K_THRUST in N/RPM
+0.000000000311 		!K_TORQUE in Nm/RPM
+0.0102			!Mass kg
+0.085			!RADIUS m
