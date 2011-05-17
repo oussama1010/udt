@@ -22,7 +22,6 @@
 
 	WRITE(*,*)' Prop design Subroutine '
 
-
 	TRANSLATION_SPEED = 0
 	Speed(wcn) = 0.06
 
@@ -34,14 +33,14 @@
 	do while (PROP_RADIUS .le. PROP_RADIUS_MAX)
 	RPM = RPM_MIN
 	do while (RPM .le. RPM_MAX)
-	Thrust(wcn) = Thrust_MIN
-	do while (Thrust(wcn) .le. Thrust_MAX)
+	designThrust = Thrust_MIN
+	do while (designThrust .le. Thrust_MAX)
 
-	!	CALL MFRAME
+		CALL MFRAME
 
-	!	CALL M_TOTAL_WEIGHT
+		CALL M_TOTAL_WEIGHT
 
-	!	 Thrust(wcn) = M_TOTAL * GRAV_ACC / NR_MOTOR
+		 Thrust = M_TOTAL * GRAV_ACC / NR_MOTOR
 
 		CALL GENERATE_PROPELLER
 
@@ -65,8 +64,8 @@
 			end do ! indx_motor loop
 		END IF		
 	
-	Thrust(wcn) = Thrust(wcn) + Thrust_DELTA
-	end do ! Thrust loop
+	designThrust = designThrust + Thrust_DELTA
+	end do ! designThrust loop
 	RPM = RPM + RPM_DELTA
 	end do ! RPM loop	
 	PROP_RADIUS = PROP_RADIUS + PROP_RADIUS_DELTA
@@ -85,15 +84,15 @@
 
 		CALL Get_airfoil_spec(indx_airfoil, Airfoil_name,CL0, CLA, CLmin, CLmax, CD0, CD2u, CD2l, CLCD0, REref, REexp)
 
-!		propeller_candidate= 'temppropdata'
+
 		IF (RPM .le. 9999) THEN
-			WRITE(propeller_candidate,600)trim(Airfoil_name),NR_BLADE,PROP_RADIUS,RPM,Thrust(wcn)
+			WRITE(propeller_candidate,600)trim(Airfoil_name),NR_BLADE,PROP_RADIUS,RPM,designThrust
 		ELSE
-			WRITE(propeller_candidate,650)trim(Airfoil_name),NR_BLADE,PROP_RADIUS,RPM,Thrust(wcn)
+			WRITE(propeller_candidate,650)trim(Airfoil_name),NR_BLADE,PROP_RADIUS,RPM,designThrust
 		END IF
 
-600 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I4,'-T',F3.1)
-650 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I5,'-T',F3.1)
+600 	Format (A,'-',I1,'-',F3.2,'-',I4,'-',F3.1)
+650 	Format (A,'-',I1,'-',F3.2,'-',I5,'-',F3.1)
 
 		Qmil_RPM = RPM
 
