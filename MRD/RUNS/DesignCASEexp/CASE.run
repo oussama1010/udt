@@ -38,12 +38,12 @@ MIN_TW_RATIO:	3	!minimum thrust/weight ratio to reach
 !---Mission Scoring---!
 ENDURANCE_COEFF:	70	!set importance of max endurance for the scoring
 SIZE_COEFF:		0	!set importance of the size for the scoring
-MANEUVRABILITY_COEFF:	10	!set importance of maneuvrability (thrust/weight ratio) for the scoring
-RANGE_COEFF:		20	!set importance of range for the scoring
+MANEUVRABILITY_COEFF:	0	!set importance of maneuvrability (thrust/weight ratio) for the scoring
+RANGE_COEFF:		0	!set importance of range for the scoring
 
 !--- Energy Source ---!
 BATT_SPEC_ENERGY:	160	! 100 Wh/kg
-BATT_MASS_MULTIPLIER:	0.1	0.1	0.01	! min max delta in kg
+BATT_MASS_MULTIPLIER:	0.2	0.2	0.01	! min max delta in kg
 BATT_MAX_VOLT:		12	! 12 V
 
 
@@ -69,9 +69,9 @@ TRANSLATION_SPEED: 0 0 1	! translation speed, min, max , delta in m/s
 
 
 !--- Propeller Settings ---!
-NR_BLADE:	2	 2	 1           	! n_blade_ary=(/2,2,1/) min max delta
-PROP_RADIUS:		0.1 	0.14 	0.01   		! R_TIP in meters
-RPM:		6000	8000 	1000    ! RPM_ary=(/2200,2400,100/) rev/min
+NR_BLADE:	2	 4	 1           	! n_blade_ary=(/2,2,1/) min max delta
+PROP_RADIUS:		0.10 	0.15 	0.01   		! R_TIP in meters
+RPM:		6000	12000 	1000    ! RPM_ary=(/2200,2400,100/) rev/min
 Thrust:		0.5	2	0.5	!RPM_ary min max Delta in N
 0.035            ! R_hub = 0.035 in meters
 

@@ -48,7 +48,7 @@ BATT_MAX_VOLT:		12	! 12 V
 
 
 !--- PROGRAM RUN MODE ---!
-RUN_MODE:	0	! Simplified analyse:0, Analyse:1, Design:2
+RUN_MODE:	1	! Simplified analyse:0, Analyse:1, Design:2
 
 
 !--- Power Consumption ---!

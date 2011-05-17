@@ -99,7 +99,6 @@
 	indx_motor=indx_motor+1
 	end do ! indx_motor loop
 
-	write(*,*)'ending simulation'
 
 	END SUBROUTINE M_PROP_SIMPLIFIED_ANALYSE
 

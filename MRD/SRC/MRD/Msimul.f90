@@ -308,7 +308,7 @@
 
 		I = Q * KV_MOTOR*3.14*2/60 + I0_MOTOR
 
-		V = RPM_MAX / (KV_MOTOR) + R_MOTOR * I
+		V = RPM / (KV_MOTOR) + R_MOTOR * I
 
 		ERROR = BATT_MAX_VOLT - V
 
@@ -323,9 +323,9 @@
 
 	END DO
 	
-	TW_RATIO = NR_MOTOR * K_THRUST* RPM_MAX**2  / (M_TOTAL * GRAV_ACC )
+	TW_RATIO = NR_MOTOR * K_THRUST* RPM**2  / (M_TOTAL * GRAV_ACC )
 
-!	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO	 !debug
+	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO	 !debug
 
 	END SUBROUTINE SIMPLIFIED_TW_RATIO_ESTIMATOR
 

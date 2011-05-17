@@ -28,6 +28,7 @@
 
 !the rows have been sorted according to their respective mission scores
 	DO k=1, n, 1
+
 	OPEN(10,file='output.dat', status='unknown',position="append")
 	WRITE (10,*)'Config', k, '		MISSION SCORE :', table3(2,k)
 	WRITE (10,*)'##############################  ',table1(1,k),table1(2,k),'  #######################################'
@@ -96,8 +97,8 @@
 				table3(2,j+1) = table3(2,j)
 			END DO
 		! the new row is inserted in the free space created
-			table1(1,i) = prop_name
-			table1(2,i) = motor_name
+			table1(1,i) = trim(prop_name)
+			table1(2,i) = trim(motor_name)
 			table2(1,i) = BATT_SPEC_NRG * M_BATT
 			table2(2,i) =  M_TOTAL
 			table2(3,i) = Thrust(wcn)

@@ -43,8 +43,7 @@
 	STOP
 	END IF
 
-!--- Simulate the performance
-!	CAll M_SIMUL
+
 
 
 	CALL CREATE_OUTPUT_FILE
