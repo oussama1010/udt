@@ -56,6 +56,15 @@
 	CLOSE (20)
 	END DO
 
+!--- Automatic file name generation from time and date
+!	Call idate(today)
+!	Call itime(time)
+!	WRITE(output_file_name,501)RUN_MODE,today(1),today(2),today(3),time(1),time(2),time(3)
+!501	FORMAT('RUN_',I2.2,'_',I2.2,'_',I4.4,'_',I2.2,'_',I2.2,'_',I2.2)
+!--- Copy the output.dat file to RESULTS folder with new generated filename --- !
+!	Call system ('cp output.dat RESULTS/'//trim(output_file_name)
+	KDOT =INDEX(CASE_FILE_NAME,'.')
+	Call system ('cp output.dat RESULTS/'//CASE_FILE_NAME(1:KDOT-1)//'.txt')
 
 	WRITE(*,*)'See output.dat file for results'
 
