@@ -23,7 +23,7 @@
 
 	CHARACTER(LEN=120) :: LINE
 	CHARACTER(LEN=40) :: COMMAND_LINE_ARG, CASE_FILE_NAME
-	INTEGER :: K, KI, KBLANK
+	INTEGER :: K, KI, KBLANK, KDOT
 
 	CHARACTER(LEN=30) :: COMMAND
 	CHARACTER(LEN=90) :: LEFT_ARGS
@@ -79,6 +79,8 @@
 	REAL :: CNTRLR_MIN_EFF, CNTRLR_MAX_EFF !speed controller min and max eff coefficients
 
 	REAL :: MAX_POW_MOTOR  !max motor power that can be handled...
+
+!	INTEGER :: today(3), time(3)
 
 !--- New addition from Charles
 	REAL :: PROP_BLADE_SIGMA, PROP_HUB_COEFF, PROP_RADIUS, FRAME_SPAN
