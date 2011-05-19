@@ -93,7 +93,7 @@
 
 	INTEGER :: MAX_FLIGHT_TIME
 
-	Character(len=30),dimension(2,1000) :: table1
+	Character(len=60),dimension(2,1000) :: table1
 	Real,dimension(10,1000) :: table2
 	Real,dimension(1,1000) :: table4
 	Integer,dimension(2,1000) :: table3
