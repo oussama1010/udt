@@ -74,21 +74,21 @@
 
 
 !--- Debug Print...
-		write (*,*)
-		write (*,*) 'Working Cond          :  ', wcn
-		write (*,*) 'Motor Name            :  ', motor_name
-		write (*,*) 'Prop Name             :  ', prop_name 
-		write (*,*) 'MASS                  :  ', M_TOTAL 
-		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
-		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
-		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
-		write (*,*) 'Torque                :  ', Qprop_Q
-	 	write (*,*) 'Thrust                :  ', Qprop_T
-	 	write (*,*) 'Volts                 :  ', Qprop_Volts
-	 	write (*,*) 'Amps                  :  ', Qprop_Amps
-	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
-	 	write (*,*)
-	 	write (*,*) 'RPM      :  ', Qprop_rpm
+!		write (*,*)
+!		write (*,*) 'Working Cond          :  ', wcn
+!		write (*,*) 'Motor Name            :  ', motor_name
+!		write (*,*) 'Prop Name             :  ', prop_name 
+!		write (*,*) 'MASS                  :  ', M_TOTAL 
+!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
+!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
+!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
+!		write (*,*) 'Torque                :  ', Qprop_Q
+!	 	write (*,*) 'Thrust                :  ', Qprop_T
+!	 	write (*,*) 'Volts                 :  ', Qprop_Volts
+!	 	write (*,*) 'Amps                  :  ', Qprop_Amps
+!	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
+!	 	write (*,*)
+!	 	write (*,*) 'RPM      :  ', Qprop_rpm
 	VOLTS = Qprop_Volts
 	P_ELEC = Qprop_P_elec
 

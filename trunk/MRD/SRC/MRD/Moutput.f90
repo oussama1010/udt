@@ -31,7 +31,7 @@
 
 	OPEN(10,file='output.dat', status='unknown',position="append")
 	WRITE (10,*)'Config', k, '		MISSION SCORE :', table3(2,k)
-	WRITE (10,*)'##############################  ',table1(1,k),table1(2,k),'  #######################################'
+	WRITE (10,*)'##########################  ',trim(table1(1,k)),'   ',trim(table1(2,k)),'  ##########################'
 	WRITE (10,'(A,F5.3,A)') ' Battery Mass test        : ',  table2(7,k), ' kg'
 	WRITE (10,'(A,F5.2,A)') ' Battery Energy           : ',  table2(1,k), ' Wh'
 	WRITE (10,'(A,F6.3,A)') ' Flying weight            : ',  table2(2,k), ' kg'
@@ -97,7 +97,7 @@
 		! all the lines showing a lower mission score are shifted one row down
 		IF (table3(2,i) .Le. MISSION_SCORE) THEN
 			DO j=n+1,i,-1
-				table1(1,j+1) = trim(table1(1,j))
+				table1(1,j+1) = table1(1,j)
 				table1(2,j+1) = trim(table1(2,j))
 				table2(1,j+1) = table2(1,j)
 				table2(2,j+1) = table2(2,j)
