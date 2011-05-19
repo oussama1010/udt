@@ -26,6 +26,7 @@
 	IF (M_frame_fix .Eq. 0) THEN 
 		CALL ESTIMATE_MASS()
 	ELSE 
+		CALL ESTIMATE_MASS()
 		M_frame = M_frame_fix
 	END IF
 
