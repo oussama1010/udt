@@ -57,9 +57,9 @@ SUBROUTINE M_TOTAL_WEIGHT
 	S = 0
 
 	IF (RUN_MODE .EQ. 2) THEN 
-		OPEN(20,file='RESULTS/PROPELLER/'//trim(prop_name), status='old', iostat=status)
+		OPEN(20,file='RESULTS/PROPELLER/'//prop_name(1:prop_cut-1), status='old', iostat=status)
 	ELSE
-		OPEN(20,file='DATA/PROPELLER/'//trim(prop_name), status='old', iostat=status)
+		OPEN(20,file='DATA/PROPELLER/'//prop_name(1:prop_cut-1), status='old', iostat=status)
 	END IF
 
 	DO i=1,50
