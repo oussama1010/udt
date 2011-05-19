@@ -359,14 +359,15 @@
 	end Subroutine nmax_simple_prop
 !################################################################################
 
-	Subroutine Get_prop_specs (indx,Prop_name, K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS)
+	Subroutine Get_prop_specs (indx,Prop_name,K0_THRUST,K1_THRUST,K2_THRUST, K0_TORQUE,K1_TORQUE, &
+					K2_TORQUE, M_PROP, PROP_RADIUS)
 	implicit none
 	integer,intent(in) :: indx
 	integer :: status, i
 	integer,parameter :: n=100
 	character(len=25) :: Prop_name_array(100)
 	character(len=25),intent(out) :: Prop_name
-	REAL, intent(out) ::  K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS
+	REAL, intent(out) ::  K0_THRUST,K1_THRUST,K2_THRUST, K0_TORQUE,K1_TORQUE,K2_TORQUE, M_PROP, PROP_RADIUS
 
 		open(80,file='./DATA/simple_propeller_name_list.txt',status='old',iostat=status)
 
@@ -383,8 +384,12 @@
 	open(50,file='./DATA/SIMPLE_PROPELLER/'//Prop_name,status='old',iostat=status)
 
 				read(50,*)
-				read(50,*)K_THRUST
-				read(50,*)K_TORQUE
+				read(50,*)K0_THRUST
+				read(50,*)K1_THRUST
+				read(50,*)K2_THRUST
+				read(50,*)K0_TORQUE
+				read(50,*)K1_TORQUE
+				read(50,*)K2_TORQUE
 				read(50,*)M_PROP
 				read(50,*)PROP_RADIUS
 

@@ -84,13 +84,14 @@
 !According to the index number, get the motor name for Qprop calculations
 
 	CALL Get_motor_specs (indx_motor,motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR,M_MOTOR, MAX_POW_MOTOR)
-	CALL Get_prop_specs (indx_simple_prop,prop_name, K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS)
+	CALL Get_prop_specs (indx_simple_prop,prop_name,K0_THRUST,K1_THRUST,K2_THRUST, K0_TORQUE,K1_TORQUE, &
+				K2_TORQUE, M_PROP, PROP_RADIUS)
 
 	prop_cut = INDEX(prop_name,' ')
 
 	WRITE(*,*)'*****************	',prop_name(1:prop_cut-1),'	', trim(motor_name),' 		**************************************'
 
-!	WRITE(*,*)'prop specs;',K_THRUST, K_TORQUE, M_PROP, PROP_RADIUS		!debug
+	WRITE(*,*)'prop specs;',K2_THRUST, K2_TORQUE, M_PROP, PROP_RADIUS		!debug
 !	WRITE(*,*)'engine specs;',R_MOTOR, I0_MOTOR, KV_MOTOR			!debug
 
 !--- Just after having all the coeffs, Simulation needs to be called to calculte the mission...

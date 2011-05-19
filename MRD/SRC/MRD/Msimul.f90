@@ -134,9 +134,11 @@
 	Thrust(wcn) = M_TOTAL * GRAV_ACC / (NR_MOTOR * COS(PHI))
 
 !---Knowing the thrust need needed we can find the RPM which gives the torque
-	RPM = SQRT ( Thrust(wcn) / K_THRUST ) 
-	
-	TORQUE = K_TORQUE * RPM**2
+	CALL SOLVE_SECOND_ORDER(K2_THRUST, K1_THRUST , K0_THRUST - Thrust(wcn), RPM)
+
+	WRITE(*,*)'delta', RPM
+
+	TORQUE = K0_TORQUE + K1_TORQUE * RPM + K2_TORQUE * RPM**2
 
 !---We can now calculate the power consumption using the motor parameters.
 	P_MECA = TORQUE * RPM *3.14*2/60
@@ -149,24 +151,24 @@
 
 
 !--- Debug Print...
-!		write (*,*)
-!		write (*,*) 'Working Cond          :  ', wcn
-!		write (*,*) 'Motor Name            :  ', motor_name
-!		write (*,*) 'Prop Name             :  ', prop_name 
-!		write (*,*) 'MASS                  :  ', M_TOTAL 
-!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
-!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
-!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
-!		write (*,*) 'Torque                :  ', TORQUE
-!	 	write (*,*) 'Thrust                :  ', Thrust(wcn)
-!	 	write (*,*) 'Kv                :  ', Kv_MOTOR
-!	 	write (*,*) 'RPM                   :  ', RPM
-!	 	write (*,*) 'Volts                 :  ', VOLTS
-!	 	write (*,*) 'Amps                  :  ', AMPS
-!	 	write (*,*) 'I0                  :  ', I0_MOTOR
-!	 	write (*,*) 'Mecanical Power      :  ', P_MECA
-!	 	write (*,*) 'Electrical Power      :  ', P_ELEC
-!	 	write (*,*)
+		write (*,*)
+		write (*,*) 'Working Cond          :  ', wcn
+		write (*,*) 'Motor Name            :  ', motor_name
+		write (*,*) 'Prop Name             :  ', prop_name 
+		write (*,*) 'MASS                  :  ', M_TOTAL 
+		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
+		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
+		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
+		write (*,*) 'Torque                :  ', TORQUE
+	 	write (*,*) 'Thrust                :  ', Thrust(wcn)
+	 	write (*,*) 'Kv                :  ', Kv_MOTOR
+	 	write (*,*) 'RPM                   :  ', RPM
+	 	write (*,*) 'Volts                 :  ', VOLTS
+	 	write (*,*) 'Amps                  :  ', AMPS
+	 	write (*,*) 'I0                  :  ', I0_MOTOR
+	 	write (*,*) 'Mecanical Power      :  ', P_MECA
+	 	write (*,*) 'Electrical Power      :  ', P_ELEC
+	 	write (*,*)
 
 
 !---Calls the subroutine finding the maximal flight time and range
@@ -306,7 +308,7 @@
 
 	DO k= 1, 100
 
-		Q = K_TORQUE * RPM**2
+		Q =K0_TORQUE + K1_TORQUE * RPM + K2_TORQUE * RPM**2
 
 		I = Q * KV_MOTOR*3.14*2/60 + I0_MOTOR
 
@@ -325,7 +327,7 @@
 
 	END DO
 	
-	TW_RATIO = NR_MOTOR * K_THRUST* RPM**2  / (M_TOTAL * GRAV_ACC )
+	TW_RATIO = NR_MOTOR *(K0_THRUST+ K1_THRUST* RPM +  K2_THRUST* RPM**2)  / (M_TOTAL * GRAV_ACC )
 
 	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO	 !debug
 
@@ -468,13 +470,16 @@
 
 	CALL MOMENT_OF_INERTIA
 
-	Q =  K_TORQUE * ( Thrust(wcn) * 1.6 / K_THRUST )
-	
+	CALL SOLVE_SECOND_ORDER(K2_THRUST, K1_THRUST , K0_THRUST - 1.6 * Thrust(wcn), RPM)
+
+	Q =   K0_TORQUE + K1_TORQUE * RPM + K2_TORQUE * RPM**2
 
 	TOTAL_TORQUE = 2 * Q
 
 !--- Computing the remaining torque on the 2 other engines (for now they are set to give 20% of the total lift to keep sufficient control)
-	Q =  K_TORQUE * ( Thrust(wcn) * 0.4 / K_THRUST )
+	CALL SOLVE_SECOND_ORDER(K2_THRUST, K1_THRUST , K0_THRUST - 0.4 * Thrust(wcn), RPM)
+
+	Q =   K0_TORQUE + K1_TORQUE * RPM + K2_TORQUE * RPM**2
 
 	COUNTER_TORQUE = 2 * Qprop_Q
 
@@ -485,4 +490,17 @@
 
 	END SUBROUTINE SIMPLIFIED_YAW_ANGULAR_ACCELERATION_ESTIMATOR
 
+!##################################################################################################################################
+	SUBROUTINE SOLVE_SECOND_ORDER(aa,bb,cc,r)
+	IMPLICIT NONE
 
+	REAL,intent(in) :: aa,bb,cc
+	INTEGER,intent(out) :: r
+	REAL ::  DELTA
+
+
+	DELTA = bb**2 - 4 * aa *cc
+
+	r = (SQRT( DELTA ) - bb) / (2* aa)
+
+	END SUBROUTINE SOLVE_SECOND_ORDER
