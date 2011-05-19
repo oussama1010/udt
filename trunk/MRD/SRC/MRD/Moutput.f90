@@ -114,7 +114,7 @@
 				table3(2,j+1) = table3(2,j)
 			END DO
 		! the new row is inserted in the free space created
-			table1(1,i) = trim(prop_name)
+			table1(1,i) = prop_name(1:prop_cut-1)
 			table1(2,i) = trim(motor_name)
 			table2(1,i) = BATT_SPEC_NRG * M_BATT
 			table2(2,i) =  M_TOTAL

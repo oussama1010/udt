@@ -61,8 +61,8 @@
                 Qprop_Eff_total, Qprop_P_elec, Qprop_P_prop, Qprop_cl_avg, Qprop_cd_avg 
 
 	CHARACTER(len=25) ::  qprop_outfile, Motor_name, Airfoil_name
-	CHARACTER(len=25) :: qprop_infile, qmil_outfile, Prop_name
-	CHARACTER(len=30) :: propeller_candidate
+	CHARACTER(len=60) :: qprop_infile, qmil_outfile, Prop_name
+	CHARACTER(len=60) :: propeller_candidate
 	CHARACTER(len=200) :: qprop_in_command, qmil_in_command
 	CHARACTER(len=27) :: dir_name
 
@@ -120,4 +120,5 @@
 
 	REAL :: Thrust_MIN, Thrust_MAX, Thrust_DELTA, designThrust
 
+	INTEGER :: prop_cut
 	END MODULE MCOMMON

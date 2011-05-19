@@ -44,11 +44,13 @@
 
 		CALL GENERATE_PROPELLER
 
+		prop_cut = INDEX(prop_name,' ')
+
 		CALL PROP_DATA_FINDER
 
 		WRITE(*,*)'Aspect ratio :', BLADE_ASPECT_RATIO
 		IF (BLADE_ASPECT_RATIO .Le. 3)  THEN
-			Call system ('rm ./RESULTS/PROPELLER/'//trim(prop_name))
+			Call system ('rm ./RESULTS/PROPELLER/'//prop_name(1:prop_cut-1))
 		ELSE 
 			indx_motor=indx_motor_ary(1)
 			do while (indx_motor .le. indx_motor_ary(2))
@@ -57,7 +59,7 @@
 
 				!CALL Get_motor_name (indx_motor,motor_name)
 				CALL Get_motor_specs (indx_motor,motor_name, R_MOTOR, I0_MOTOR, KV_MOTOR,M_MOTOR, MAX_POW_MOTOR)
-			WRITE(*,*)'*****************	',trim(prop_name) ,'	', trim(motor_name),'	**********'
+			WRITE(*,*)'*****************	',prop_name(1:prop_cut-1) ,'	', trim(motor_name),'	**********'
 				CALL M_SIMUL	
 			M_BATT = M_BATT + M_BATT_DELTA
 			end do ! M_BATT loop
@@ -92,8 +94,8 @@
 			WRITE(propeller_candidate,650)trim(Airfoil_name),NR_BLADE,PROP_RADIUS,RPM,designThrust
 		END IF
 
-600 	Format (A,'-',I1,'-',F3.2,'-',I4,'-',F3.1)
-650 	Format (A,'-',I1,'-',F3.2,'-',I5,'-',F3.1)
+600 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I4,'-T',F3.1)
+650 	Format (A,'-B',I1,'-R',F3.2,'-RPM',I5,'-T',F3.1)
 
 		Qmil_RPM = RPM
 

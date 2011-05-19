@@ -259,7 +259,7 @@
 
 			close(80)
 
-	Prop_name=Prop_name_array(indx)
+	Prop_name=trim(Prop_name_array(indx))
 !	write(*,*)' Propeller Name is : ',Prop_name
 	end subroutine Get_prop_name
 !################################################################################

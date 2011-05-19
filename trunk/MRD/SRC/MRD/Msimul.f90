@@ -25,6 +25,8 @@
  
 	WRITE(*,*)'QProp Simulation'
 
+	prop_cut = INDEX(prop_name,' ')
+
 !!! The mass depends on the propeller and the engine used so it cannot be calculated before the loop for now.
 	CALL PROP_DATA_FINDER
 
@@ -45,13 +47,12 @@
 		Beta = 0
 	END IF
 
-		WRITE(*,500) trim(prop_name), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile)
 
 !---The command to call Qprop is created and launched
 	IF (RUN_MODE .EQ. 2) THEN 
-		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile) 
+		WRITE(qprop_in_command,500) prop_name(1:prop_cut-1), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile) 
 	ELSE
-		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile) 
+		WRITE(qprop_in_command,550) prop_name(1:prop_cut-1), trim(motor_name), Speed(wcn), Beta, Thrust(wcn), trim(qprop_outfile) 
 	END IF
 
 500		Format ('../../BIN/qprop',' ./RESULTS/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
@@ -62,6 +63,7 @@
 
 	
 		Call system (qprop_in_command)
+
 
 !---Read the results from Qprop out file
 		Call qprop_read (Qprop_V, Qprop_rpm, Qprop_Dbeta, Qprop_T, Qprop_Q, Qprop_Pshaft, &
@@ -89,6 +91,7 @@
 	 	write (*,*) 'RPM      :  ', Qprop_rpm
 	VOLTS = Qprop_Volts
 	P_ELEC = Qprop_P_elec
+
 
 !---Calls the subroutine finding the maximal flight time and range
 	CALL M_MAX_FLIGHT_TIME
@@ -261,9 +264,9 @@
 
 !--- The max thrust of a motor is computed using Qprop 
 	IF (RUN_MODE .EQ. 2) THEN 
-		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
+		WRITE(qprop_in_command,500)prop_name(1:prop_cut-1), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
 	ELSE
-		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
+		WRITE(qprop_in_command,550) prop_name(1:prop_cut-1), trim(motor_name), Speed(wcn), BATT_MAX_VOLT, trim(qprop_outfile) 
 	END IF
 
 
@@ -409,9 +412,9 @@
 
 !--- Computing the torque making the UAV turn
 	IF (RUN_MODE .EQ. 2) THEN 
-		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 1.6, trim(qprop_outfile) 
+		WRITE(qprop_in_command,500) prop_name(1:prop_cut-1), trim(motor_name), 0.06, Thrust(wcn) * 1.6, trim(qprop_outfile) 
 	ELSE
-		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 1.6, trim(qprop_outfile) 
+		WRITE(qprop_in_command,550) prop_name(1:prop_cut-1), trim(motor_name), 0.06, Thrust(wcn) * 1.6, trim(qprop_outfile) 
 	END IF
 
 500	Format ('../../BIN/qprop',' ./RESULTS/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - 0 ',F5.2,' > ',A )
@@ -429,9 +432,9 @@
 
 !--- Computing the remaining torque on the 2 other engines (for now they are set to give 20% of the total lift to keep sufficient control)
 	IF (RUN_MODE .EQ. 2) THEN 
-		WRITE(qprop_in_command,500) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 0.4, trim(qprop_outfile)  
+		WRITE(qprop_in_command,500) prop_name(1:prop_cut-1), trim(motor_name), 0.06, Thrust(wcn) * 0.4, trim(qprop_outfile)  
 	ELSE
-		WRITE(qprop_in_command,550) trim(prop_name), trim(motor_name), 0.06, Thrust(wcn) * 0.4, trim(qprop_outfile)  
+		WRITE(qprop_in_command,550) prop_name(1:prop_cut-1), trim(motor_name), 0.06, Thrust(wcn) * 0.4, trim(qprop_outfile)  
 	END IF
 	
 
