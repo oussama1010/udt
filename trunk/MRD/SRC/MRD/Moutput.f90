@@ -37,7 +37,7 @@
 	WRITE (10,'(A,F6.3,A)') ' Flying weight            : ',  table2(2,k), ' kg'
 	WRITE (10,'(A,F4.1,A)') ' Flying Speed             : ',  table2(9,k), ' m/s'
 	WRITE (10,'(A,F7.0,A)') ' Maximal Range            : ',  table2(10,k), ' m'
-	WRITE (10,'(A,F4.1,A)') ' Frame size               : ', 2 * 100 * table2(6,k), ' cm'
+	WRITE (10,'(A,F4.1,A)') ' Frame size               : ',  100 * table2(6,k), ' cm'
 	WRITE (10,'(A,F5.3,A)') ' Frame weight             : ',  table2(8,k), ' kg'
 	WRITE (10,'(A,F5.2,A)') ' Thrust to hover          : ',  table2(3,k), ' N'
 	WRITE (10,'(A,F6.2,A)') ' Flight power             : ',  table2(4,k), ' W'
@@ -121,7 +121,7 @@
 			table2(3,i) = Thrust(wcn)
 			table2(4,i) = TOTAL_FLYING_POWER
 			table2(5,i) = TW_RATIO
-			table2(6,i) = FRAME_SPAN
+			table2(6,i) = 2*(FRAME_SPAN+PROP_RADIUS)
 			table2(7,i) = M_BATT
 			table2(8,i) = M_FRAME
 			table2(9,i) = TRANSLATION_SPEED
