@@ -40,12 +40,13 @@
 			RUN_MODE,	&
 			FRAME_TYPE,	&
 			FRAME_MAT,	&
-			FRAME_SHAPE
+			FRAME_SHAPE	
 
 
 
 
-	REAL :: TIP_CLRNC
+
+	REAL :: TIP_CLRNC, FRAME_FIX_SIZE
 
 
 	REAL :: M_FRAME,	&
@@ -121,5 +122,5 @@
 
 	REAL :: Thrust_MIN, Thrust_MAX, Thrust_DELTA, designThrust
 
-	INTEGER :: prop_cut
+	INTEGER :: prop_cut, CANCEL_SIMUL
 	END MODULE MCOMMON

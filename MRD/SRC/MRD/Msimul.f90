@@ -33,6 +33,11 @@
 !---The PROP_RADIUS is known and the optimun size can be computed
 	CALL MFRAME
 
+	IF (CANCEL_SIMUL .eq. 1) THEN
+		WRITE(*,*)'the propeller is not suitable'
+		GOTO 1000
+	ENDIF
+
 !---Knowing the frame size the total weight can be calculated and gives the needed thrust of each motor 
 	CALL M_TOTAL_WEIGHT
 	
@@ -107,6 +112,7 @@
 			CALL CREATE_OUTPUT_TABLE
 		END IF
 
+1000	CONTINUE
 
 	END SUBROUTINE M_SIMUL
 
@@ -125,6 +131,11 @@
 
 !---The PROP_RADIUS is known and the optimun size can be computed
 	CALL MFRAME
+
+	IF (CANCEL_SIMUL .eq. 1) THEN
+		WRITE(*,*)'the propeller is not suitable'
+		GOTO 1000
+	ENDIF
 
 !---Knowing the frame size the total weight can be calculated and gives the needed thrust of each motor 
 	CALL M_TOTAL_WEIGHT
@@ -187,6 +198,7 @@
 			CALL CREATE_OUTPUT_TABLE
 		END IF
 
+1000	CONTINUE
 
 	END SUBROUTINE M_SIMPLIFIED_SIMUL
 
