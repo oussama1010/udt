@@ -29,7 +29,7 @@ FRAME_SHAPE :    0    ! 0 cross, 1 round ...
 FRAME_FIX_MASS: 0.1  ! kg, If defined, the prog doesnt estimate the mass... otherwise leave 0.0
 FRAME_SIZE: 0 0 0 ! Array, min,max,delta	If not defined the prog estimate the size according to the propellers used
 FRAME_FIX_SIZE:	0	! aircraft diameter in m, If defined, the prog doesnt estimate the size and uses only suitable propellers... otherwise leave 0.0
-MAX_FRAME_SIZE:	0.5	! aircraft diameter in m, If defined, the prog doesnt estimate the size and uses only suitable propellers... otherwise leave 0.0
+MAX_FRAME_SIZE:	0.5	! aircraft max diameter in m, If defined, the prog doesnt estimate the size and uses only suitable propellers... otherwise leave 0.0
 TIP_CLRNC:	0.05	! propellers tip clearance in m
 NR_MOTOR:	4	!number of engines
 

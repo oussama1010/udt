@@ -94,10 +94,10 @@
 
 	INTEGER :: MAX_FLIGHT_TIME
 
-	Character(len=60),dimension(2,1000) :: table1
-	Real,dimension(10,1000) :: table2
-	Real,dimension(1,1000) :: table4
-	Integer,dimension(2,1000) :: table3
+	Character(len=60),dimension(2,10000) :: table1
+	Real,dimension(10,10000) :: table2
+	Real,dimension(1,10000) :: table4
+	Integer,dimension(2,10000) :: table3
 
 	Integer :: n, MISSION_SCORE, FTIME_COEFF, SIZE_COEFF, TW_COEFF, RANGE_COEFF
 
