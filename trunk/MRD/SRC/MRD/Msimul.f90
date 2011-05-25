@@ -257,8 +257,8 @@
 
 !--- This is a really simple model that needs to be improved
 	
-	CNTRLR_MIN_EFF = 0.5
-	CNTRLR_MAX_EFF = 0.9
+!	CNTRLR_MIN_EFF = 0.5
+!	CNTRLR_MAX_EFF = 0.9
 
 	CONTROLLER_ESTIMATED_EFFICIENCY = CNTRLR_MIN_EFF  + (VOLTS / BATT_MAX_VOLT) * (CNTRLR_MAX_EFF - CNTRLR_MIN_EFF)
 
