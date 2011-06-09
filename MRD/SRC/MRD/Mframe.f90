@@ -20,7 +20,7 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
-	WRITE(*,*)' Frame Building Subroutine '
+	WRITE(*,*)' 	Frame Building Subroutine '
 !--- Fixed Frame Weight for Type 10---
 
 	IF (M_frame_fix .Eq. 0) THEN 
@@ -48,7 +48,7 @@
 		ENDIF
 	ELSE 
 		FRAME_SPAN = FRAME_FIX_SIZE/2 - PROP_RADIUS 
-			WRITE(*,*)'FRAME_SPAN',FRAME_SPAN
+			!WRITE(*,*)'FRAME_SPAN',FRAME_SPAN
 
 		IF (2 * FRAME_SPAN**2 .le. (2*PROP_RADIUS+TIP_CLRNC)**2) THEN
 			CANCEL_SIMUL = 1

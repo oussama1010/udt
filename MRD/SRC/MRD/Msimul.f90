@@ -63,7 +63,7 @@
 500		Format ('../../BIN/qprop',' ./RESULTS/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
 550		Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
 
-		write(*,*) qprop_in_command
+!		write(*,*) qprop_in_command
 
 
 	
@@ -95,6 +95,8 @@
 !	 	write (*,*)
 !	 	write (*,*) 'RPM      :  ', Qprop_rpm
 	VOLTS = Qprop_Volts
+	AMPS =  Qprop_Amps
+
 	P_ELEC = Qprop_P_elec
 
 
@@ -110,6 +112,10 @@
 ! Only the configurations meeting the mission constraints are stored
 		IF ( MIN_TW_RATIO .Le. TW_RATIO) THEN
 			CALL CREATE_OUTPUT_TABLE
+		ELSE 
+			WRITE(*,*)''
+			WRITE(*,*)'Configuration not suitable'
+			WRITE(*,*)''
 		END IF
 
 1000	CONTINUE
@@ -147,8 +153,6 @@
 !---Knowing the thrust need needed we can find the RPM which gives the torque
 	CALL SOLVE_SECOND_ORDER(K2_THRUST, K1_THRUST , K0_THRUST - Thrust(wcn), RPM)
 
-	WRITE(*,*)'delta', RPM
-
 	TORQUE = K0_TORQUE + K1_TORQUE * RPM + K2_TORQUE * RPM**2
 
 !---We can now calculate the power consumption using the motor parameters.
@@ -162,24 +166,24 @@
 
 
 !--- Debug Print...
-		write (*,*)
-		write (*,*) 'Working Cond          :  ', wcn
-		write (*,*) 'Motor Name            :  ', motor_name
-		write (*,*) 'Prop Name             :  ', prop_name 
-		write (*,*) 'MASS                  :  ', M_TOTAL 
-		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
-		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
-		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
-		write (*,*) 'Torque                :  ', TORQUE
-	 	write (*,*) 'Thrust                :  ', Thrust(wcn)
-	 	write (*,*) 'Kv                :  ', Kv_MOTOR
-	 	write (*,*) 'RPM                   :  ', RPM
-	 	write (*,*) 'Volts                 :  ', VOLTS
-	 	write (*,*) 'Amps                  :  ', AMPS
-	 	write (*,*) 'I0                  :  ', I0_MOTOR
-	 	write (*,*) 'Mecanical Power      :  ', P_MECA
-	 	write (*,*) 'Electrical Power      :  ', P_ELEC
-	 	write (*,*)
+!		write (*,*)
+!		write (*,*) 'Working Cond          :  ', wcn
+!		write (*,*) 'Motor Name            :  ', motor_name
+!		write (*,*) 'Prop Name             :  ', prop_name 
+!		write (*,*) 'MASS                  :  ', M_TOTAL 
+!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
+!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
+!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
+!		write (*,*) 'Torque                :  ', TORQUE
+!	 	write (*,*) 'Thrust                :  ', Thrust(wcn)
+!	 	write (*,*) 'Kv                :  ', Kv_MOTOR
+!	 	write (*,*) 'RPM                   :  ', RPM
+!	 	write (*,*) 'Volts                 :  ', VOLTS
+!	 	write (*,*) 'Amps                  :  ', AMPS
+!	 	write (*,*) 'I0                  :  ', I0_MOTOR
+!	 	write (*,*) 'Mecanical Power      :  ', P_MECA
+!	 	write (*,*) 'Electrical Power      :  ', P_ELEC
+!	 	write (*,*)
 
 
 !---Calls the subroutine finding the maximal flight time and range
@@ -215,7 +219,7 @@
 
 	INTEGER :: MAX_FLIGHT_TIME_MIN, MAX_FLIGHT_TIME_HOUR
 
-	WRITE(*,*)'Max flight time'
+	WRITE(*,*)'	Max flight time'
 
 	NRG = BATT_SPEC_NRG * M_BATT
 
@@ -239,8 +243,8 @@
 
 !	MAX_FLIGHT_TIME_MIN= modulo(MAX_FLIGHT_TIME,60)
 
-	write (*,*) 'the total power needed is :  ', TOTAL_FLYING_POWER, 'W'		! debug
-	write (*,*) 'the maximal flight time is  :  ', MAX_FLIGHT_TIME,'min'		! debug
+!	write (*,*) 'the total power needed is :  ', TOTAL_FLYING_POWER, 'W'		! debug
+!	write (*,*) 'the maximal flight time is  :  ', MAX_FLIGHT_TIME,'min'		! debug
 !	write (*,*)
 	
 
@@ -253,7 +257,7 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
-	WRITE(*,*)'Controller effieciency estimator'
+	WRITE(*,*)'		Controller effieciency estimator'
 
 !--- This is a really simple model that needs to be improved
 	
@@ -272,9 +276,12 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
-	WRITE(*,*)'Thrust/weight estimator'
+	WRITE(*,*)'	Thrust/weight estimator'
+
+	!REAL :: INPUT_VOLTS
 
 	Speed(wcn) = 0.1
+	!INPUT_VOLTS = BATT_MAX_VOLT
 
 !--- The max thrust of a motor is computed using Qprop 
 	IF (RUN_MODE .EQ. 2) THEN 
@@ -298,7 +305,9 @@
 !---The thrust weight ratio is then calculated
 	TW_RATIO = NR_MOTOR *  Qprop_T / (M_TOTAL * GRAV_ACC )
 
-	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO
+	MAX_OUTPUT_CURRENT = Qprop_Amps
+
+!	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO
 
 	END SUBROUTINE TW_RATIO_ESTIMATOR
 
@@ -311,7 +320,7 @@
 
 	REAL :: Q, I, V, ERROR, PREV_ERROR, DELTA_RPM
 
-	WRITE(*,*)'Simplified  Thrust/weight estimator'
+	WRITE(*,*)'	Simplified  Thrust/weight estimator'
 
 
 	DELTA_RPM = 1000
@@ -341,7 +350,9 @@
 	
 	TW_RATIO = NR_MOTOR *(K0_THRUST+ K1_THRUST* RPM +  K2_THRUST* RPM**2)  / (M_TOTAL * GRAV_ACC )
 
-	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO	 !debug
+	MAX_OUTPUT_CURRENT = I
+
+!	write (*,*) 'the thrust to weight ratio is :  ', TW_RATIO	 !debug
 
 	END SUBROUTINE SIMPLIFIED_TW_RATIO_ESTIMATOR
 
@@ -355,7 +366,7 @@
 	REAL :: SCDRAG0, SCDRAG_MAX, PHI_MAX, THRUSTtemp, ERROR , PREV_ERROR, DELTA_PHI, F, &
 		DRAG, SCDRAG
 
-	write (*,*) 'bank angle estimator'
+	write (*,*) '	bank angle estimator'
 
 
 	SCDRAG0 = 0.01
@@ -403,7 +414,7 @@
 	USE MCOMMON
 	IMPLICIT NONE
 
-	WRITE(*,*)'Max range estimator'
+	WRITE(*,*)'	Max range estimator'
 
 	MAX_RANGE = MAX_FLIGHT_TIME * 60 * TRANSLATION_SPEED
 
@@ -419,7 +430,7 @@
 
 	REAL :: TOTAL_TORQUE, COUNTER_TORQUE
 	
-	WRITE(*,*)'yaw angular acceleration estimator'
+	WRITE(*,*)'	yaw angular acceleration estimator'
 
 	CALL MOMENT_OF_INERTIA
 
@@ -478,7 +489,7 @@
 
 	REAL :: Q, TOTAL_TORQUE, COUNTER_TORQUE
 	
-	WRITE(*,*)'Simplified yaw angular acceleration estimator'
+	WRITE(*,*)'	Simplified yaw angular acceleration estimator'
 
 	CALL MOMENT_OF_INERTIA
 
