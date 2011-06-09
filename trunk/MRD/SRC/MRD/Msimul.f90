@@ -110,10 +110,13 @@
 	CALL YAW_ANGULAR_ACCELERATION_ESTIMATOR
 
 ! Only the configurations meeting the mission constraints are stored
-		IF ( MIN_TW_RATIO .Le. TW_RATIO) THEN
+		IF ( MIN_TW_RATIO .Le. TW_RATIO .AND. AMPS .LE. MAX_STEADY_CURRENT .AND. MAX_OUTPUT_CURRENT .LE. &
+		MAX_BURST_CURRENT ) THEN
 			CALL CREATE_OUTPUT_TABLE
-		ELSE 
-			WRITE(*,*)''
+		ELSE
+			WRITE(*,*)MIN_TW_RATIO, TW_RATIO
+			WRITE(*,*)AMPS,  MAX_STEADY_CURRENT
+			WRITE(*,*)MAX_OUTPUT_CURRENT, MAX_BURST_CURRENT
 			WRITE(*,*)'Configuration not suitable'
 			WRITE(*,*)''
 		END IF
@@ -198,8 +201,13 @@
 	CALL SIMPLIFIED_YAW_ANGULAR_ACCELERATION_ESTIMATOR
 
 ! Only the configurations meeting the mission constraints are stored
-		IF ( MIN_TW_RATIO .Le. TW_RATIO) THEN
+		IF ( MIN_TW_RATIO .Le. TW_RATIO .AND. AMPS .LE. MAX_STEADY_CURRENT .AND. MAX_OUTPUT_CURRENT .LE. &
+		MAX_BURST_CURRENT ) THEN
 			CALL CREATE_OUTPUT_TABLE
+		ELSE
+			WRITE(*,*)''
+			WRITE(*,*)'Configuration not suitable'
+			WRITE(*,*)''
 		END IF
 
 1000	CONTINUE

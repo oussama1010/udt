@@ -35,14 +35,15 @@ NR_MOTOR:	4	!number of engines
 
 !--- Constraints & Checks ---!
 PROP_AR:
-MIN_TW_RATIO:	3	!minimum thrust/weight ratio to reach 
-MAX_OUTPUT_CURRENT: 3	!A, max current that each controller can output (keep high if not used)
+MIN_TW_RATIO:	2	!minimum thrust/weight ratio to reach 
+MAX_STEADY_CURRENT: 15	!A, max current that each controller can output (keep high if not used)
+MAX_BURST_CURRENT: 20	!A, max current that each controller can output (keep high if not used)
 
 !---Mission Scoring---!
-ENDURANCE_COEFF:	70	!set importance of max endurance for the scoring
+ENDURANCE_COEFF:	100	!set importance of max endurance for the scoring
 SIZE_COEFF:		0	!set importance of the size for the scoring
-MANEUVRABILITY_COEFF:	10	!set importance of maneuvrability (thrust/weight ratio) for the scoring
-RANGE_COEFF:		20	!set importance of range for the scoring
+MANEUVRABILITY_COEFF:	0	!set importance of maneuvrability (thrust/weight ratio) for the scoring
+RANGE_COEFF:		0	!set importance of range for the scoring
 
 !--- Energy Source ---!
 BATT_SPEC_ENERGY:	160	! 100 Wh/kg
@@ -51,8 +52,8 @@ BATT_MAX_VOLT:		12	! 12 V
 
 
 !--- PROGRAM RUN MODE ---!
-RUN_MODE:	0	! Simplified analyse:0, Analyse:1, Design:2
-
+RUN_MODE:	1	! Simplified analyse:0, Analyse:1, Design:2
+ 
 
 !--- Power Consumption ---!
 AVIONICS_POWER:		4	! autopilot consumption 4 W
