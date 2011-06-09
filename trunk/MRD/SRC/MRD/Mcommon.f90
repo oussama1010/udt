@@ -95,8 +95,7 @@
 	INTEGER :: MAX_FLIGHT_TIME
 
 	Character(len=60),dimension(2,10000) :: table1
-	Real,dimension(10,10000) :: table2
-	Real,dimension(1,10000) :: table4
+	Real,dimension(14,10000) :: table2
 	Integer,dimension(2,10000) :: table3
 
 	Integer :: n, MISSION_SCORE, FTIME_COEFF, SIZE_COEFF, TW_COEFF, RANGE_COEFF
@@ -122,5 +121,8 @@
 
 	REAL :: Thrust_MIN, Thrust_MAX, Thrust_DELTA, designThrust
 
+	REAL :: MAX_OUTPUT_CURRENT, HOVER_CURRENT
+
 	INTEGER :: prop_cut, CANCEL_SIMUL
+
 	END MODULE MCOMMON

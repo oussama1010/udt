@@ -23,8 +23,7 @@ SUBROUTINE M_TOTAL_WEIGHT
 	USE MCOMMON
 	IMPLICIT NONE
 
-	WRITE(*,*)' Total Weight Subroutine ' 
-	write (*,*)
+	WRITE(*,*)'	Total Weight Subroutine ' 
 
 !	CALL ENGINE_WEIGHT
 
@@ -52,6 +51,8 @@ SUBROUTINE M_TOTAL_WEIGHT
 	integer ::  status, i, j
 	REAL :: radius, chord, radius1, chord1, S, Rfac, Cfac, Bfac
 
+	WRITE(*,*)'	Propeller data finder' 
+
 	radius = 0
 	chord = 0
 	S = 0
@@ -73,7 +74,7 @@ SUBROUTINE M_TOTAL_WEIGHT
 !--- Find the number of blades...
 		IF ( LINE( (INDEX(LINE,'!')+2) : (INDEX(LINE,'!')+9) ) .Eq. 'Nblades') THEN
 			READ(LINE,*)NR_BLADE
-			WRITE(*,*)'The selected propeller has', NR_BLADE, ' blades'	!debug
+			!WRITE(*,*)'The selected propeller has', NR_BLADE, ' blades'	!debug
 		END IF
 
 !--- Find the unit coefficients...
@@ -132,6 +133,8 @@ SUBROUTINE M_TOTAL_WEIGHT
 	IMPLICIT NONE
 
 	REAL :: IFRAME, IMOTOR
+
+	WRITE(*,*)'		Computing aircraft inertia' 
 
 	IFRAME = 1/12 * M_FRAME * (2 * FRAME_SPAN)**2
 
