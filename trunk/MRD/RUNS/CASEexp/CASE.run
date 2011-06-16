@@ -36,8 +36,8 @@ NR_MOTOR:	4	!number of engines
 !--- Constraints & Checks ---!
 PROP_AR:
 MIN_TW_RATIO:	3	!minimum thrust/weight ratio to reach 
-MAX_STEADY_CURRENT: 15	!A, max current that each controller can output (keep high if not used)
-MAX_BURST_CURRENT: 20	!A, max current that each controller can output (keep high if not used)
+MAX_STEADY_CURRENT: 20	!A, max current that each controller can output (keep high if not used)
+MAX_BURST_CURRENT: 25	!A, max current that each controller can output (keep high if not used)
 
 !---Mission Scoring---!
 ENDURANCE_COEFF:	70	!set importance of max endurance for the scoring
@@ -52,7 +52,7 @@ BATT_MAX_VOLT:		12	! 12 V
 
 
 !--- PROGRAM RUN MODE ---!
-RUN_MODE:	1	! Simplified analyse:0, Analyse:1, Design:2
+RUN_MODE:	0	! Simplified analyse:0, Analyse:1, Design:2
 ###CREATE_BATT_GRAPH:	1	!Generates graph of endurance vs battery size for each configuration if set to 1, otherwize put 0
  
 

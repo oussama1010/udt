@@ -79,6 +79,8 @@
 	do while (indx_motor .le. indx_motor_ary(2))
 	indx_simple_prop=indx_simple_prop_ary(1)
 	do while (indx_simple_prop .le.indx_simple_prop_ary(2))
+	CALL SYSTEM("rm gnuplot.dat")
+	CALL SYSTEM("rm gnuplot.conf")
 	M_BATT = M_BATT_MIN
 	do while (M_BATT .le. M_BATT_MAX)
 	TRANSLATION_SPEED = TRANSLATION_SPEED_MIN
@@ -105,6 +107,7 @@
 	end do ! M_BATT loop
 	M_BATT = M_BATT + M_BATT_DELTA
 	end do ! M_BATT loop
+	CALL CREATE_GRAPH
 	indx_simple_prop=indx_simple_prop+1
 	end do ! indx_simple_prop loop
 	indx_motor=indx_motor+1
