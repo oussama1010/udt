@@ -8,7 +8,7 @@ PROGS = mrd qprop qmil
 
 
 MRDOBJS = Mcommon.o Mcase_read1.o Mfunctions.o Mframe.o Mpanalyse.o Mpdsgn.o \
-Mweight.o Mexec.o MRD.o Moutput.o Msimul.o
+Mweight.o Mexec.o MRD.o Moutput.o Msimul.o Mgraphplot.o
 #Mcase_read.o \
 
 QPOBJS = qprop.o gvcalc.o cdfun.o tqcalc.o motor.o spline.o io.o qcget.o #gaussn0.o
@@ -59,6 +59,8 @@ Moutput.o :	$(MSRC)/Moutput.f90
 	$(FC) -c $(MFLAGS) $(MSRC)/Moutput.f90
 Msimul.o :	$(MSRC)/Msimul.f90
 	$(FC) -c $(MFLAGS) $(MSRC)/Msimul.f90
+Mgraphplot.o :	$(MSRC)/Mgraphplot.f90
+	$(FC) -c $(MFLAGS) $(MSRC)/Mgraphplot.f90
 
 #-------Qprop & Qmil src files--------------
 qprop.o: $(QpSRC)/qprop.f $(QpSRC)/QDEF.INC

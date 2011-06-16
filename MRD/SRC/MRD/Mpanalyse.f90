@@ -1,6 +1,6 @@
 !-----------------------------------------------------------------------------|
 !    Consists a part of MRD Program - Multi Rotor Vehicle Design, see MRD.f90 |
-!    Copyright (C) 2011  Murat BRONZ                                          |
+!    Copyright (C) 2011  Murat BRONZ & Charles PLACHOT                        |
 !                                                                             |
 !    This program is free software; you can redistribute it and/or modify     |
 !    it under the terms of the GNU General Public License as published by     |
@@ -27,6 +27,8 @@
 	do while (indx_motor .le. indx_motor_ary(2))
 	indx_prop=indx_prop_ary(1)
 	do while (indx_prop .le.indx_prop_ary(2))
+	CALL SYSTEM("rm gnuplot.dat")
+	CALL SYSTEM("rm gnuplot.conf")
 	M_BATT = M_BATT_MIN
 	do while (M_BATT .le. M_BATT_MAX)
 	TRANSLATION_SPEED = TRANSLATION_SPEED_MIN
@@ -52,6 +54,7 @@
 	end do ! M_BATT loop
 	M_BATT = M_BATT + M_BATT_DELTA
 	end do ! M_BATT loop
+	CALL CREATE_GRAPH
 	indx_prop=indx_prop+1
 	end do ! indx_prop loop
 	indx_motor=indx_motor+1

@@ -1,6 +1,6 @@
 !-----------------------------------------------------------------------------|
 !    Consists a part of MRD Program - Multi Rotor Vehicle Design, see MRD.f90 |
-!    Copyright (C) 2011  Murat BRONZ                                          |
+!    Copyright (C) 2011  Murat BRONZ & Charles PLACHOT                        |
 !                                                                             |
 !    This program is free software; you can redistribute it and/or modify     |
 !    it under the terms of the GNU General Public License as published by     |
@@ -93,6 +93,7 @@
 	REAL :: BATT_MAX_VOLT, CONTROLLER_ESTIMATED_EFFICIENCY, AVIONICS_POWER, PAYLOAD_POWER, TW_RATIO, TOTAL_FLYING_POWER
 
 	INTEGER :: MAX_FLIGHT_TIME
+	REAL :: MAX_FLIGHT_TIME_FLOAT
 
 	Character(len=60),dimension(2,10000) :: table1
 	Real,dimension(14,10000) :: table2
