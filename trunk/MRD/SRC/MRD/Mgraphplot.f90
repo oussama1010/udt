@@ -16,63 +16,40 @@
 !    with this program; if not, write to the Free Software Foundation, Inc.,  |
 !    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.              |
 !-----------------------------------------------------------------------------|
-	SUBROUTINE MFRAME
+	SUBROUTINE FILL_GNUPLOT_DATA
 	USE MCOMMON
 	IMPLICIT NONE
 
-	WRITE(*,*)' 	Frame Building Subroutine '
-!--- Fixed Frame Weight for Type 10---
+	open (60, file='gnuplot.dat', status='unknown',position="append")
 
-	IF (M_frame_fix .Eq. 0) THEN 
-		CALL ESTIMATE_MASS()
-	ELSE 
-		CALL ESTIMATE_MASS()
-		M_frame = M_frame_fix
-	END IF
+	write (60,*)MAX_FLIGHT_TIME_FLOAT,M_BATT, TW_RATIO, MIN_TW_RATIO, AMPS, MAX_STEADY_CURRENT
+
+	close (60)
 
 
-	END SUBROUTINE MFRAME
+	END SUBROUTINE FILL_GNUPLOT_DATA
 
-	SUBROUTINE ESTIMATE_MASS
+
+
+
+	SUBROUTINE CREATE_GRAPH
 	USE MCOMMON
 	IMPLICIT NONE
 
-	Real ::  volume
+	open (60, file='gnuplot.conf', status='new',position="append")
 
-	IF (FRAME_FIX_SIZE .eq. 0) THEN
-		FRAME_SPAN = SQRT((2*PROP_RADIUS+TIP_CLRNC)**2/2)
-		IF (MAX_FRAME_SIZE .ne. 0 .and. 2*(FRAME_SPAN+PROP_RADIUS) .gt. MAX_FRAME_SIZE) THEN
-			CANCEL_SIMUL = 1
-		ELSE
-			CANCEL_SIMUL = 0
-		ENDIF
-	ELSE 
-		FRAME_SPAN = FRAME_FIX_SIZE/2 - PROP_RADIUS 
-			!WRITE(*,*)'FRAME_SPAN',FRAME_SPAN
+	write (60,*)'set term png '	
+	write (60,*)'set xrange [', M_BATT_MIN,':', M_BATT_MAX,']'
+	write (60,*)'set yrange [', 0,':', MAX_FLIGHT_TIME + 1,']'
+	write (60,*)'set xlabel "Battery mass"'
+	write (60,*)'set output "./RESULTS/GRAPHS/',prop_name(1:prop_cut-1),'-',trim(motor_name),'.png"'
+	write (60,*)'plot "gnuplot.dat" using 2:1 title "Flight Time" w lines,', &
+			' "gnuplot.dat" using 2:3 title "TW ratio" w lines, ', &
+			' "gnuplot.dat" using 2:4 title "Min TW ratio" w lines, ', &
+			' "gnuplot.dat" using 2:5 title "Motor input current to hover" w lines'
 
-		IF (2 * FRAME_SPAN**2 .le. (2*PROP_RADIUS+TIP_CLRNC)**2) THEN
-			CANCEL_SIMUL = 1
-		ELSE
-			CANCEL_SIMUL = 0
-		ENDIF
+	close (60)
 
-	END IF
+	CALL SYSTEM('/usr/bin/gnuplot gnuplot.conf')
 
-	SELECT CASE (FRAME_SHAPE)
-	CASE(0)
-		SELECT CASE (FRAME_MAT)
-			CASE(0)	
-				volume = (0.1 *FRAME_SPAN)*(0.0533 *FRAME_SPAN)*FRAME_SPAN*4
-				M_frame = volume *611.1+ 0.03
-			CASE(1)	
-				volume = (0.088 *FRAME_SPAN)*(0.035 *FRAME_SPAN)*FRAME_SPAN*4
-				M_frame = volume *1.4/1000+ 0.03			! FRAME_SPAN = 24cm -> 110g
-			CASE(2)
-				volume = (0.2 *FRAME_SPAN)*(0.3 *FRAME_SPAN)*FRAME_SPAN*4
-				M_frame = volume *0.333/1000+ 0.03
-		END SELECT	
-	CASE(1)
-	END SELECT
-
-!	WRITE(*,*)'M_FRAME', M_FRAME, FRAME_SPAN		!- debug
-	END SUBROUTINE ESTIMATE_MASS
+	END SUBROUTINE CREATE_GRAPH

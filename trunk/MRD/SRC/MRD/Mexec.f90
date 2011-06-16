@@ -1,6 +1,6 @@
 !-----------------------------------------------------------------------------|
 !    Consists a part of MRD Program - Multi Rotor Vehicle Design, see MRD.f90 |
-!    Copyright (C) 2011  Murat BRONZ                                          |
+!    Copyright (C) 2011  Murat BRONZ & Charles PLACHOT                        |
 !                                                                             |
 !    This program is free software; you can redistribute it and/or modify     |
 !    it under the terms of the GNU General Public License as published by     |

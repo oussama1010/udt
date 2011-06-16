@@ -1,6 +1,6 @@
 !-----------------------------------------------------------------------------|
 !    Consists a part of MRD Program - Multi Rotor Vehicle Design, see MRD.f90 |
-!    Copyright (C) 2011  Murat BRONZ                                          |
+!    Copyright (C) 2011  Murat BRONZ & Charles PLACHOT                        |
 !                                                                             |
 !    This program is free software; you can redistribute it and/or modify     |
 !    it under the terms of the GNU General Public License as published by     |
@@ -109,6 +109,9 @@
 
 	CALL YAW_ANGULAR_ACCELERATION_ESTIMATOR
 
+
+	CALL FILL_GNUPLOT_DATA
+
 ! Only the configurations meeting the mission constraints are stored
 		IF ( MIN_TW_RATIO .Le. TW_RATIO .AND. AMPS .LE. MAX_STEADY_CURRENT .AND. MAX_OUTPUT_CURRENT .LE. &
 		MAX_BURST_CURRENT ) THEN
@@ -200,6 +203,9 @@
 
 	CALL SIMPLIFIED_YAW_ANGULAR_ACCELERATION_ESTIMATOR
 
+
+	CALL FILL_GNUPLOT_DATA
+
 ! Only the configurations meeting the mission constraints are stored
 		IF ( MIN_TW_RATIO .Le. TW_RATIO .AND. AMPS .LE. MAX_STEADY_CURRENT .AND. MAX_OUTPUT_CURRENT .LE. &
 		MAX_BURST_CURRENT ) THEN
@@ -245,7 +251,9 @@
 
 	TOTAL_FLYING_POWER = HOVER_POWER / CONTROLLER_ESTIMATED_EFFICIENCY + AVIONICS_POWER + PAYLOAD_POWER
 
-	MAX_FLIGHT_TIME = NRG / TOTAL_FLYING_POWER * 60	! flight time in minutes
+	MAX_FLIGHT_TIME_FLOAT =  NRG / TOTAL_FLYING_POWER * 60	! flight time in minutes
+
+	MAX_FLIGHT_TIME = MAX_FLIGHT_TIME_FLOAT
 
 !	MAX_FLIGHT_TIME_HOUR= MAX_FLIGHT_TIME/ 60
 

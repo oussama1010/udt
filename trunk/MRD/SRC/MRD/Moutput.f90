@@ -1,6 +1,6 @@
 !-----------------------------------------------------------------------------|
 !    Consists a part of MRD Program - Multi Rotor Vehicle Design, see MRD.f90 |
-!    Copyright (C) 2011  Murat BRONZ                                          |
+!    Copyright (C) 2011  Murat BRONZ & Charles PLACHOT                        |
 !                                                                             |
 !    This program is free software; you can redistribute it and/or modify     |
 !    it under the terms of the GNU General Public License as published by     |
@@ -158,6 +158,6 @@ WRITE (10,'(A,F6.3,A)') ' Flying weight            :	',  table2(2,k), ' kg'
 	IMPLICIT NONE
 
 
-	MISSION_SCORE=(FTIME_COEFF*MAX_FLIGHT_TIME)/15+SIZE_COEFF*(10/FRAME_SPAN)+TW_COEFF*(TW_RATIO/3)+RANGE_COEFF*MAX_RANGE/5000
+	MISSION_SCORE=(FTIME_COEFF*MAX_FLIGHT_TIME)/15+SIZE_COEFF*(0.1/FRAME_SPAN)+TW_COEFF*(TW_RATIO/3)+RANGE_COEFF*MAX_RANGE/5000
 
 	END SUBROUTINE CALCULATE_MISSION_SCORE

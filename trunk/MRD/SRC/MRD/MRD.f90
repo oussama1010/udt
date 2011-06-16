@@ -1,7 +1,6 @@
 !-----------------------------------------------------------------------------|
 !    MRD - Multi Rotor Vehicle Design, (by using Qprop & Qmil see /SRC/Qprop) |
-!                                                                             |
-!    Copyright (C) 2011  Murat BRONZ                                          |
+!    Copyright (C) 2011  Murat BRONZ & Charles PLACHOT                        |
 !                                                                             |
 !    This program is free software; you can redistribute it and/or modify     |
 !    it under the terms of the GNU General Public License as published by     |
