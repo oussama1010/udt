@@ -54,6 +54,8 @@
 	CALL SYSTEM('ls -B DATA/PROPELLER > DATA/propeller_name_list.txt')
 	CALL SYSTEM('ls -B DATA/SIMPLE_PROPELLER > DATA/simple_propeller_name_list.txt')
 	CALL SYSTEM("rm output.dat")
+	CALL SYSTEM('mkdir .PLOT')
+
 !######################################################
 
 	indx_motor_ary(1)=1
@@ -75,7 +77,7 @@
 !---Main Loops will be defined here and then EXECuted 1by1
 	CALL MEXEC()
 
-
+	CALL SYSTEM('mv .PLOT/* RESULTS/GRAPHS/.PLOT')
 
 5000	FORMAT(A120)
 

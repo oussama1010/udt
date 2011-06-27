@@ -255,13 +255,7 @@
 
 	MAX_FLIGHT_TIME = MAX_FLIGHT_TIME_FLOAT
 
-!	MAX_FLIGHT_TIME_HOUR= MAX_FLIGHT_TIME/ 60
 
-!	MAX_FLIGHT_TIME_MIN= modulo(MAX_FLIGHT_TIME,60)
-
-!	write (*,*) 'the total power needed is :  ', TOTAL_FLYING_POWER, 'W'		! debug
-!	write (*,*) 'the maximal flight time is  :  ', MAX_FLIGHT_TIME,'min'		! debug
-!	write (*,*)
 	
 
 	END SUBROUTINE M_MAX_FLIGHT_TIME
@@ -409,6 +403,7 @@
 		ERROR = DRAG - F
 
 		IF (ABS(ERROR) .Le. 0.001) THEN
+			!WRITE(*,*)'			PHI :', PHI* 180/3.14  ! debug
 			EXIT
 		ELSE IF ( ERROR * PREV_ERROR .Le. 0) THEN
 			DELTA_PHI = DELTA_PHI / 2
