@@ -52,7 +52,7 @@ BATT_MAX_VOLT:		12	! 12 V
 
 
 !--- PROGRAM RUN MODE ---!
-RUN_MODE:	0	! Simplified analyse:0, Analyse:1, Design:2
+RUN_MODE:	1	! Simplified analyse:0, Analyse:1, Design:2
 ###CREATE_BATT_GRAPH:	1	!Generates graph of endurance vs battery size for each configuration if set to 1, otherwize put 0
  
 
@@ -65,7 +65,7 @@ PAYLOAD_POWER:		2	! payload consumption 2 W
 CONTROLLER_EFF: 0.5 0.9  !MIN MAX coefficient of speed controller
 
 !--- Mission Settings---!
-TRANSLATION_SPEED: 0 0 1	! translation speed, min, max , delta in m/s
+TRANSLATION_SPEED: 0 11 1	! translation speed, min, max , delta in m/s
 
 =======
 

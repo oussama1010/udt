@@ -28,6 +28,7 @@
 	indx_prop=indx_prop_ary(1)
 	do while (indx_prop .le.indx_prop_ary(2))
 	CALL SYSTEM("rm gnuplot.dat")
+	CALL SYSTEM("rm gnuplot2.dat")
 	CALL SYSTEM("rm gnuplot.conf")
 	M_BATT = M_BATT_MIN
 	do while (M_BATT .le. M_BATT_MAX)
@@ -80,6 +81,7 @@
 	indx_simple_prop=indx_simple_prop_ary(1)
 	do while (indx_simple_prop .le.indx_simple_prop_ary(2))
 	CALL SYSTEM("rm gnuplot.dat")
+	CALL SYSTEM("rm gnuplot2.dat")
 	CALL SYSTEM("rm gnuplot.conf")
 	M_BATT = M_BATT_MIN
 	do while (M_BATT .le. M_BATT_MAX)
