@@ -17,11 +17,11 @@ How to get MRD operational.
 
 MRD is develloped on linux and thus is for now only available on linux based OS. However it should not be really difficult to port it to windows. 
 
-#That means that the first thing you need is a computer running with Ubuntu or other Linux based OS.
+ #That means that the first thing you need is a computer running with     Ubuntu or other Linux based OS.
 
-#Install the gfortran-4.5 compiler with the command: $ sudo apt-get install gfortran-4.5
+ #Install the gfortran-4.5 compiler with the command: $ sudo apt-get install gfortran-4.5
 
-#Install svn (Subversion) in order to download keep the program up to date and submit your work if you want to contribute to this project. To do that use: $ apt-get install subversion 
+ #Install svn (Subversion) in order to download keep the program up to date and submit your work if you want to contribute to this project. To do that use: $ apt-get install subversion 
 
 
 
