@@ -1,0 +1,15 @@
+This page describes the use of MRD to design or simulate a multi-rotor UAV.
+
+= Introduction =
+
+MRD is an open source software developed in Enac's UAV department in order to design home made rotorcrafts, mainly quadrotors. MRD is based on the Qprop propeller simulator and on the Qmil design tool. It allows the user to simulate an existing vehicle, but also to run batch analysis and to plot the results in order to chose the optimum propeller, motor and battery for a given project.
+For people capable of producing propellers, MRD is also capable of designing an optimized propeller to meet your mission constraints. 
+
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
