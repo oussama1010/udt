@@ -1,3 +1,5 @@
+=Multi Rotor Design - User Manual=
+
 This page describes the use of MRD to design or simulate a multi-rotor UAV.
 
 = Introduction =
