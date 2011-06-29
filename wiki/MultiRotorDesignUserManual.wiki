@@ -1,4 +1,4 @@
-= Multi Rotor Design - User Manual =
+=Multi Rotor Design - User Manual=
 
 This page describes the use of MRD to design or simulate a multi-rotor UAV.
 
@@ -7,9 +7,26 @@ This page describes the use of MRD to design or simulate a multi-rotor UAV.
 MRD is an open source software developed in Enac's UAV department in order to design home made rotorcrafts, mainly quadrotors. MRD is based on the Qprop propeller simulator and on the Qmil design tool. It allows the user to simulate an existing vehicle, but also to run batch analysis and to plot the results in order to chose the optimum propeller, motor and battery for a given project.
 For people capable of producing propellers, MRD is also capable of designing an optimized propeller to meet your mission constraints. 
 
-The following sections will guide you to set up MRD and to launch your first design and simulation calculations.
+
 
 = Setup =
+
+How to get MRD operational.
+
+== What you need ==
+
+MRD is develloped on linux and thus is for now only available on linux based OS. However it should not be really difficult to port it to windows. 
+
+#That means that the first thing you need is a computer running with Ubuntu or other Linux based OS.
+
+#Install the gfortran-4.5 compiler with the command: $ sudo apt-get install gfortran-4.5
+
+#Install svn (Subversion) in order to download keep the program up to date and submit your work if you want to contribute to this project. To do that use: $ apt-get install subversion 
+
+
+
+
+== Setup step by step ==
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
