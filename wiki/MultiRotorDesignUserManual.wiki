@@ -26,7 +26,8 @@ MRD is develloped on linux and thus is for now only available on linux based OS.
 
 == Setup step by step ==
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+You are now ready to download the source files and compile the software.
+
+# First you need to create a folder wherever you want to have the program and move inside this folder.
+# Then use the following command to register in google code to allow svn to download from the host : $ svn checkout http://udt.googlecode.com/svn/trunk/ udt-read-only
+# To update the folder run the command : $ svn up
