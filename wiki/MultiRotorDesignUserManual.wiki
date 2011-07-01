@@ -18,8 +18,8 @@ How to get MRD operational.
 MRD is develloped on linux and thus is for now only available on linux based OS. However it should not be really difficult to port it to windows. 
 
  # That means that the first thing you need is a computer running with     Ubuntu or other Linux based OS.
- # Install the gfortran-4.5 compiler with the command: $ sudo apt-get install gfortran-4.5
- # Install svn (Subversion) in order to download keep the program up to date and submit your work if you want to contribute to this project. To do that use: $ apt-get install subversion 
+ # Install the gfortran-4.5 compiler with the command: *$ sudo apt-get install gfortran-4.5*
+ # Install svn (Subversion) in order to download keep the program up to date and submit your work if you want to contribute to this project. To do that use: *$ apt-get install subversion* 
 
 
 
@@ -29,5 +29,10 @@ MRD is develloped on linux and thus is for now only available on linux based OS.
 You are now ready to download the source files and compile the software.
 
  # First you need to create a folder wherever you want to have the program and move inside this folder.
- # Then use the following command to register in google code to allow svn to download from the host : $ svn checkout http://udt.googlecode.com/svn/trunk/ udt-read-only
- # To update the folder run the command : $ svn up
+ # Then use the following command to register in google code to allow svn to download from the host : *$ svn checkout http://udt.googlecode.com/svn/trunk/ udt-read-only*
+ # To update the folder run the command : *$ svn up*
+
+A UDT folder will be created, it wil contain all you need to compile and run the software. Inside you will find:
+ * *BIN* : the folder in which the binaries and the Makefile are
+ * *SRC* : the folder containing the source files
+ * *RUNS* : In which you store your propeller, motor, airfoil databases and your simulation configuration file.
