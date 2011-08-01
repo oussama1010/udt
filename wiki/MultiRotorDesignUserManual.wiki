@@ -28,8 +28,8 @@ MRD is develloped on linux and thus is for now only available on linux based OS.
 
 You are now ready to download the source files and compile the software.
 
- # First you need to create a folder wherever you want to have the program and move inside this folder. For example you can create a UDT folder using the command: *$ mkdir UDT
- # Move inside this folder using: *$ cd UDT
+ # First you need to create a folder wherever you want to have the program and move inside this folder. For example you can create a UDT folder using the command: *$ mkdir UDT*
+ # Move inside this folder using: *$ cd UDT*
  # Then use the following command to register in google code to allow svn to download from the host : *$ svn checkout http://udt.googlecode.com/svn/trunk/ udt-read-only*
  # To update the folder run the command : *$ svn up*
 
