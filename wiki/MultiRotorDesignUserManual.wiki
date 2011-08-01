@@ -39,5 +39,15 @@ A udt folder will be created, it wil contain all you need to compile and run the
  * *RUNS* : In which you store your propeller, motor, airfoil databases and your simulation configuration file. It will also contain the results once you have run some simulations. 
 
 To compile Go to directory /BIN 
-Edit the <Makefile> in order to change the fortran compiler if necessary (default is the gfortran-4.5). 
-Type <make> to compile Qprop,Qmil and MRD all together in once.
+Edit the *Makefile* in order to change the fortran compiler if necessary (default is the gfortran-4.5). 
+Type *$ make* to compile Qprop,Qmil and MRD all together.
+
+MRD is now ready to run.
+
+= Running the software =
+
+== Modes available ==
+
+MRD can be run in three different modes according to what you want to do and what kind of data you have. These three modes are:
+
+ * *Qprop based simulation mode* : this mode is meant to simulate multirotor vehicles using calls to Qprop in order to achieve higher precision and additional output. The difficult part here is to get an accurate propeller model which can be used by Qprop, i.e. span, cord law and airfoil characteristics. If your propeller is well known you should be able to find it's model using google otherwise you can find a modelisation procedure here http://web.mit.edu/drela/Public/web/qprop/prop_measure.pdf
