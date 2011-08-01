@@ -28,15 +28,16 @@ MRD is develloped on linux and thus is for now only available on linux based OS.
 
 You are now ready to download the source files and compile the software.
 
- # First you need to create a folder wherever you want to have the program and move inside this folder.
+ # First you need to create a folder wherever you want to have the program and move inside this folder. For example you can create a UDT folder using the command: *$ mkdir UDT
+ # Move inside this folder using: *$ cd UDT
  # Then use the following command to register in google code to allow svn to download from the host : *$ svn checkout http://udt.googlecode.com/svn/trunk/ udt-read-only*
  # To update the folder run the command : *$ svn up*
 
-A UDT folder will be created, it wil contain all you need to compile and run the software. Inside you will find:
+A udt folder will be created, it wil contain all you need to compile and run the software. Inside you will find:
  * *BIN* : the folder in which the binaries and the Makefile are
  * *SRC* : the folder containing the source files
- * *RUNS* : In which you store your propeller, motor, airfoil databases and your simulation configuration file.
+ * *RUNS* : In which you store your propeller, motor, airfoil databases and your simulation configuration file. It will also contain the results once you have run some simulations. 
 
 To compile Go to directory /BIN 
-Edit the <Makefile> in order to change the fortran compiler if necessary. 
+Edit the <Makefile> in order to change the fortran compiler if necessary (default is the gfortran-4.5). 
 Type <make> to compile Qprop,Qmil and MRD all together in once.
