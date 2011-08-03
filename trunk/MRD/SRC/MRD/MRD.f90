@@ -36,7 +36,6 @@
 
 	NR_PROP = NR_MOTOR ! Number of Propellers
 
-	TIP_CLRNC = 0.01 ! Tip Clearance in meters
 
 !	M_FRAME_FIX = 0.1 ! (kg) Fixed frame weight for FRAME_TYPE=10
 !--- extra from MURAT ---!
