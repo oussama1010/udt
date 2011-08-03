@@ -33,6 +33,7 @@
 !---The PROP_RADIUS is known and the optimun size can be computed
 	CALL MFRAME
 
+
 	IF (CANCEL_SIMUL .eq. 1) THEN
 		WRITE(*,*)'the propeller is not suitable'
 		GOTO 1000
@@ -63,7 +64,7 @@
 500		Format ('../../BIN/qprop',' ./RESULTS/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
 550		Format ('../../BIN/qprop',' ./DATA/PROPELLER/',A,' ./DATA/MOTOR/',A,' ',F5.2,' - - ',F5.2,' ',F5.2,' > ',A )
 
-!		write(*,*) qprop_in_command
+		write(*,*) qprop_in_command
 
 
 	
@@ -79,21 +80,21 @@
 
 
 !--- Debug Print...
-!		write (*,*)
-!		write (*,*) 'Working Cond          :  ', wcn
-!		write (*,*) 'Motor Name            :  ', motor_name
-!		write (*,*) 'Prop Name             :  ', prop_name 
-!		write (*,*) 'MASS                  :  ', M_TOTAL 
-!		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
-!		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
-!		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
-!		write (*,*) 'Torque                :  ', Qprop_Q
-!	 	write (*,*) 'Thrust                :  ', Qprop_T
-!	 	write (*,*) 'Volts                 :  ', Qprop_Volts
-!	 	write (*,*) 'Amps                  :  ', Qprop_Amps
-!	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
-!	 	write (*,*)
-!	 	write (*,*) 'RPM      :  ', Qprop_rpm
+		write (*,*)
+		write (*,*) 'Working Cond          :  ', wcn
+		write (*,*) 'Motor Name            :  ', motor_name
+		write (*,*) 'Prop Name             :  ', prop_name 
+		write (*,*) 'MASS                  :  ', M_TOTAL 
+		write (*,*) 'PROP Eff              :  ', Qprop_Eff_prop
+		write (*,*) 'MOTOR Eff             :  ', Qprop_Eff_mot
+		write (*,*) 'Total Eff             :  ', Qprop_Eff_total
+		write (*,*) 'Torque                :  ', Qprop_Q
+	 	write (*,*) 'Thrust                :  ', Qprop_T
+	 	write (*,*) 'Volts                 :  ', Qprop_Volts
+	 	write (*,*) 'Amps                  :  ', Qprop_Amps
+	 	write (*,*) 'Electrical Power      :  ', Qprop_P_elec
+	 	write (*,*)
+	 	write (*,*) 'RPM      :  ', Qprop_rpm
 	VOLTS = Qprop_Volts
 	AMPS =  Qprop_Amps
 
@@ -115,6 +116,7 @@
 ! Only the configurations meeting the mission constraints are stored
 		IF ( MIN_TW_RATIO .Le. TW_RATIO .AND. AMPS .LE. MAX_STEADY_CURRENT .AND. MAX_OUTPUT_CURRENT .LE. &
 		MAX_BURST_CURRENT ) THEN
+	WRITE(*,*)'FRAME_SPAN',2*(FRAME_SPAN+PROP_RADIUS)
 			CALL CREATE_OUTPUT_TABLE
 		ELSE
 			WRITE(*,*)MIN_TW_RATIO, TW_RATIO
