@@ -92,4 +92,8 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
 
 ===Set up a Simulation===
 
- You can now get back to the Case
+ You can now get back to the Case.run file and open it. In this file you will find various parameters describing the mode you want to use, your aircraft shape, size, the way you want the results to be sorted...
+
+ Here is an overview of all the parameters you need to tune for your simulation:
+
+  **RUN_MODE* : define the mode in which the software will run. 0 will run the Simplified simulation mode using the SIMPLE_PROPELLER models, 1 will run the Qprop based simulation and 2 will run the propeller design mode.
