@@ -60,8 +60,8 @@ In addition the user can create engines model from his experiments or the manufa
    * *The maximum working power* in W
 
  ===Simplified simulation mode :=== 
-In this mode the propeller is described by eight coefficients. This allow the user to create a model for an existing propeller just by doing some basic measurment on it. As it is not calling Qprop this mode is also much faster.
-The coefficients describing the aerodynamic effieciency of the propeller are:
+ In this mode the propeller is described by eight coefficients. This allow the user to create a model for an existing propeller just by doing some basic measurment on it. As it is not calling Qprop this mode is also much faster.
+ The coefficients describing the aerodynamic effieciency of the propeller are:
    * *K0_THRUST* in N (~0)
    * *K1_THRUST* in N/RPM
    * *K2_THRUST* in N/RPM^2
@@ -69,13 +69,13 @@ The coefficients describing the aerodynamic effieciency of the propeller are:
    * *K0_TORQUE* in Nm/RPM 
    * *K0_TORQUE* in Nm/RPM^2 
 
-These coeffiecients can be computed using excel for example and approximating the Thrust(RPM) and Torque(RPM) response with the following secont order polynoms:
+ These coeffiecients can be computed using excel for example and approximating the Thrust(RPM) and Torque(RPM) response with the following secont order polynoms:
 
-Thrust(RPM) = K0_THRUST + K1_THRUST.RPM + K2_THRUST.RPM^2
+ Thrust(RPM) = K0_THRUST + K1_THRUST.RPM + K2_THRUST.RPM^2
 
-Torque(RPM) = K0_TORQUE + K1_TORQUE.RPM + K2_TORQUE.RPM^2
+ Torque(RPM) = K0_TORQUE + K1_TORQUE.RPM + K2_TORQUE.RPM^2
 
-The last coefficients are the *MASS* in kg and the *RADIUS* of the propeller in meter.
+ The last coefficients are the *MASS* in kg and the *RADIUS* of the propeller in meter.
 
 
  ===Propeller design mode :=== 
@@ -88,4 +88,4 @@ The only inputs this mode need is the aerodynamic coefficients of the airfoils y
 
 To run a simulation (or a design procedure) using MRD you need to create a Case folder containing the data and the incoming results. This folder needs to be located in the udt/MRD/RUNS folder. The easiest way to do it is to go inside the RUNS folder duplicate and rename the CASEexp folder. Call it for example SIMU1.
 
- Then move inside this new folder. You will find a Case.run file, a DATA folder and a RESULTS folder. The Case.run file is the configuration file that will contain all the parameters of your simulation
+Then move inside this new folder. You will find a Case.run file, a DATA folder and a RESULTS folder. The Case.run file is the configuration file that will contain all the parameters of your simulation
