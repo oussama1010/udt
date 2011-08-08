@@ -53,7 +53,8 @@ MRD can be run in three different modes according to what you want to do and wha
  ===Qprop based simulation mode :===
 This mode is meant to simulate multirotor vehicles using calls to Qprop in order to achieve higher precision and additional output. The difficult part here is to get an accurate propeller model which can be used by Qprop, i.e. span, cord law and airfoil characteristics. If your propeller is well known you should be able to find it's model using google otherwise you can find a modelisation procedure here http://web.mit.edu/drela/Public/web/qprop/prop_measure.pdf
 
- ===Simplified simulation mode :=== In this mode the propeller is described by eight coefficients. This allow the user to create a model for an existing propeller just by doing some basic measurment on it. As it is not calling Qprop this mode is also much faster.
+ ===Simplified simulation mode :=== 
+In this mode the propeller is described by eight coefficients. This allow the user to create a model for an existing propeller just by doing some basic measurment on it. As it is not calling Qprop this mode is also much faster.
 The coefficients describing the aerodynamic effieciency of the propeller are:
    * *K0_THRUST* in N (~0)
    * *K1_THRUST* in N/RPM
@@ -74,3 +75,8 @@ In addition the user can create engines model from his experiments or the manufa
 
    * *The motor mass* in kg
    * *The maximum working power* in W
+
+ ===Propeller design mode :=== 
+This mode allow the user to generate propellers using Qmil according to some design constraints, simulate them and sort the ones meeting your mission constraints. The software will output a Qprop-type definition file which can allow you to design and produce an optimal propeller for your aircraft.
+
+The only input this mode need is the aerodynamic coefficients of the airfoils you want to use. 
