@@ -79,9 +79,9 @@ In addition the user can create engines model from his experiments or the manufa
 
 
  ===Propeller design mode :=== 
-This mode allow the user to generate propellers using Qmil according to some design constraints, simulate them and sort the ones meeting your mission constraints. The software will output a Qprop-type definition file which can allow you to design and produce an optimal propeller for your aircraft.
+ This mode allow the user to generate propellers using Qmil according to some design constraints, simulate them and sort the ones meeting your mission constraints. The software will output a Qprop-type definition file which can allow you to design and produce an optimal propeller for your aircraft.
 
-The only inputs this mode need is the aerodynamic coefficients of the airfoils you want to use and the motors models. 
+ The only inputs this mode need is the aerodynamic coefficients of the airfoils you want to use and the motors models. 
 
 
 ==Running a Simulation==
