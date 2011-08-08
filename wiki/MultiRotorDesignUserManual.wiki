@@ -51,10 +51,10 @@ MRD is now ready to run.
 MRD can be run in three different modes according to what you want to do and what kind of data you have. These three modes are:
 
  ===Qprop based simulation mode :===
-This mode is meant to simulate multirotor vehicles using calls to Qprop in order to achieve higher precision and additional output. The software will combine propeller and motor models available. The difficult part here is to get an accurate propeller model which can be used by Qprop, i.e. span, cord law and airfoil characteristics. If your propeller is well known you should be able to find it's model using google otherwise you can find a modelisation procedure here http://web.mit.edu/drela/Public/web/qprop/prop_measure.pdf
+ This mode is meant to simulate multirotor vehicles using calls to Qprop in order to achieve higher precision and additional output. The software will combine propeller and motor models available. The difficult part here is to get an accurate propeller model which can be used by Qprop, i.e. span, cord law and airfoil characteristics. If your propeller is well known you should be able to find it's model using google otherwise you can find a modelisation procedure here http://web.mit.edu/drela/Public/web/qprop/prop_measure.pdf
 
 
-In addition the user can create engines model from his experiments or the manufacturer data. The model used is similar to the Qprop model but has two additional coefficients that are relevant for UAV design:
+ In addition the user can create engines model from his experiments or the manufacturer data. The model used is similar to the Qprop model but has two additional coefficients that are relevant for UAV design:
 
    * *The motor mass* in kg
    * *The maximum working power* in W
