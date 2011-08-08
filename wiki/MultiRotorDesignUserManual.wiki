@@ -19,8 +19,8 @@ MRD is develloped on linux and thus is for now only available on linux based OS.
 
  # That means that the first thing you need is a computer running with     Ubuntu or other Linux based OS.
  # Install the gfortran-4.5 compiler with the command: *$ sudo apt-get install gfortran-4.5*
- # Install svn (Subversion) in order to download keep the program up to date and submit your work if you want to contribute to this project. To do that use: *$ apt-get install subversion* 
-
+ # Install svn (Subversion) in order to download keep the program up to date and submit your work if you want to contribute to this project. To do that use: *$ sudo apt-get install subversion* 
+ # In order to have nice graphical output from the software you can install gnuplot using: *$ sudo apt-get install gnuplot* 
 
 
 
@@ -88,4 +88,8 @@ MRD can be run in three different modes according to what you want to do and wha
 
 To run a simulation (or a design procedure) using MRD you need to create a Case folder containing the data and the incoming results. This folder needs to be located in the udt/MRD/RUNS folder. The easiest way to do it is to go inside the RUNS folder duplicate and rename the CASEexp folder. Call it for example SIMU1.
 
-Then move inside this new folder. You will find a Case.run file, a DATA folder and a RESULTS folder. The Case.run file is the configuration file that will contain all the parameters of your simulation
+Then move inside this new folder. You will find a Case.run file, a DATA folder and a RESULTS folder. The Case.run file is the configuration file that will contain all the parameters of your simulation. Inside DATA/PROPELLER, DATA/MOTOR or DATA/SIMPLE_PROPELLER just replace the existing models with the ones you want to use.
+
+===Set up a Simulation===
+
+ You can now get back to the Case
