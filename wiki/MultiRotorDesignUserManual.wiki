@@ -51,7 +51,13 @@ MRD is now ready to run.
 MRD can be run in three different modes according to what you want to do and what kind of data you have. These three modes are:
 
  ===Qprop based simulation mode :===
-This mode is meant to simulate multirotor vehicles using calls to Qprop in order to achieve higher precision and additional output. The difficult part here is to get an accurate propeller model which can be used by Qprop, i.e. span, cord law and airfoil characteristics. If your propeller is well known you should be able to find it's model using google otherwise you can find a modelisation procedure here http://web.mit.edu/drela/Public/web/qprop/prop_measure.pdf
+This mode is meant to simulate multirotor vehicles using calls to Qprop in order to achieve higher precision and additional output. The software will combine propeller and motor models available. The difficult part here is to get an accurate propeller model which can be used by Qprop, i.e. span, cord law and airfoil characteristics. If your propeller is well known you should be able to find it's model using google otherwise you can find a modelisation procedure here http://web.mit.edu/drela/Public/web/qprop/prop_measure.pdf
+
+
+In addition the user can create engines model from his experiments or the manufacturer data. The model used is similar to the Qprop model but has two additional coefficients that are relevant for UAV design:
+
+   * *The motor mass* in kg
+   * *The maximum working power* in W
 
  ===Simplified simulation mode :=== 
 In this mode the propeller is described by eight coefficients. This allow the user to create a model for an existing propeller just by doing some basic measurment on it. As it is not calling Qprop this mode is also much faster.
@@ -71,12 +77,15 @@ Torque(RPM) = K0_TORQUE + K1_TORQUE.RPM + K2_TORQUE.RPM^2
 
 The last coefficients are the *MASS* in kg and the *RADIUS* of the propeller in meter.
 
-In addition the user can create engines model from his experiments or the manufacturer data. The model used is similar to the Qprop model but has two additional coefficients that are relevant for UAV design:
-
-   * *The motor mass* in kg
-   * *The maximum working power* in W
 
  ===Propeller design mode :=== 
 This mode allow the user to generate propellers using Qmil according to some design constraints, simulate them and sort the ones meeting your mission constraints. The software will output a Qprop-type definition file which can allow you to design and produce an optimal propeller for your aircraft.
 
-The only input this mode need is the aerodynamic coefficients of the airfoils you want to use. 
+The only inputs this mode need is the aerodynamic coefficients of the airfoils you want to use and the motors models. 
+
+
+==Running a Simulation==
+
+To run a simulation (or a design procedure) using MRD you need to create a Case folder containing the data and the incoming results. This folder needs to be located in the udt/MRD/RUNS folder. The easiest way to do it is to go inside the RUNS folder duplicate and rename the CASEexp folder. Call it for example SIMU1.
+
+ Then move inside this new folder. You will find a Case.run file, a DATA folder and a RESULTS folder. The Case.run file is the configuration file that will contain all the parameters of your simulation
