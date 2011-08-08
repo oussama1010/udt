@@ -60,3 +60,7 @@ The coefficients describing the aerodynamic effieciency of the propeller are:
  * *K0_TORQUE* in Nm (~0)
  * *K0_TORQUE* in Nm/RPM 
  * *K0_TORQUE* in Nm/RPM^2 
+
+These coeffiecients can be computed using excel for example and approximating the Thrust(RPM) and Torque(RPM) response with the following secont order polynoms:
+
+Thrust(RPM) = K0_THRUST + K1_THRUST.RPM + K2_THRUST.RPM^2
