@@ -15,7 +15,7 @@ How to get MRD operational.
 
 == What you need ==
 
-MRD is develloped on linux and thus is for now only available on linux based OS. However it should not be really difficult to port it to windows. 
+MRD is developed on linux and thus is for now only available on linux based OS. However it should not be really difficult to port it to windows. 
 
  # That means that the first thing you need is a computer running with     Ubuntu or other Linux based OS.
  # Install the gfortran-4.5 compiler with the command: *$ sudo apt-get install gfortran-4.5*
@@ -39,7 +39,7 @@ A udt folder will be created, it wil contain all you need to compile and run the
  * *RUNS* : In which you store your propeller, motor, airfoil databases and your simulation configuration file. It will also contain the results once you have run some simulations. 
 
 To compile Go to directory /BIN 
-Edit the *Makefile* in order to change the fortran compiler if necessary (default is the gfortran-4.5). 
+Edit the *Makefile* in order to change the Fortran compiler if necessary (default is the gfortran-4.5). 
 Type *$ make* to compile Qprop,Qmil and MRD all together.
 
 MRD is now ready to run.
@@ -60,8 +60,8 @@ MRD can be run in three different modes according to what you want to do and wha
    * *The maximum working power* in W
 
  ===Simplified simulation mode :=== 
- In this mode the propeller is described by eight coefficients. This allow the user to create a model for an existing propeller just by doing some basic measurment on it. As it is not calling Qprop this mode is also much faster.
- The coefficients describing the aerodynamic effieciency of the propeller are:
+ In this mode the propeller is described by eight coefficients. This allow the user to create a model for an existing propeller just by doing some basic measurement on it. As it is not calling Qprop this mode is also much faster.
+ The coefficients describing the aerodynamic efficiency of the propeller are:
    * *K0_THRUST* in N (~0)
    * *K1_THRUST* in N/RPM
    * *K2_THRUST* in N/RPM^2
@@ -69,7 +69,7 @@ MRD can be run in three different modes according to what you want to do and wha
    * *K0_TORQUE* in Nm/RPM 
    * *K0_TORQUE* in Nm/RPM^2 
 
- These coeffiecients can be computed using excel for example and approximating the Thrust(RPM) and Torque(RPM) response with the following secont order polynoms:
+ These coeffiecients can be computed using excel for example and approximating the Thrust(RPM) and Torque(RPM) response with the following second order polynoms:
 
  Thrust(RPM) = K0_THRUST + K1_THRUST.RPM + K2_THRUST.RPM^2
 
@@ -128,7 +128,7 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
 
   * *NR_MOTOR* : number of motors (and propellers) of your aircraft
 
-  * *FRAME_MAT* : Frame material. 0:carbon,1:aluminium,2:EPP
+  * *FRAME_MAT* : Frame material. 0:carbon,1:aluminum,2:EPP
 
   * *FRAME_SHAPE* : Define the shape of the frame. 0:cross, 1:round 
 
@@ -136,4 +136,4 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
 
   * *FRAME_FIX_SIZE* : The span in m that will be used for your quad frame. The simulator will use this frame size and reject all the propellers to large to fit according to the tip clearance you set. Put 0 to let the simulator find the most compact frame for each propellers.
 
-  * *MAX_FRAME_SIZE* : The maximal span of the quad frame. The simulator will reject all configuratiosn exceeding this limit. Leave 0 to keep all configurations.
+  * *MAX_FRAME_SIZE* : The maximal span of the quad frame. The simulator will reject all configurations exceeding this limit. Leave 0 to keep all configurations.
