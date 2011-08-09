@@ -97,8 +97,19 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
  Here is an overview of all the parameters you need to tune for your simulation:
 
   * *RUN_MODE* : define the mode in which the software will run. 0 will run the Simplified simulation mode using the SIMPLE_PROPELLER models, 1 will run the Qprop based simulation and 2 will run the propeller design mode.
+
+  System Weights
+
   * *MASS_PAYLOAD* : define the mass in kg of the payload you intend to carry
+
   * *MASS_AVIONICS* : define the mass in kg of your autopilot system (with sensors, modem, engine controllers...)
+
   * *MASS_MISC* : various additional weight in kg
+
+  Energy Source 
+
   * *BATT_SPEC_ENERGY* : is the ratio of energy in Wh that contains your battery over it's mass. To approximate the energy contained in a battery just multiply it's capacity in Ah by the mean voltage during use (~11V fos a 3 cells Lipo).
+
   * *BATT_MASS_MULTIPLIER* : define the battery mass, you can enter here three values if you want the simulator to loop on the battery size. Enter the starting mass, the maximum mass, and delta. If you don't want to loop just use the same value for the minimum and maximum mass.
+
+  * *BATT_MAX_VOLT* : the nominal voltage of your battery in V (12V for a 3 cells Lipo)
