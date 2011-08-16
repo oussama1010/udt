@@ -165,3 +165,13 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
   * *MANEUVRABILITY_COEFF* : Define the importance of maximum thrust/weight ratio to sort the different configurations.
 
   * *RANGE_COEFF* : Define the importance of the range of a configuration to sort the different configurations. The range cannot be calculated in the Simplified simulation mode.
+
+  Mission Settings
+
+  * *TRANSLATION_SPEED* : Define the translation speeds to simulate. Set minimum, maximum speed an delta in m/s. Keep min and max at the same value not to loop on the speed.
+
+  Efficiencies
+
+  Brushless engine controllers don't have a 100% efficiency, usually the higher efficiency is achieved at high RPM and the lowest at low RPM. This efficiency is difficult to modelise so for now we are just approximating it with a Linear function. You just need to give the program the minimum and maximum efficiency for low and high RPM respectively. If your are not sure just keep the values we set and that seems quite realistic for most controllers.
+
+    * *CONTROLLER_EFF* : Set the minimum and maximum controller efficiencies in % 
