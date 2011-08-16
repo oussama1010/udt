@@ -181,5 +181,5 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
 You have now edited the CASE.run file and compiled all the software executables. MRD is launched through a command line, the place from which you launch the command will impact the data it will use. Here is the recommended way of doing it:
 
  # Move inside your experiment folder (the one containing your CASE.run file). This folder also contains your data folder, with your propellers/motor models.
- # Launch the software using the CASE.run file using the command: *$ ../../BIN/mrd CASE.run*
-.
+ # Launch the software using the CASE.run file using the command: *$ ../../BIN/mrd CASE.run*.
+ # You should see the software running for a while in the terminal and printing some debug. After this all your results will be created in the RESULTS folder. The main file is the CASE.txt which is a sorted list, according to your mission scoring coefficients, of all the suitable configurations.
