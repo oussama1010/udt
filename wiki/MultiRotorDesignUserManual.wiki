@@ -101,6 +101,8 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
 
   System Weights
 
+  This section define the mass of the different systems and payload onboard.
+
   * *MASS_PAYLOAD* : define the mass in kg of the payload you intend to carry
 
   * *MASS_AVIONICS* : define the mass in kg of your autopilot system (with sensors, modem, engine controllers...)
@@ -109,6 +111,8 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
 
 
   Energy Source 
+
+  This section define the energy source of the aircraft.
 
   * *BATT_SPEC_ENERGY* : is the ratio of energy in Wh that contains your battery over it's mass. To approximate the energy contained in a battery just multiply it's capacity in Ah by the mean voltage during use (~11V fos a 3 cells Lipo).
 
@@ -124,6 +128,8 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
 
   Frame Specs
 
+  This section define shape, size and mass of the aircraft naked frame.
+
   * *FRAME_FIX_MASS* : Is the mass in kg of your aircraft frame. If you let 0 the software will estimate it (for quad rotors only) according to the following parameters.
 
   * *NR_MOTOR* : number of motors (and propellers) of your aircraft
@@ -137,3 +143,25 @@ Then move inside this new folder. You will find a Case.run file, a DATA folder a
   * *FRAME_FIX_SIZE* : The span in m that will be used for your quad frame. The simulator will use this frame size and reject all the propellers to large to fit according to the tip clearance you set. Put 0 to let the simulator find the most compact frame for each propellers.
 
   * *MAX_FRAME_SIZE* : The maximal span of the quad frame. The simulator will reject all configurations exceeding this limit. Leave 0 to keep all configurations.
+
+  Constraints & Checks
+
+  This section define the criteria that have to be met for a configuration to be considered successful.
+
+  * *MIN_TW_RATIO* : Define the minimum thrust/weight that a configuration have to reach. 2 should be a good compromise between maneuverability and endurance.
+
+  * *MAX_STEADY_CURRENT* : Maximum current in A at which your engine controller is designed to operate continuously. All configuration exceeding this limit while hovering are rejected.
+
+  * *MAX_BURST_CURRENT* : Maximum current in A that can be sustained by your controller for a short period of time. All configuration exceeding this limit while performing maximum thrust/weight ratio maneuver are rejected.
+
+  Mission Scoring
+
+  This section define the relative importance of different criteria in the output sorting.
+
+  * *ENDURANCE_COEFF* : Define the importance of endurance to sort the different configurations.
+
+  * *SIZE_COEFF* : Define the importance of the overall size to sort the different configurations, the smaller the better.
+
+  * *MANEUVRABILITY_COEFF* : Define the importance of maximum thrust/weight ratio to sort the different configurations.
+
+  * *RANGE_COEFF* : Define the importance of the range of a configuration to sort the different configurations. The range cannot be calculated in the Simplified simulation mode.
