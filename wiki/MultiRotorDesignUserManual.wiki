@@ -30,7 +30,7 @@ You are now ready to download the source files and compile the software.
 
  # First you need to create a folder wherever you want to have the program and move inside this folder. For example you can create a UDT folder using the command: *$ mkdir UDT*
  # Move inside this folder using: *$ cd UDT*
- # Then use the following command to register in google code to allow svn to download from the host : *$ svn checkout http://udt.googlecode.com/svn/trunk/ udt-read-only*
+ # Then use the following command to register in google code to allow svn to download from the host : *$ svn checkout https://udt.googlecode.com/svn/trunk/ udt-read-only*
  # To update the folder run the command : *$ svn up*
 
 A udt folder will be created, it wil contain all you need to compile and run the software. Inside you will find:
@@ -183,3 +183,8 @@ You have now edited the CASE.run file and compiled all the software executables.
  # Move inside your experiment folder (the one containing your CASE.run file). This folder also contains your data folder, with your propellers/motor models.
  # Launch the software using the CASE.run file using the command: *$ ../../BIN/mrd CASE.run*.
  # You should see the software running for a while in the terminal and printing some debug. After this all your results will be created in the RESULTS folder. The main file is the CASE.txt which is a sorted list, according to your mission scoring coefficients, of all the suitable configurations.
+
+
+==Running a Design Loop==
+
+Coming soon !
