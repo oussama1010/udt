@@ -91,7 +91,7 @@ To run a simulation (or a design procedure) using MRD you need to create a Case 
 
 Then move inside this new folder. You will find a Case.run file, a DATA folder and a RESULTS folder. The Case.run file is the configuration file that will contain all the parameters of your simulation. Inside DATA/PROPELLER, DATA/MOTOR or DATA/SIMPLE_PROPELLER just replace the existing models with the ones you want to use.
 
-===Set up a Simulation===
+===Setting up a Simulation===
 
  You can now get back to the Case.run file and open it. In this file you will find various parameters describing the mode you want to use, your aircraft shape, size, the way you want the results to be sorted...
 
@@ -188,4 +188,4 @@ You have now edited the CASE.run file and compiled all the software executables.
 
 ==Running a Design Loop==
 
-Coming soon !
+To launch the software in design mode you will need to set a few parameters in addition to all those you set for the simulation mode. You will also need to feed the software with airfoil data files which are the files describing the airfoils that will be tested on your propellers. You can find example of these file in CASEexp/DATA/AIRFOIL and look at this link to create your own file : http://web.mit.edu/drela/Public/web/qprop/prop_measure.pdf
